@@ -10,6 +10,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/components/ui/sidebar";
+import logo from "../../static/logo.jpg";
 
 import {
   adminNavItems,
@@ -21,7 +22,14 @@ export default function AppSidebar() {
   return (
     <SidebarProvider>
       <Sidebar>
-        <SidebarHeader>LOGO</SidebarHeader>
+        <SidebarHeader>
+          <div className="flex gap-5 items-center justify-center">
+            <div className="w-20">
+              <img src={logo} alt="logo" className="w-full" />
+            </div>
+            <div className="font-bold">DSPL</div>
+          </div>
+        </SidebarHeader>
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupLabel>Salesman Name</SidebarGroupLabel>
