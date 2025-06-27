@@ -1,32 +1,28 @@
-import AddOrder from "./components/common/AddOrder";
-import AppSidebar from "./components/common/AppSidebar";
-import BottomNavbar from "./components/common/BottomNavbar";
-import TableGrid from "./components/common/TableGrid";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./components/pages/LoginPage";
-import { useIsMobile } from "./hooks/use-mobile";
+import Layout from "./components/common/Layout";
+import InProgress from "./components/pages/InProgress";
 
 function App() {
-  const isMobile = useIsMobile();
-
   return (
-    <div className="flex h-screen">
-      {/* Sidebar or Bottom Navbar */}
-      {isMobile ? (
-        <BottomNavbar />
-      ) : (
-        <div className="w-64 shrink-0">
-          <AppSidebar />
-        </div>
-      )}
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        {/* <Route path="/" element={}/> */}
+        <Route element={<Layout />}>
+          <Route path="/" element={<InProgress />} />
+          {/* <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          /> */}
+        </Route>
+      </Routes>
+    </BrowserRouter>
 
-      {/* Main Content */}
-      <div className="flex-1 overflow-auto">
-        <TableGrid />
-      </div>
-
-      {/* Floating Button */}
-      <AddOrder />
-    </div>
     // <LoginPage />
   );
 }
