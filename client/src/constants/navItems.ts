@@ -1,14 +1,4 @@
-import {
-  Home,
-  Inbox,
-  Calendar,
-  Search,
-  Settings,
-  User,
-  Clock,
-  CircleCheck,
-  Notebook,
-} from "lucide-react";
+import { User, Clock, CircleCheck, Notebook } from "lucide-react";
 type ItemType = {
   title: string;
   url: string;

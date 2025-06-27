@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Clock, CircleCheck, Notebook } from "lucide-react";
+// import { Clock, CircleCheck, Notebook } from "lucide-react";
 import { salesManNavItems } from "@/constants/navItems";
 function BottomNavbar() {
   return (

@@ -1,5 +1,3 @@
-// MyFormPage.tsx
-import React from "react";
 import CommonForm from "./CommonForm";
 import type { FieldConfig } from "@/types";
 
