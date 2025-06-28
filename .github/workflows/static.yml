@@ -5,6 +5,9 @@ on:
     branches:
       - main  # Trigger only when code is pushed to main
 
+permissions:
+  contents: write  # Needed for GitHub Pages deployment
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
