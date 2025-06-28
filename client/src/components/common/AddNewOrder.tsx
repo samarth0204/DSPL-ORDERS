@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import {
   Dialog,
@@ -11,7 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Minus, Trash, ChevronDown } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import {
   Popover,
   PopoverTrigger,
@@ -24,6 +22,10 @@ import {
   CommandGroup,
   CommandEmpty,
 } from "@/components/ui/command";
+import { useForm, useFieldArray } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { orderSchema } from "@/constants/orderSchema";
+import FormInput from "./FormInput";
 
 type Props = {
   open: boolean;
@@ -33,13 +35,6 @@ type Props = {
 type Variant = {
   name: string;
   weightPerUnit: number;
-};
-
-type Product = {
-  name: string;
-  mrp: string;
-  quantity: string;
-  weight: string;
 };
 
 type ProductOption = {
@@ -65,99 +60,61 @@ const availableProducts: ProductOption[] = [
 ];
 
 const AddNewOrder: React.FC<Props> = ({ open, setOpen }) => {
-  const [clientName, setClientName] = useState("");
-  const [products, setProducts] = useState<Product[]>([]);
-  const [error, setError] = useState("");
-  const productListRef = React.useRef<HTMLDivElement>(null);
   const [hoveredProduct, setHoveredProduct] = useState<ProductOption | null>(
     null
   );
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const productListRef = useRef<HTMLDivElement>(null);
 
-  const hasEnteredData =
-    clientName.trim() !== "" ||
-    products.some(
-      (p) =>
-        p.name.trim() !== "" ||
-        p.mrp.trim() !== "" ||
-        p.quantity.trim() !== "" ||
-        p.weight.trim() !== ""
-    );
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(orderSchema),
+    defaultValues: {
+      clientName: "",
+      deliveryDetails: "",
+      products: [],
+    },
+    mode: "onTouched",
+    reValidateMode: "onChange",
+  });
 
-  const handleRemoveProduct = (index: number) => {
-    setProducts((prev) => prev.filter((_, i) => i !== index));
-  };
+  const { fields, append, remove, replace } = useFieldArray({
+    control,
+    name: "products",
+  });
 
-  const handleChange = (index: number, field: keyof Product, value: string) => {
-    const updated = [...products];
-    updated[index][field] = value;
-    setProducts(updated);
-  };
-
-  const handleSubmit = () => {
-    if (products.length === 0) {
-      setError("Please add at least one product.");
-      return;
-    }
-
-    const hasEmpty = products.some(
-      (p) =>
-        !p.name.trim() ||
-        !p.mrp.trim() ||
-        !p.quantity.trim() ||
-        !p.weight.trim()
-    );
-    if (hasEmpty) {
-      setError("Please fill all product fields before saving.");
-      return;
-    }
-
-    const order = {
-      client: clientName,
-      products,
-    };
-    console.log("Order submitted:", order);
-
-    resetForm();
+  const onSubmit = (data: any) => {
+    console.log("Order submitted:", data);
+    reset();
     setOpen(false);
   };
 
-  const resetForm = () => {
-    setClientName("");
-    setProducts([]);
-    setError("");
-  };
-
   const handleClose = (shouldOpen: boolean) => {
-    if (!shouldOpen && hasEnteredData) {
+    if (!shouldOpen) {
       const confirmClose = window.confirm(
         "You have unsaved changes. Are you sure you want to discard them?"
       );
       if (!confirmClose) return;
-      resetForm();
+      reset();
     }
-
     setOpen(shouldOpen);
-  };
-
-  const handleClearAllProducts = () => {
-    setProducts([]);
-    setError("");
   };
 
   const handleAddProductWithVariant = (
     product: ProductOption,
     variant: Variant
   ) => {
-    setProducts((prev) => [
-      ...prev,
-      {
-        name: `${product.name} - ${variant.name}`,
-        mrp: "",
-        quantity: "",
-        weight: variant.weightPerUnit.toString(),
-      },
-    ]);
+    append({
+      name: `${product.name} - ${variant.name}`,
+      mrp: "",
+      quantity: "",
+      weight: variant.weightPerUnit.toString(),
+    });
     setPopoverOpen(false);
     setTimeout(() => {
       if (productListRef.current) {
@@ -165,10 +122,6 @@ const AddNewOrder: React.FC<Props> = ({ open, setOpen }) => {
       }
     }, 0);
   };
-
-  useEffect(() => {
-    if (!open) resetForm();
-  }, [open]);
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -180,50 +133,41 @@ const AddNewOrder: React.FC<Props> = ({ open, setOpen }) => {
           </DialogDescription>
         </DialogHeader>
 
-        {/* Client Name */}
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Client Name</label>
-          <Input
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FormInput
+            label="Client Name"
             placeholder="Enter client name"
-            value={clientName}
-            onChange={(e) => setClientName(e.target.value)}
+            {...register("clientName")}
+            error={errors.clientName?.message}
           />
-        </div>
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Delivery Option</label>
-          <Input
+
+          <FormInput
+            label="Delivery Option"
             placeholder="Enter Delivery Details"
-            value={clientName}
-            onChange={(e) => setClientName(e.target.value)}
+            {...register("deliveryDetails")}
+            error={errors.deliveryDetails?.message}
           />
-        </div>
-        {/* Product Section */}
-        <div className="mt-4 space-y-4">
-          <div className="flex items-center justify-between">
-            <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
-              <PopoverTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <ChevronDown className="w-4 h-4 mr-1" />
-                  Add New Product
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent
-                className="p-0 w-[300px] overflow-visible"
-                side="bottom"
-                align="start"
-                sideOffset={4}
-              >
-                <Command className="max-h-[300px] overflow-visible">
-                  <CommandInput placeholder="Search product..." />
-                  <CommandEmpty>No product found.</CommandEmpty>
-                  <CommandGroup className="overflow-visible">
-                    {availableProducts.map((product) => (
-                      <div
-                        key={product.name}
-                        className="relative"
-                        onMouseEnter={() => setHoveredProduct(product)}
-                        onMouseLeave={() => setHoveredProduct(null)}
-                      >
+
+          <div className="mt-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <ChevronDown className="w-4 h-4 mr-1" />
+                    Add New Product
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="p-0 w-[300px] overflow-visible"
+                  side="bottom"
+                  align="start"
+                  sideOffset={4}
+                >
+                  <Command className="max-h-[300px] overflow-visible">
+                    <CommandInput placeholder="Search product..." />
+                    <CommandEmpty>No product found.</CommandEmpty>
+                    <CommandGroup className="overflow-visible">
+                      {availableProducts.map((product) => (
                         <div
                           key={product.name}
                           className="relative"
@@ -258,88 +202,83 @@ const AddNewOrder: React.FC<Props> = ({ open, setOpen }) => {
                             </div>
                           )}
                         </div>
-                      </div>
-                    ))}
-                  </CommandGroup>
-                </Command>
-              </PopoverContent>
-            </Popover>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={handleClearAllProducts}
-              disabled={products.length === 0}
-              className="text-red-500 hover:text-red-600"
-            >
-              <Trash className="w-4 h-4 mr-1" />
-              Remove All
-            </Button>
-          </div>
-
-          {/* No product message */}
-          {products.length === 0 && (
-            <p className="text-sm text-muted-foreground italic">
-              No product selected.
-            </p>
-          )}
-
-          {/* Scrollable Product List */}
-          <div
-            className="max-h-[500px] md:max-h-[220px] overflow-y-auto px-1 rounded-xl space-y-2 md:bg-gray-100"
-            ref={productListRef}
-          >
-            {products.map((product, index) => (
-              <div
-                key={index}
-                className="relative grid grid-cols-1 md:grid-cols-3 gap-2 items-start border border-gray-300 bg-gray-100 md:bg-white p-4 rounded-xl shadow-sm my-4"
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => replace([])}
+                disabled={fields.length === 0}
+                className="text-red-500 hover:text-red-600"
               >
-                <div className="absolute -top-3 left-2 text-sm text-gray-500 bg-white px-1 rounded ">
-                  {product.name}
-                </div>
-                <Input
-                  placeholder="MRP"
-                  className="w-full"
-                  value={product.mrp}
-                  onChange={(e) => handleChange(index, "mrp", e.target.value)}
-                />
-                <Input
-                  placeholder="Qty (e.g. 5pkt)"
-                  className="w-full"
-                  value={product.quantity}
-                  onChange={(e) =>
-                    handleChange(index, "quantity", e.target.value)
-                  }
-                />
-                <div className="flex w-full items-center gap-2">
-                  <Input
-                    placeholder="Weight"
-                    className="flex-1"
-                    value={product.weight}
-                    onChange={(e) =>
-                      handleChange(index, "weight", e.target.value)
-                    }
+                <Trash className="w-4 h-4 mr-1" />
+                Remove All
+              </Button>
+            </div>
+
+            {fields.length === 0 && (
+              <p className="text-sm text-muted-foreground italic">
+                No product selected.
+              </p>
+            )}
+            {errors.products?.message && (
+              <p className="text-sm text-red-500 font-medium">
+                {errors.products.message}
+              </p>
+            )}
+
+            <div
+              className="max-h-[500px] md:max-h-[220px] overflow-y-auto px-1 rounded-xl space-y-2 md:bg-gray-100"
+              ref={productListRef}
+            >
+              {fields.map((field, index) => (
+                <div
+                  key={field.id}
+                  className="relative grid grid-cols-1 md:grid-cols-3 gap-2 items-start border border-gray-300 bg-gray-100 md:bg-white p-4 rounded-xl shadow-sm my-4"
+                >
+                  <div className="absolute -top-3 left-2 text-sm text-gray-500 bg-white px-1 rounded ">
+                    {field.name}
+                  </div>
+                  <FormInput
+                    label="MRP"
+                    placeholder="MRP"
+                    {...register(`products.${index}.mrp`)}
+                    error={errors.products?.[index]?.mrp?.message}
                   />
-                  <Button
-                    variant="destructive"
-                    size="icon"
-                    onClick={() => handleRemoveProduct(index)}
-                  >
-                    <Minus className="w-4 h-4" />
-                  </Button>
+                  <FormInput
+                    label="Quantity"
+                    placeholder="Qty (e.g. 5pkt)"
+                    {...register(`products.${index}.quantity`)}
+                    error={errors.products?.[index]?.quantity?.message}
+                  />
+                  <div className="flex w-full items-center gap-2">
+                    <FormInput
+                      label="Weight"
+                      placeholder="Weight"
+                      {...register(`products.${index}.weight`)}
+                      error={errors.products?.[index]?.weight?.message}
+                    />
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      onClick={() => remove(index)}
+                    >
+                      <Minus className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
-          {/* Error Message */}
-          {error && <p className="text-sm text-red-500 font-medium">{error}</p>}
-        </div>
-
-        {/* Submit */}
-        <Button className="w-full mt-4" onClick={handleSubmit}>
-          Save Order
-        </Button>
+          <Button type="submit" className="w-full mt-4">
+            Save Order
+          </Button>
+        </form>
       </DialogContent>
     </Dialog>
   );
