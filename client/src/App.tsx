@@ -1,11 +1,11 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./components/pages/LoginPage";
 import Layout from "./components/common/Layout";
 import InProgress from "./components/pages/InProgress";
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         {/* <Route path="/" element={}/> */}
@@ -21,7 +21,7 @@ function App() {
           /> */}
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
 
     // <LoginPage />
   );
