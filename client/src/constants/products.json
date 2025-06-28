@@ -1,0 +1,174 @@
+{
+  "products": [
+    {
+      "product": "Mirchi Gold",
+      "sizes": [
+        { "size": "1 kg", "order_by": ["Bag", "Kg"] },
+        { "size": "500gm", "order_by": ["Bag", "Kg"] },
+        { "size": "200gm", "order_by": ["Bag", "Kg"] },
+        { "size": "100gm", "order_by": ["Bag", "Kg"] }
+      ]
+    },
+    {
+      "product": "Haldi Gold",
+      "sizes": [
+        { "size": "1 kg", "order_by": ["Bag", "Kg"] },
+        { "size": "500gm", "order_by": ["Bag", "Kg"] },
+        { "size": "200gm", "order_by": ["Bag", "Kg"] },
+        { "size": "100gm", "order_by": ["Bag", "Kg"] }
+      ]
+    },
+    {
+      "product": "Dhaniya Gold",
+      "sizes": [
+        { "size": "1 kg", "order_by": ["Bag", "Kg"] },
+        { "size": "500gm", "order_by": ["Bag", "Kg"] },
+        { "size": "200gm", "order_by": ["Bag", "Kg"] },
+        { "size": "100gm", "order_by": ["Bag", "Kg"] }
+      ]
+    },
+    {
+      "product": "Mirchi Royal",
+      "sizes": [
+        { "size": "1 kg", "order_by": ["Bag", "Kg"] },
+        { "size": "500gm", "order_by": ["Bag", "Kg"] },
+        { "size": "200gm", "order_by": ["Bag", "Kg"] },
+        { "size": "100gm", "order_by": ["Bag", "Kg"] }
+      ]
+    },
+    {
+      "product": "Haldi Royal",
+      "sizes": [
+        { "size": "1 kg", "order_by": ["Bag", "Kg"] },
+        { "size": "500gm", "order_by": ["Bag", "Kg"] },
+        { "size": "200gm", "order_by": ["Bag", "Kg"] },
+        { "size": "100gm", "order_by": ["Bag", "Kg"] }
+      ]
+    },
+    {
+      "product": "Dhaniya Royal",
+      "sizes": [
+        { "size": "1 kg", "order_by": ["Bag", "Kg"] },
+        { "size": "500gm", "order_by": ["Bag", "Kg"] },
+        { "size": "200gm", "order_by": ["Bag", "Kg"] },
+        { "size": "100gm", "order_by": ["Bag", "Kg"] }
+      ]
+    },
+    {
+      "product": "Mirchi VAP",
+      "sizes": [
+        { "size": "10 Rs", "order_by": ["PKT", "Bag"] },
+        { "size": "20 Rs", "order_by": ["PKT", "Bag"] }
+      ]
+    },
+    {
+      "product": "Haldi VAP",
+      "sizes": [
+        { "size": "10 Rs", "order_by": ["PKT", "Bag"] },
+        { "size": "20 Rs", "order_by": ["PKT", "Bag"] }
+      ]
+    },
+    {
+      "product": "Dhaniya VAP",
+      "sizes": [
+        { "size": "10 Rs", "order_by": ["PKT", "Bag"] },
+        { "size": "20 Rs", "order_by": ["PKT", "Bag"] }
+      ]
+    },
+    {
+      "product": "Jeeravan VAP",
+      "sizes": [{ "size": "10 Rs", "order_by": ["PKT", "Bag"] }]
+    },
+    {
+      "product": "Chicken VAP",
+      "sizes": [{ "size": "10 Rs", "order_by": ["PKT", "Bag"] }]
+    },
+    {
+      "product": "Mutton VAP",
+      "sizes": [{ "size": "10 Rs", "order_by": ["PKT", "Bag"] }]
+    },
+    {
+      "product": "Garam VAP",
+      "sizes": [{ "size": "10 Rs", "order_by": ["PKT", "Bag"] }]
+    },
+    {
+      "product": "Achar Masala Gold",
+      "sizes": [
+        { "size": "500gm", "order_by": ["Bag", "Kg"] },
+        { "size": "200gm", "order_by": ["Bag", "Kg"] }
+      ]
+    },
+    {
+      "product": "Achar Masala Royal",
+      "sizes": [
+        { "size": "500gm", "order_by": ["Bag", "Kg"] },
+        { "size": "200gm", "order_by": ["Bag", "Kg"] }
+      ]
+    },
+    {
+      "product": "Chana Masala",
+      "sizes": [{ "size": "100gm", "order_by": ["Pcs"] }]
+    },
+    {
+      "product": "Chat Masala",
+      "sizes": [
+        { "size": "100gm", "order_by": ["Pcs"] },
+        { "size": "500gm", "order_by": ["Kg"] }
+      ]
+    },
+    {
+      "product": "Chicken Masala",
+      "sizes": [{ "size": "100gm", "order_by": ["Pcs"] }]
+    },
+    {
+      "product": "jeeravan Masala",
+      "sizes": [{ "size": "100gm", "order_by": ["Pcs"] }]
+    },
+    {
+      "product": "kashmiri Mirch",
+      "sizes": [
+        { "size": "100gm", "order_by": ["Pcs"] },
+        { "size": "500gm", "order_by": ["Kg"] }
+      ]
+    },
+    {
+      "product": "Kasuri Methi",
+      "sizes": [
+        { "size": "100gm", "order_by": ["Kg", "Pcs"] },
+        { "size": "25gm", "order_by": ["Pcs"] }
+      ]
+    },
+    {
+      "product": "Kitchen King",
+      "sizes": [{ "size": "100gm", "order_by": ["Pcs"] }]
+    },
+    {
+      "product": "Mutton Masala",
+      "sizes": [{ "size": "100gm", "order_by": ["Pcs"] }]
+    },
+    {
+      "product": "Sambhar Masala",
+      "sizes": [{ "size": "100gm", "order_by": ["Pcs"] }]
+    },
+    {
+      "product": "Pav Bhaji Masala",
+      "sizes": [{ "size": "100gm", "order_by": ["Pcs"] }]
+    },
+    {
+      "product": "Dahi Vada Masala",
+      "sizes": [{ "size": "100gm", "order_by": ["Pcs"] }]
+    },
+    {
+      "product": "Sabji Masala",
+      "sizes": [{ "size": "100gm", "order_by": ["Pcs"] }]
+    },
+    {
+      "product": "Shahi Paneer Masala",
+      "sizes": [{ "size": "100gm", "order_by": ["Pcs"] }]
+    },
+    {
+      "product": "Amchoor",
+      "sizes": [{ "size": "100gm", "order_by": ["Pcs"] }]
+    }
+  ]
+}

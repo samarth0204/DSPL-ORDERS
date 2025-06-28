@@ -6,7 +6,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Minus, Trash, ChevronDown } from "lucide-react";
 import { useRef, useState } from "react";
