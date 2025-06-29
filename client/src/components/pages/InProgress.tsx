@@ -1,5 +1,7 @@
+import { useOrderStore } from "@/store/useOrderStore";
 const InProgress = () => {
-  return <div>InProgress</div>;
+  const orders = useOrderStore((state) => state.orders);
+  return <div>{orders.length}</div>;
 };
 
 export default InProgress;

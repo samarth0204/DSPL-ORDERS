@@ -8,9 +8,9 @@ export const orderSchema = yup.object().shape({
     .of(
       yup.object().shape({
         name: yup.string().required("Product name is required"),
-        mrp: yup.string().required("MRP is required"),
+        size: yup.string().required("Size is required"),
+        order_by: yup.string().required("Order By is required"),
         quantity: yup.string().required("Quantity is required"),
-        weight: yup.string().required("Weight is required"),
       })
     )
     .min(1, "Add at least one product"),
