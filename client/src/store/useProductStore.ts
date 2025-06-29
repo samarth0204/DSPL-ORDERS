@@ -10,6 +10,6 @@ type ProductStore = {
   availableProducts: Product[];
 };
 
-export const useProductStore = create<ProductStore>((set) => ({
+export const useProductStore = create<ProductStore>(() => ({
   availableProducts: currentProducts,
 }));
