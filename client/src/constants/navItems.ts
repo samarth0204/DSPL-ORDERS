@@ -21,7 +21,7 @@ export const salesManNavItems: ItemType[] = [
     url: "#",
     icon: Notebook,
   },
-  { title: "Profile", url: "#", icon: User },
+  // { title: "Profile", url: "#", icon: User },
 ];
 
 export const fulfilmentNavItems: ItemType[] = [

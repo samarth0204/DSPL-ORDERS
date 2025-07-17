@@ -7,7 +7,7 @@ const Layout = () => {
     <div className="flex h-screen">
       <Navbar />
       {/* Main Content */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-y-auto pb-14">
         <Outlet />
       </div>
 
