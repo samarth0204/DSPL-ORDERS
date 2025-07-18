@@ -28,7 +28,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "../ui/button";
-import { Activity, Pencil, Trash, Truck } from "lucide-react";
+import {
+  Activity,
+  BadgeCheck,
+  Clock,
+  Pencil,
+  Trash,
+  Truck,
+} from "lucide-react";
 
 const OrderTable = ({ order }: { order: Order }) => {
   return (
@@ -74,9 +81,34 @@ const OrderAccordion = ({ order }: { order: Order }) => {
     </Accordion>
   );
 };
+const GetBadge = ({ order }: { order: Order }) => {
+  if (order.status === "Completed") {
+    return (
+      <Badge
+        variant="secondary"
+        className="bg-green-700 text-white dark:bg-blue-600"
+      >
+        <BadgeCheck />
+        Completed
+      </Badge>
+    );
+  }
+  if (order.status === "In Progress") {
+    return (
+      <Badge
+        variant="secondary"
+        className="bg-green-700 text-white dark:bg-blue-600"
+      >
+        <Clock />
+        In Progress
+      </Badge>
+    );
+  }
+  return <Badge variant="destructive">Not Started</Badge>;
+};
 const OrderCard = ({ order }: { order: Order }) => {
   return (
-    <Card className="my-2 mx-1">
+    <Card className="my-2">
       <CardHeader>
         <CardTitle>{order.clientName}</CardTitle>
         <CardDescription className="flex gap-2">
@@ -84,7 +116,7 @@ const OrderCard = ({ order }: { order: Order }) => {
           {order.deliveryDetails}
         </CardDescription>
         <CardAction>
-          <Badge variant="destructive">Not fullfilled</Badge>
+          <GetBadge order={order} />
         </CardAction>
       </CardHeader>
       <CardContent>

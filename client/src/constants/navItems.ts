@@ -3,6 +3,7 @@ type ItemType = {
   title: string;
   url: string;
   icon: any;
+  route?: string;
 };
 
 export const salesManNavItems: ItemType[] = [
@@ -10,16 +11,19 @@ export const salesManNavItems: ItemType[] = [
     title: "In Progress",
     url: "#",
     icon: Clock,
+    route: "in-progress",
   },
   {
     title: "Completed",
     url: "#",
     icon: CircleCheck,
+    route: "completed",
   },
   {
     title: "Stats",
     url: "#",
     icon: Notebook,
+    route: "stats",
   },
   // { title: "Profile", url: "#", icon: User },
 ];

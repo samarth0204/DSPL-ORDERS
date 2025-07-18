@@ -1,5 +1,4 @@
 import { Outlet } from "react-router-dom";
-import AddOrder from "./AddOrder";
 import Navbar from "./Navbar";
 
 const Layout = () => {
@@ -10,9 +9,6 @@ const Layout = () => {
       <div className="flex-1 overflow-y-auto pb-14">
         <Outlet />
       </div>
-
-      {/* Floating Button */}
-      <AddOrder />
     </div>
   );
 };

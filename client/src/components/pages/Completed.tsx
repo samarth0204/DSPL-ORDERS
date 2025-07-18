@@ -39,7 +39,7 @@ const Completed = () => {
         <AddOrder />
       </div>
 
-      <ShowOrders filteredOrder={filteredOrder} showCompleted={false} />
+      <ShowOrders filteredOrder={filteredOrder} showCompleted={true} />
     </div>
   );
 };

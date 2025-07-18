@@ -8,5 +8,6 @@ export interface Product {
 export interface Order {
   clientName: String;
   deliveryDetails: string;
+  status: String;
   products: Product[];
 }
