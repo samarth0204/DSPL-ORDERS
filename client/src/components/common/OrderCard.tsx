@@ -27,13 +27,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "../ui/button";
+// import { Button } from "../ui/button";
 import {
-  Activity,
   BadgeCheck,
   Clock,
-  Pencil,
-  Trash,
+  // Pencil,
+  // Trash,
   Truck,
 } from "lucide-react";
 
