@@ -25,7 +25,7 @@ export const dummyOrders = [
       {
         id: "8e3b9c47", // Changed ID to be unique
         fulfilledProducts: [
-          { name: "Mirchi Gold", size: "1 kg", quantity: 87 },
+          { name: "Mirchi Gold", size: "1 kg", quantity: 83 },
         ],
         date: "2025-08-10",
       },

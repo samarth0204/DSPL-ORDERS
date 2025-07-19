@@ -38,7 +38,6 @@ import {
 
 import { Progress } from "@/components/ui/progress";
 import { getFulfilledQuantities, getFulfillmentProgress } from "@/lib/utils";
-import { useState } from "react";
 
 const FulfillmentProgress = ({ order }: { order: Order }) => {
   const progress = getFulfillmentProgress(order);
@@ -55,14 +54,6 @@ const FulfillmentProgress = ({ order }: { order: Order }) => {
 
 const OrderTable = ({ order }: { order: Order }) => {
   const fulfilledMap = getFulfilledQuantities(order);
-  const [showDetails, setShowDetails] = useState<Record<string, boolean>>({});
-
-  const handleRowClick = (productKey: string) => {
-    setShowDetails((prev) => ({
-      ...prev,
-      [productKey]: !prev[productKey],
-    }));
-  };
 
   return (
     <Table>
@@ -70,7 +61,7 @@ const OrderTable = ({ order }: { order: Order }) => {
         <TableRow>
           <TableHead className="w-[100px]">Name</TableHead>
           <TableHead>Size</TableHead>
-          <TableHead>Quantity</TableHead>
+          <TableHead className="text-center">Quantity</TableHead>
           <TableHead className="text-right">Order By</TableHead>
         </TableRow>
       </TableHeader>
@@ -88,25 +79,20 @@ const OrderTable = ({ order }: { order: Order }) => {
               className={`${
                 isFullyFulfilled ? "bg-green-100 dark:bg-green-900" : ""
               } cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800`}
-              onClick={() => handleRowClick(productKey)}
             >
               <TableCell className="font-medium">{product.name}</TableCell>
               <TableCell>{product.size}</TableCell>
-              <TableCell>
-                {showDetails[productKey] ? (
-                  <>
-                    <span className="font-semibold">
-                      Sent: {fulfilledQuantity}
+              <TableCell className="text-center">
+                <span className="text-green-900 font-semibold">
+                  {product.quantity}
+                </span>{" "}
+                <span>
+                  {remainingQuantity > 0 && (
+                    <span className="text-sm font-semibold text-red-600 dark:text-red-400 ml-2">
+                      / {remainingQuantity}
                     </span>
-                    {remainingQuantity > 0 && (
-                      <span className="text-sm text-red-600 dark:text-red-400 ml-2">
-                        / {remainingQuantity}
-                      </span>
-                    )}
-                  </>
-                ) : (
-                  product.quantity
-                )}
+                  )}
+                </span>
               </TableCell>
               <TableCell className="text-right">{product.order_by}</TableCell>
             </TableRow>
@@ -119,15 +105,12 @@ const OrderTable = ({ order }: { order: Order }) => {
 
 const OrderAccordion = ({ order }: { order: Order }) => {
   return (
-    <Accordion
-      type="single"
-      defaultValue="item-1"
-      collapsible
-      className="w-full"
-    >
+    <Accordion type="single" collapsible className="w-full">
       <AccordionItem value="item-1">
-        <div className="flex justify-between">
-          <AccordionTrigger>Products</AccordionTrigger>
+        <div>
+          <AccordionTrigger className=" bg-gray-100 p-3 ">
+            Products
+          </AccordionTrigger>
         </div>
 
         <AccordionContent className="flex flex-col gap-4 text-balance">
@@ -168,8 +151,10 @@ const FulfillmentAccordion = ({ order }: { order: Order }) => {
   return (
     <Accordion type="single" collapsible className="w-full">
       <AccordionItem value="fulfillment-1">
-        <AccordionTrigger>Fulfillment History</AccordionTrigger>
-        <AccordionContent className="text-sm">
+        <AccordionTrigger className=" bg-gray-100 p-3 ">
+          Fulfillment History
+        </AccordionTrigger>
+        <AccordionContent className="text-sm mt-2">
           <ul className="space-y-2">
             {order.fulfillments.map((f, index) => (
               <li key={index} className="border p-2 rounded-md">
@@ -193,20 +178,20 @@ const FulfillmentAccordion = ({ order }: { order: Order }) => {
 
 const OrderCard = ({ order }: { order: Order }) => {
   return (
-    <Card className="my-2 gap-2 py-4">
+    <Card className="my-2 gap-3 py-4">
       <CardHeader>
         <CardTitle>{order.clientName}</CardTitle>
         <CardDescription className="flex gap-2">
           <Truck />
           {order.deliveryDetails}
         </CardDescription>
-        <FulfillmentProgress order={order} />
         <CardAction>
           <GetBadge order={order} />
         </CardAction>
       </CardHeader>
 
-      <CardContent className="flex gap-2 flex-col">
+      <CardContent className="flex gap-3 flex-col">
+        <FulfillmentProgress order={order} />
         <OrderAccordion order={order} />
       </CardContent>
 
