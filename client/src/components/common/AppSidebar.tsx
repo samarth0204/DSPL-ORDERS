@@ -15,7 +15,7 @@ import logo from "../../static/logo.jpg";
 import {
   adminNavItems,
   fulfilmentNavItems,
-  salesManNavItems,
+  // salesManNavItems,
 } from "@/constants/navItems";
 import { Link } from "react-router-dom";
 

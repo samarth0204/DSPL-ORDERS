@@ -1,11 +1,4 @@
-import {
-  User,
-  Clock,
-  CircleCheck,
-  Notebook,
-  BarChart,
-  ChartBarBig,
-} from "lucide-react";
+import { User, Clock, CircleCheck, Notebook, ChartBarBig } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 type ItemType = {
   title: string;
