@@ -1,27 +1,31 @@
-import { User, Clock, CircleCheck, Notebook } from "lucide-react";
+import {
+  User,
+  Clock,
+  CircleCheck,
+  Notebook,
+  BarChart,
+  ChartBarBig,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 type ItemType = {
   title: string;
-  url: string;
-  icon: any;
+  icon: LucideIcon;
   route?: string;
 };
 
 export const salesManNavItems: ItemType[] = [
   {
     title: "In Progress",
-    url: "#",
     icon: Clock,
     route: "in-progress",
   },
   {
     title: "Completed",
-    url: "#",
     icon: CircleCheck,
     route: "completed",
   },
   {
     title: "Stats",
-    url: "#",
     icon: Notebook,
     route: "stats",
   },
@@ -30,32 +34,35 @@ export const salesManNavItems: ItemType[] = [
 
 export const fulfilmentNavItems: ItemType[] = [
   {
-    title: "Orders",
-    url: "#",
+    title: "In Progress Orders",
     icon: Clock,
+    route: "in-progress",
   },
   {
     title: "Completed",
-    url: "#",
     icon: CircleCheck,
+    route: "completed",
+  },
+  {
+    title: "Bills",
+    icon: Notebook,
+    route: "bills",
+  },
+  {
+    title: "Stats",
+    icon: ChartBarBig,
+    route: "stats",
   },
 ];
 
 export const adminNavItems: ItemType[] = [
   {
     title: "Salesman",
-    url: "#",
     icon: Clock,
   },
-  {
-    title: "Stock Mangement",
-    url: "#",
-    icon: CircleCheck,
-  },
-  {
-    title: "Bills",
-    url: "#",
-    icon: Notebook,
-  },
-  { title: "Profile", url: "#", icon: User },
+  // {
+  //   title: "Stock Mangement",
+  //   icon: CircleCheck,
+  // },
+  { title: "Profile", icon: User },
 ];

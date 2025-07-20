@@ -38,6 +38,7 @@ import {
 
 import { Progress } from "@/components/ui/progress";
 import { getFulfilledQuantities, getFulfillmentProgress } from "@/lib/utils";
+import BillCard from "./BillCard";
 
 const FulfillmentProgress = ({ order }: { order: Order }) => {
   const progress = getFulfillmentProgress(order);
@@ -157,17 +158,7 @@ const FulfillmentAccordion = ({ order }: { order: Order }) => {
         <AccordionContent className="text-sm mt-2">
           <ul className="space-y-2">
             {order.fulfillments.map((f, index) => (
-              <li key={index} className="border p-2 rounded-md">
-                <div className="font-medium">Bill ID: {f.id}</div>
-                <div>Date: {f.date}</div>
-                <ul className="ml-4 list-disc">
-                  {f.fulfilledProducts.map((p, i) => (
-                    <li key={i}>
-                      {p.name} - {p.size} : {p.quantity}
-                    </li>
-                  ))}
-                </ul>
-              </li>
+              <BillCard key={index} f={f} />
             ))}
           </ul>
         </AccordionContent>
@@ -178,7 +169,7 @@ const FulfillmentAccordion = ({ order }: { order: Order }) => {
 
 const OrderCard = ({ order }: { order: Order }) => {
   return (
-    <Card className="my-2 gap-3 py-4">
+    <Card className="gap-3 py-4">
       <CardHeader>
         <CardTitle>{order.clientName}</CardTitle>
         <CardDescription className="flex gap-2">

@@ -17,6 +17,7 @@ import {
   fulfilmentNavItems,
   salesManNavItems,
 } from "@/constants/navItems";
+import { Link } from "react-router-dom";
 
 export default function AppSidebar() {
   return (
@@ -31,7 +32,7 @@ export default function AppSidebar() {
           </div>
         </SidebarHeader>
         <SidebarContent>
-          <SidebarGroup>
+          {/* <SidebarGroup>
             <SidebarGroupLabel>Salesman Name</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
@@ -47,7 +48,7 @@ export default function AppSidebar() {
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>
-          </SidebarGroup>
+          </SidebarGroup> */}
           <SidebarGroup>
             <SidebarGroupLabel>Fulfillment Panel</SidebarGroupLabel>
             <SidebarGroupContent>
@@ -55,10 +56,10 @@ export default function AppSidebar() {
                 {fulfilmentNavItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
-                      <a href={item.url}>
+                      <Link to={item.route ?? "#"}>
                         <item.icon />
                         <span>{item.title}</span>
-                      </a>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
@@ -72,10 +73,10 @@ export default function AppSidebar() {
                 {adminNavItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
-                      <a href={item.url}>
+                      <Link to={item.route ?? "#"}>
                         <item.icon />
                         <span>{item.title}</span>
-                      </a>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}

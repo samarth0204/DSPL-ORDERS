@@ -1,34 +1,40 @@
 import { cn } from "@/lib/utils";
 
-const Loader = ({ className }: { className?: string }) => {
+const Loader = ({
+  className,
+  message = "Loading...",
+  color = "#1976D2", // Default color
+  size = 24,
+}: {
+  className?: string;
+  message?: string;
+  color?: string;
+  size?: number;
+}) => {
   return (
-    <div
-      className={cn(
-        "w-full h-full flex flex-col gap-2 justify-center items-center",
-        className
-      )}
-    >
+    <div className={cn("flex flex-col items-center gap-2", className)}>
       <svg
-        className="animate-spin h-8 w-8 text-[#000000]"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
+        className="animate-spin"
+        width={size}
+        height={size}
         viewBox="0 0 24 24"
+        fill="none"
       >
         <circle
           className="opacity-25"
           cx="12"
           cy="12"
           r="10"
-          stroke="#000000"
+          stroke={color}
           strokeWidth="4"
         />
         <path
           className="opacity-75"
-          fill="#000000"
-          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+          fill={color}
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
         />
       </svg>
-      <span className="text-sm text-[#000000] font-medium">Please wait...</span>
+      <p className="text-sm text-muted-foreground">{message}</p>
     </div>
   );
 };

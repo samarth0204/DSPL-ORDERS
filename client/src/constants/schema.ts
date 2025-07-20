@@ -15,3 +15,8 @@ export const orderSchema = yup.object().shape({
     )
     .min(1, "Add at least one product"),
 });
+
+export const loginSchema = yup.object().shape({
+  username: yup.string().required("Username is required"),
+  password: yup.string().required("Password is required").min(8),
+});

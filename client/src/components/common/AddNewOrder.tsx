@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/command";
 import { useForm, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { orderSchema } from "@/constants/orderSchema";
+import { orderSchema } from "@/constants/schema";
 import FormInput from "./FormInput";
 import { useOrderStore } from "@/store/useOrderStore";
 import { useProductStore } from "@/store/useProductStore";

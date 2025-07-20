@@ -12,11 +12,11 @@ const ShowOrders = ({
     ? filteredOrder.filter((ele) => ele.status === "Completed")
     : filteredOrder.filter((ele) => ele.status !== "Completed");
   return (
-    <div>
+    <>
       {data.map((order, index) => (
         <OrderCard key={index} order={order} />
       ))}
-    </div>
+    </>
   );
 };
 

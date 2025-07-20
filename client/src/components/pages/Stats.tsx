@@ -1,9 +1,7 @@
+import ComingSoon from "../common/ComingSoon";
+
 const Stats = () => {
-  return (
-    <div className="flex justify-center items-center text-gray h-full w-full">
-      Stats - Arriving soon..
-    </div>
-  );
+  return <ComingSoon message="Stats" />;
 };
 
 export default Stats;

@@ -25,9 +25,9 @@ const Completed = () => {
     : orders;
 
   return (
-    <div className="px-3 mt-2 pt-14">
-      <div className="flex items-center gap-3 mb-2">
-        <div className="relative w-full max-w-sm">
+    <div className="px-3 mt-2 pt-14 ">
+      <div className="w-full flex items-center justify-between gap-3 mb-2">
+        <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
           <Input
             placeholder="Search orders..."
@@ -38,8 +38,9 @@ const Completed = () => {
         </div>
         <AddOrder />
       </div>
-
-      <ShowOrders filteredOrder={filteredOrder} showCompleted={true} />
+      <div className="flex flex-col lg:grid lg:grid-cols-3 gap-2">
+        <ShowOrders filteredOrder={filteredOrder} showCompleted={true} />
+      </div>
     </div>
   );
 };
