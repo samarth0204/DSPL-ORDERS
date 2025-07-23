@@ -32,23 +32,6 @@ export default function AppSidebar() {
           </div>
         </SidebarHeader>
         <SidebarContent>
-          {/* <SidebarGroup>
-            <SidebarGroupLabel>Salesman Name</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {salesManNavItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <a href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup> */}
           <SidebarGroup>
             <SidebarGroupLabel>Fulfillment Panel</SidebarGroupLabel>
             <SidebarGroupContent>

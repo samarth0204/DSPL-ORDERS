@@ -30,6 +30,8 @@ export const dummyOrders = [
         date: "2025-08-10",
       },
     ],
+    salesManName: "Akash",
+    orderDate: "2025-07-01",
   },
   {
     clientName: "Ravi",
@@ -47,6 +49,8 @@ export const dummyOrders = [
         date: "2025-07-05",
       },
     ],
+    salesManName: "Akash",
+    orderDate: "2025-07-02",
   },
   {
     clientName: "Sunita",
@@ -57,6 +61,8 @@ export const dummyOrders = [
       { name: "Kasuri Methi", size: "1 kg", order_by: "Kg", quantity: "31" },
     ],
     fulfillments: [], // No fulfillments yet as status is "Not Started"
+    salesManName: "Priya",
+    orderDate: "2025-07-03",
   },
   {
     clientName: "Vikash",
@@ -74,6 +80,8 @@ export const dummyOrders = [
         date: "2025-07-12",
       },
     ],
+    salesManName: "Rajesh",
+    orderDate: "2025-07-04",
   },
   {
     clientName: "Ramesh",
@@ -89,6 +97,8 @@ export const dummyOrders = [
         date: "2025-07-08",
       },
     ],
+    salesManName: "Akash",
+    orderDate: "2025-07-05",
   },
   {
     clientName: "Pooja",
@@ -99,6 +109,8 @@ export const dummyOrders = [
       { name: "Haldi Gold", size: "25gm", order_by: "Pcs", quantity: "14" },
     ],
     fulfillments: [], // No fulfillments yet as status is "Not Started"
+    salesManName: "Priya",
+    orderDate: "2025-07-06",
   },
   {
     clientName: "Deepak",
@@ -116,6 +128,8 @@ export const dummyOrders = [
         date: "2025-07-15",
       },
     ],
+    salesManName: "Rajesh",
+    orderDate: "2025-07-07",
   },
   {
     clientName: "Meena",
@@ -133,6 +147,8 @@ export const dummyOrders = [
         date: "2025-07-09",
       },
     ],
+    salesManName: "Akash",
+    orderDate: "2025-07-08",
   },
   {
     clientName: "Suresh",
@@ -152,6 +168,8 @@ export const dummyOrders = [
         date: "2025-07-11",
       },
     ],
+    salesManName: "Priya",
+    orderDate: "2025-07-09",
   },
   {
     clientName: "Neha",
@@ -161,6 +179,8 @@ export const dummyOrders = [
       { name: "Mirchi Gold", size: "500gm", order_by: "Kg", quantity: "34" },
     ],
     fulfillments: [], // No fulfillments yet as status is "Not Started"
+    salesManName: "Rajesh",
+    orderDate: "2025-07-10",
   },
   {
     clientName: "Asha",
@@ -178,6 +198,8 @@ export const dummyOrders = [
         date: "2025-07-13",
       },
     ],
+    salesManName: "Akash",
+    orderDate: "2025-07-11",
   },
   {
     clientName: "Sandeep",
@@ -204,6 +226,8 @@ export const dummyOrders = [
         date: "2025-07-14",
       },
     ],
+    salesManName: "Priya",
+    orderDate: "2025-07-12",
   },
   {
     clientName: "Tina",
@@ -213,6 +237,8 @@ export const dummyOrders = [
       { name: "Kasuri Methi", size: "25gm", order_by: "Pcs", quantity: "12" },
     ],
     fulfillments: [], // No fulfillments yet as status is "Not Started"
+    salesManName: "Rajesh",
+    orderDate: "2025-07-13",
   },
   {
     clientName: "Rohit",
@@ -230,6 +256,8 @@ export const dummyOrders = [
         date: "2025-07-16",
       },
     ],
+    salesManName: "Akash",
+    orderDate: "2025-07-14",
   },
   {
     clientName: "Komal",
@@ -247,6 +275,8 @@ export const dummyOrders = [
         date: "2025-07-06",
       },
     ],
+    salesManName: "Priya",
+    orderDate: "2025-07-15",
   },
   {
     clientName: "Ajay",
@@ -266,6 +296,8 @@ export const dummyOrders = [
         date: "2025-07-17",
       },
     ],
+    salesManName: "Rajesh",
+    orderDate: "2025-07-16",
   },
   {
     clientName: "Lata",
@@ -275,6 +307,8 @@ export const dummyOrders = [
       { name: "Mirchi Gold", size: "200gm", order_by: "Bag", quantity: "68" },
     ],
     fulfillments: [], // No fulfillments yet as status is "Not Started"
+    salesManName: "Akash",
+    orderDate: "2025-07-17",
   },
   {
     clientName: "Karan",
@@ -290,6 +324,8 @@ export const dummyOrders = [
         date: "2025-07-18",
       },
     ],
+    salesManName: "Priya",
+    orderDate: "2025-07-18",
   },
   {
     clientName: "Sneha",
@@ -307,6 +343,8 @@ export const dummyOrders = [
         date: "2025-07-04",
       },
     ],
+    salesManName: "Rajesh",
+    orderDate: "2025-07-19",
   },
   {
     clientName: "Mohit",
@@ -316,5 +354,7 @@ export const dummyOrders = [
       { name: "Haldi Gold", size: "100gm", order_by: "Pcs", quantity: "37" },
     ],
     fulfillments: [], // No fulfillments yet as status is "Not Started"
+    salesManName: "Akash",
+    orderDate: "2025-07-20",
   },
 ];

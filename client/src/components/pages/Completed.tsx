@@ -39,7 +39,7 @@ const Completed = () => {
         <AddOrder />
       </div>
       <div className="flex flex-col lg:grid lg:grid-cols-3 gap-2">
-        <ShowOrders filteredOrder={filteredOrder} showCompleted={true} />
+        <ShowOrders orders={filteredOrder} showCompleted={true} />
       </div>
     </div>
   );

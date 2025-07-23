@@ -27,14 +27,9 @@ export const salesManNavItems: ItemType[] = [
 
 export const fulfilmentNavItems: ItemType[] = [
   {
-    title: "In Progress Orders",
+    title: "All Orders",
     icon: Clock,
-    route: "in-progress",
-  },
-  {
-    title: "Completed",
-    icon: CircleCheck,
-    route: "completed",
+    route: "all-orders",
   },
   {
     title: "Bills",

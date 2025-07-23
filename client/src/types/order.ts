@@ -16,9 +16,11 @@ interface Fulfillment {
 }
 
 export interface Order {
-  clientName: String;
+  clientName: string; // Changed from String to string
   deliveryDetails: string;
-  status: String;
+  status: string; // Changed from String to string
   products: Product[];
   fulfillments: Fulfillment[];
+  salesManName: string;
+  orderDate: string;
 }

@@ -2,18 +2,24 @@ import type { Order } from "@/types/order";
 import OrderCard from "./OrderCard";
 
 const ShowOrders = ({
-  filteredOrder,
+  orders,
   showCompleted,
 }: {
-  filteredOrder: Order[];
-  showCompleted: boolean;
+  orders: Order[];
+  showCompleted?: boolean;
 }) => {
-  const data = showCompleted
-    ? filteredOrder.filter((ele) => ele.status === "Completed")
-    : filteredOrder.filter((ele) => ele.status !== "Completed");
+  const filteredOrders =
+    showCompleted === undefined
+      ? orders
+      : orders.filter((order) =>
+          showCompleted
+            ? order.status === "Completed"
+            : order.status !== "Completed"
+        );
+
   return (
     <>
-      {data.map((order, index) => (
+      {filteredOrders.map((order, index) => (
         <OrderCard key={index} order={order} />
       ))}
     </>
