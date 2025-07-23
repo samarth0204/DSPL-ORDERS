@@ -169,7 +169,7 @@ const FulfillmentAccordion = ({ order }: { order: Order }) => {
 
 const OrderCard = ({ order }: { order: Order }) => {
   return (
-    <Card className="gap-3 py-4">
+    <Card className="gap-3 py-4 rounded-sm">
       <CardHeader>
         <CardTitle>{order.clientName}</CardTitle>
         <CardDescription className="flex gap-2">
