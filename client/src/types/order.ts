@@ -11,6 +11,7 @@ interface Fulfillment {
     name: string;
     size: string;
     quantity: number;
+    order_by: string;
   }[];
   date: string;
 }

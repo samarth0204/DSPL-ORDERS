@@ -18,11 +18,11 @@ const ShowOrders = ({
         );
 
   return (
-    <>
+    <div className="flex flex-col gap-2">
       {filteredOrders.map((order, index) => (
         <OrderCard key={index} order={order} />
       ))}
-    </>
+    </div>
   );
 };
 

@@ -15,13 +15,13 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../ui/accordion"; // Assuming you have your shadcn/ui Accordion here
-import type { Order } from "@/types/order"; // Import the Order type
+} from "../ui/accordion";
+import type { Order } from "@/types/order";
 
 const AllOrders = () => {
   const orders = useOrderStore((state) => state.orders);
-  const [groupBy, setGroupBy] = useState("none"); // Initialize with "none"
-  const [sortBy, setSortBy] = useState("none"); // Initialize with "none"
+  const [groupBy, setGroupBy] = useState("none");
+  const [sortBy, setSortBy] = useState("none");
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredAndGroupedOrders = useMemo(() => {
@@ -44,7 +44,6 @@ const AllOrders = () => {
 
     // 2. Sorting
     if (sortBy !== "none") {
-      // Only apply sorting if sortBy is not "none"
       currentOrders.sort((a, b) => {
         if (sortBy === "dateAsc") {
           return (
@@ -59,7 +58,7 @@ const AllOrders = () => {
         } else if (sortBy === "clientNameDesc") {
           return b.clientName.localeCompare(a.clientName);
         }
-        return 0; // Should not be reached
+        return 0;
       });
     }
 
@@ -83,12 +82,11 @@ const AllOrders = () => {
         {}
       );
 
-      // Sort group keys for consistent display
       const sortedGroupKeys = Object.keys(grouped).sort((a, b) => {
         if (groupBy === "orderDate") {
-          return new Date(a).getTime() - new Date(b).getTime(); // Sort dates chronologically
+          return new Date(a).getTime() - new Date(b).getTime();
         }
-        return a.localeCompare(b); // Sort salesman names alphabetically
+        return a.localeCompare(b);
       });
 
       return sortedGroupKeys.map((key) => ({
@@ -97,7 +95,6 @@ const AllOrders = () => {
       }));
     }
 
-    // If no grouping (i.e., groupBy is "none"), return a single group with all orders
     return [{ groupKey: "All Orders", orders: currentOrders }];
   }, [orders, groupBy, sortBy, searchQuery]);
 
@@ -138,9 +135,7 @@ const AllOrders = () => {
         </Select>
       </div>
       <div>
-        {/* Use Accordion only when grouping is active */}
         {groupBy !== "none" ? (
-          // Accordion type="multiple" can be used if you want multiple groups open
           <Accordion type="single" collapsible className="w-full">
             {filteredAndGroupedOrders.map((group, groupIndex) => (
               <AccordionItem
@@ -148,24 +143,19 @@ const AllOrders = () => {
                 value={`item-${groupIndex}`}
                 className="mb-2 border-0"
               >
-                <AccordionTrigger className="text-lg capitalize bg-gray-100 p-3 ">
+                <AccordionTrigger className="text-lg capitalize bg-gray-100 p-3">
                   {groupBy === "salesman"
                     ? `Salesman: ${group.groupKey}`
                     : `Date: ${group.groupKey}`}
                 </AccordionTrigger>
-                <AccordionContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                    <ShowOrders orders={group.orders} />
-                  </div>
+                <AccordionContent className="mt-2">
+                  <ShowOrders orders={group.orders} />
                 </AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
         ) : (
-          // If no grouping, display all orders in a single grid
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 col-span-full">
-            <ShowOrders orders={filteredAndGroupedOrders[0].orders} />
-          </div>
+          <ShowOrders orders={filteredAndGroupedOrders[0].orders} />
         )}
       </div>
     </div>

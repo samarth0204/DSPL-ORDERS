@@ -31,6 +31,9 @@ import {
 import {
   BadgeCheck,
   Clock,
+  Pencil,
+  Plus,
+  Trash,
   // Pencil,
   // Trash,
   Truck,
@@ -39,6 +42,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { getFulfilledQuantities, getFulfillmentProgress } from "@/lib/utils";
 import BillCard from "./BillCard";
+import { Button } from "../ui/button";
 
 const FulfillmentProgress = ({ order }: { order: Order }) => {
   const progress = getFulfillmentProgress(order);
@@ -137,7 +141,7 @@ const GetBadge = ({ order }: { order: Order }) => {
     return (
       <Badge
         variant="secondary"
-        className="bg-green-700 text-white dark:bg-blue-600"
+        className="bg-yellow-500 text-white dark:bg-blue-600"
       >
         <Clock />
         In Progress
@@ -169,34 +173,66 @@ const FulfillmentAccordion = ({ order }: { order: Order }) => {
 
 const OrderCard = ({ order }: { order: Order }) => {
   return (
-    <Card className="gap-3 py-4 rounded-sm">
-      <CardHeader>
-        <CardTitle>{order.clientName}</CardTitle>
-        <CardDescription className="flex gap-2">
-          <Truck />
-          {order.deliveryDetails}
-        </CardDescription>
-        <CardAction>
-          <GetBadge order={order} />
-        </CardAction>
-      </CardHeader>
+    <Card className="gap-3 py-4 rounded-sm lg:grid lg:grid-cols-10 lg:px-4">
+      <div className="lg:col-span-3">
+        <CardHeader className="lg:px-0">
+          <CardTitle>{order.clientName}</CardTitle>
+          <CardDescription className="flex lg:flex-col gap-2">
+            <div className="flex gap-2">
+              <Truck />
+              {order.deliveryDetails}
+            </div>
 
-      <CardContent className="flex gap-3 flex-col">
-        <FulfillmentProgress order={order} />
+            <div className="hidden lg:block">
+              <FulfillmentProgress order={order} />
+            </div>
+          </CardDescription>
+          <CardAction className="flex flex-col gap-1 lg:gap-2 items-end">
+            <GetBadge order={order} />
+          </CardAction>
+        </CardHeader>
+      </div>
+
+      <CardContent className="flex gap-3 flex-col lg:px-0 lg:col-span-3">
+        <div className="lg:hidden">
+          <FulfillmentProgress order={order} />
+        </div>
         <OrderAccordion order={order} />
       </CardContent>
 
-      <CardFooter className="flex flex-col">
+      <CardFooter className="flex flex-col lg:pl-0 lg:pr-0 gap-4 lg:col-span-3">
         <FulfillmentAccordion order={order} />
-        {/* <Button variant="outline" className="gap-2">
-          <Pencil />
-          Edit
-        </Button>
-        <Button variant="destructive" className="gap-2">
-          <Trash />
-          Delete
-        </Button> */}
+        <div className="flex w-full justify-between lg:hidden">
+          <Button variant="outline" className="gap-2">
+            <Plus />
+            Attach Bill
+          </Button>
+          <Button variant="outline" className="gap-2">
+            <Pencil />
+            Edit
+          </Button>
+          <Button variant="destructive" className="gap-2">
+            <Trash />
+            Delete
+          </Button>
+        </div>
       </CardFooter>
+      <div className="hidden lg:block lg:col-span-1">
+        <div className="flex flex-col w-full gap-2">
+          <Button variant="outline" className="gap-2">
+            <Plus />
+            Attach Bill
+          </Button>
+          <Button variant="outline" className="gap-2">
+            <Pencil />
+            Edit
+          </Button>
+          <Button variant="destructive" className="gap-2">
+            <Trash />
+            Delete
+          </Button>
+        </div>
+      </div>
     </Card>
   );
 };
