@@ -111,7 +111,7 @@ const Bills = () => {
               setGroupBy(value)
             }
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[180px] sm:max-w-1/3">
               <SelectValue placeholder="Group By" />
             </SelectTrigger>
             <SelectContent>
@@ -133,7 +133,7 @@ const Bills = () => {
                 | "none"
             ) => setSortBy(value)}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[180px] sm:max-w-1/3">
               <SelectValue placeholder="Sort By" />
             </SelectTrigger>
             <SelectContent>
@@ -152,7 +152,7 @@ const Bills = () => {
               setFilterStatus(value)
             }
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[180px] sm:max-w-1/3">
               <SelectValue placeholder="Filter by Status" />
             </SelectTrigger>
             <SelectContent>

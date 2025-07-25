@@ -138,7 +138,7 @@ const AllOrders = () => {
             }
             value={groupBy}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[180px] sm:max-w-1/3">
               <SelectValue placeholder="Group by" />
             </SelectTrigger>
             <SelectContent>
@@ -159,7 +159,7 @@ const AllOrders = () => {
             ) => setSortBy(value)}
             value={sortBy}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[180px] sm:max-w-1/3">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
@@ -177,7 +177,7 @@ const AllOrders = () => {
             ) => setFilterStatus(value)}
             value={filterStatus}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[180px] sm:max-w-1/3">
               <SelectValue placeholder="Filter by Status" />
             </SelectTrigger>
             <SelectContent>
