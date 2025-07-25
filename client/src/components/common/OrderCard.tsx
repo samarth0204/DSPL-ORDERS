@@ -219,15 +219,15 @@ const OrderCard = ({ order }: { order: Order }) => {
       </CardFooter>
       <div className="hidden lg:block lg:col-span-1">
         <div className="flex flex-col w-full gap-2">
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline">
             <Plus />
             Attach Bill
           </Button>
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline">
             <Pencil />
             Edit
           </Button>
-          <Button variant="destructive" className="gap-2">
+          <Button variant="destructive">
             <Trash />
             Delete
           </Button>

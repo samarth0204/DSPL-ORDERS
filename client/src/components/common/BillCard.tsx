@@ -7,6 +7,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Calendar } from "lucide-react";
+import { Badge } from "../ui/badge";
+import { cn } from "@/lib/utils";
 
 interface FulfilledProduct {
   name: string;
@@ -29,8 +31,17 @@ const BillCard = ({ f }: { f?: any }) => {
               {f.date}
             </CardDescription>
           </div>
-          <div className="text-sm font-semibold text-right text-green-600">
+          <div className="text-sm font-semibold text-right text-green-600 flex flex-col gap-1 items-end">
             ₹{f.amount?.toLocaleString() || "0"}
+            <Badge
+              variant={f.status === "Paid" ? "secondary" : "destructive"}
+              className={cn(
+                f.status === "Paid" &&
+                  "bg-green-700 text-white dark:bg-blue-600"
+              )}
+            >
+              {f.status === "Paid" ? "Paid" : "Pending"}
+            </Badge>
           </div>
         </div>
       </CardHeader>
