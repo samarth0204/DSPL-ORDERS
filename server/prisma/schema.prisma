@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String   @id @default(uuid())
+  username String   @unique
+  password String
+  role     Role
+  orders   Order[]  @relation("SalesmanOrders")
+}
+
+model Order {
+  id              String       @id
+  clientName      String
+  deliveryDetails String
+  status          String
+  products        Product[]
+  fulfillments    Fulfillment[]
+  salesman        User         @relation("SalesmanOrders", fields: [salesmanId], references: [id])
+  salesmanId      String
+  orderDate       DateTime
+}
+
+model Product {
+  id        String   @id @default(uuid())
+  name      String
+  size      String
+  orderBy   String
+  quantity  Int
+  order     Order    @relation(fields: [orderId], references: [id])
+  orderId   String
+}
+
+model Fulfillment {
+  id                String             @id
+  date              DateTime
+  order             Order              @relation(fields: [orderId], references: [id])
+  orderId           String
+  fulfilledProducts FulfilledProduct[]
+}
+
+model FulfilledProduct {
+  id             String       @id @default(uuid())
+  name           String
+  size           String
+  orderBy        String
+  quantity       Int
+  fulfillment    Fulfillment  @relation(fields: [fulfillmentId], references: [id])
+  fulfillmentId  String
+}
+
+enum Role {
+  ADMIN
+  SALESMAN
+}

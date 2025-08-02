@@ -1,12 +1,39 @@
-node_modules
-dist
+# Node dependencies
+node_modules/
 
+# Build output
+dist/
+build/
+
+# Prisma generated client
+/src/generated/prisma/
+
+# Environment files
+.env
+.env.*
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# VSCode settings
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+
+# JetBrains IDEs (e.g. WebStorm, IntelliJ)
+.idea/
+
+# Miscellaneous
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# TypeScript
+*.tsbuildinfo
