@@ -39,7 +39,6 @@ async function main() {
   for (const order of dummyOrders) {
     await prisma.order.create({
       data: {
-        id: order.id,
         clientName: order.clientName,
         deliveryDetails: order.deliveryDetails,
         status: order.status,
@@ -50,12 +49,11 @@ async function main() {
             name: p.name,
             size: p.size,
             orderBy: p.order_by,
-            quantity: parseInt(p.quantity),
+            quantity: p.quantity,
           })),
         },
         fulfillments: {
           create: order.fulfillments.map((f) => ({
-            id: f.id,
             date: new Date(f.date),
             fulfilledProducts: {
               create: f.fulfilledProducts.map((fp) => ({

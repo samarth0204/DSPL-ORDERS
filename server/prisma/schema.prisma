@@ -23,7 +23,7 @@ model User {
 }
 
 model Order {
-  id              String       @id
+  id              String      @id @default(uuid())
   clientName      String
   deliveryDetails String
   status          String
@@ -45,7 +45,7 @@ model Product {
 }
 
 model Fulfillment {
-  id                String             @id
+  id                String           @id @default(uuid())
   date              DateTime
   order             Order              @relation(fields: [orderId], references: [id])
   orderId           String

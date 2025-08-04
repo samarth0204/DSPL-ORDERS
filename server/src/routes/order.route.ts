@@ -1,8 +1,14 @@
 import express from "express";
-import { getAllOrders } from "../controllers/order.controller";
+import {
+  addOrder,
+  getAllOrders,
+  getAllOrdersBySalesman,
+} from "../controllers/order.controller";
 
 const router = express.Router();
 
-router.get("/getAllOrders", getAllOrders);
+router.get("/", getAllOrders);
+router.get("/salesman", getAllOrdersBySalesman);
+router.post("/", addOrder);
 
 export default router;
