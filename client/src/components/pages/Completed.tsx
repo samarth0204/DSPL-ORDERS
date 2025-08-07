@@ -38,7 +38,7 @@ const Completed = () => {
         </div>
         <AddOrder />
       </div>
-      <ShowOrders orders={filteredOrder} showCompleted={true} />
+      <ShowOrders orders={filteredOrder} filterStatus="Completed" />
     </div>
   );
 };

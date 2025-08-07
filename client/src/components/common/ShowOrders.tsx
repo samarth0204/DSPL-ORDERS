@@ -1,20 +1,19 @@
 import type { Order } from "@/types/order";
 import OrderCard from "./OrderCard";
 
-const ShowOrders = ({
-  orders,
-  showCompleted,
-}: {
+type ShowOrdersProps = {
   orders: Order[];
-  showCompleted?: boolean;
-}) => {
+  filterStatus?: "All" | string | string[];
+};
+
+const ShowOrders = ({ orders, filterStatus = "All" }: ShowOrdersProps) => {
   const filteredOrders =
-    showCompleted === undefined
+    filterStatus === "All"
       ? orders
       : orders.filter((order) =>
-          showCompleted
-            ? order.status === "Completed"
-            : order.status !== "Completed"
+          Array.isArray(filterStatus)
+            ? filterStatus.includes(order.status)
+            : order.status === filterStatus
         );
 
   return (

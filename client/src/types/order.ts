@@ -25,3 +25,11 @@ export interface Order {
   salesManName: string;
   orderDate: string;
 }
+
+export type UseFetchOrdersParams = {
+  groupBy?: string;
+  sortBy?: string;
+  sortOrder?: string;
+  search?: string;
+  filterStatus?: string;
+};

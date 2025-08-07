@@ -1,8 +1,7 @@
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
 import ShowOrders from "../common/ShowOrders";
-import { useOrderStore } from "@/store/useOrderStore";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -16,10 +15,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
-import type { Order } from "@/types/order";
+import Loader from "../common/Loader";
+import useFetchOrders from "@/hooks/useFetchOrders";
 
 const AllOrders = () => {
-  const orders = useOrderStore((state) => state.orders);
   // Refined type for groupBy and sortBy states
   const [groupBy, setGroupBy] = useState<"none" | "salesman" | "orderDate">(
     "none"
@@ -32,83 +31,35 @@ const AllOrders = () => {
   const [filterStatus, setFilterStatus] = useState<
     "All" | "Completed" | "In Progress" | "Not Started"
   >("All");
+  //   if (groupBy === "none") {
+  //     // Return a single group containing all processed orders
+  //     return [{ groupKey: "All Orders", orders: processedOrders }];
+  //   }
 
-  const processedOrders = useMemo(() => {
-    let currentOrders = [...orders];
+  //   const groups: { [key: string]: Order[] } = {};
+  //   processedOrders.forEach((order) => {
+  //     const key =
+  //       groupBy === "salesman"
+  //         ? order.salesManName || "Unassigned"
+  //         : order.orderDate || "Unknown Date"; // Ensure 'orderDate' is used for date grouping
+  //     if (!groups[key]) {
+  //       groups[key] = [];
+  //     }
+  //     groups[key].push(order);
+  //   });
 
-    // 1. Search Filtering
-    if (searchQuery) {
-      currentOrders = currentOrders.filter(
-        (order) =>
-          order.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          order.deliveryDetails
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          order.products.some((product) =>
-            product.name.toLowerCase().includes(searchQuery.toLowerCase())
-          ) ||
-          order.salesManName?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
+  //   const sortedGroupKeys = Object.keys(groups).sort((a, b) => {
+  //     if (groupBy === "orderDate") {
+  //       return new Date(a).getTime() - new Date(b).getTime();
+  //     }
+  //     return a.localeCompare(b);
+  //   });
 
-    // 2. Status Filtering (New step)
-    if (filterStatus !== "All") {
-      currentOrders = currentOrders.filter(
-        (order) => order.status === filterStatus
-      );
-    }
-
-    // 3. Sorting
-    currentOrders.sort((a, b) => {
-      if (sortBy === "dateAsc") {
-        return (
-          new Date(a.orderDate).getTime() - new Date(b.orderDate).getTime()
-        );
-      } else if (sortBy === "dateDesc") {
-        return (
-          new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime()
-        );
-      } else if (sortBy === "clientNameAsc") {
-        return a.clientName.localeCompare(b.clientName);
-      } else if (sortBy === "clientNameDesc") {
-        return b.clientName.localeCompare(a.clientName);
-      }
-      return 0; // No specific sorting or sortBy is 'none'
-    });
-
-    return currentOrders;
-  }, [orders, sortBy, searchQuery, filterStatus]); // Added filterStatus to dependencies
-
-  const groupedOrders = useMemo(() => {
-    if (groupBy === "none") {
-      // Return a single group containing all processed orders
-      return [{ groupKey: "All Orders", orders: processedOrders }];
-    }
-
-    const groups: { [key: string]: Order[] } = {};
-    processedOrders.forEach((order) => {
-      const key =
-        groupBy === "salesman"
-          ? order.salesManName || "Unassigned"
-          : order.orderDate || "Unknown Date"; // Ensure 'orderDate' is used for date grouping
-      if (!groups[key]) {
-        groups[key] = [];
-      }
-      groups[key].push(order);
-    });
-
-    const sortedGroupKeys = Object.keys(groups).sort((a, b) => {
-      if (groupBy === "orderDate") {
-        return new Date(a).getTime() - new Date(b).getTime();
-      }
-      return a.localeCompare(b);
-    });
-
-    return sortedGroupKeys.map((key) => ({
-      groupKey: key,
-      orders: groups[key],
-    }));
-  }, [processedOrders, groupBy]);
+  //   return sortedGroupKeys.map((key) => ({
+  //     groupKey: key,
+  //     orders: groups[key],
+  //   }));
+  // }, [processedOrders, groupBy]);
 
   // Determine the default value for the accordion (all items open if no grouping, or first group open)
   // const defaultAccordionValue =
@@ -117,6 +68,17 @@ const AllOrders = () => {
   //     : groupedOrders.length > 0
   //     ? [groupedOrders[0].groupKey]
   //     : [];
+
+  const { data, isLoading, error } = useFetchOrders({
+    groupBy,
+  });
+
+  // console.log(data);
+
+  if (isLoading) return <Loader />;
+  if (error) return <div>Error occurred</div>;
+
+  const groupedOrders = data;
 
   return (
     <div className="px-3 mt-2 pt-14 ">
@@ -192,7 +154,7 @@ const AllOrders = () => {
       <div>
         {groupBy !== "none" ? (
           <Accordion type="single" collapsible className="w-full">
-            {groupedOrders.map((group, groupIndex) => (
+            {groupedOrders.map((group: any, groupIndex: any) => (
               <AccordionItem
                 key={groupIndex}
                 value={`item-${groupIndex}`}
@@ -204,13 +166,19 @@ const AllOrders = () => {
                     : `Date: ${group.groupKey}`}
                 </AccordionTrigger>
                 <AccordionContent className="mt-2">
-                  <ShowOrders orders={group.orders} />
+                  <ShowOrders
+                    orders={group.orders}
+                    filterStatus={filterStatus}
+                  />
                 </AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
         ) : (
-          <ShowOrders orders={groupedOrders[0].orders} />
+          <ShowOrders
+            orders={groupedOrders && groupedOrders[0].orders}
+            filterStatus={filterStatus}
+          />
         )}
       </div>
     </div>
