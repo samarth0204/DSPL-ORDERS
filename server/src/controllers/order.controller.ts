@@ -154,3 +154,110 @@ export const addOrder = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const deleteOrder = async (req: Request, res: Response) => {
+  const { id } = req.query;
+
+  if (!id || typeof id !== "string") {
+    return res.status(400).json({ message: "Order ID is required." });
+  }
+
+  try {
+    // Delete related fulfillments and products first due to FK constraints
+    await prisma.fulfilledProduct.deleteMany({
+      where: {
+        fulfillment: {
+          orderId: id,
+        },
+      },
+    });
+
+    await prisma.fulfillment.deleteMany({
+      where: {
+        orderId: id,
+      },
+    });
+
+    await prisma.product.deleteMany({
+      where: {
+        orderId: id,
+      },
+    });
+
+    const deletedOrder = await prisma.order.delete({
+      where: { id },
+    });
+
+    res
+      .status(200)
+      .json({ message: "Order deleted successfully", deletedOrder });
+  } catch (error) {
+    console.error("Error while deleting order:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const editOrder = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const {
+    clientName,
+    salesmanId,
+    deliveryDetails,
+    status,
+    orderDate,
+    products,
+  } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ message: "Order ID is required." });
+  }
+
+  try {
+    // Update main order fields
+    const updatedOrder = await prisma.order.update({
+      where: { id },
+      data: {
+        clientName,
+        salesmanId,
+        deliveryDetails,
+        status,
+        orderDate: new Date(orderDate),
+      },
+    });
+
+    // Remove existing products
+    await prisma.product.deleteMany({
+      where: { orderId: id },
+    });
+
+    // Add new/updated products
+    if (products && products.length > 0) {
+      await prisma.product.createMany({
+        data: products.map((product: any) => ({
+          name: product.name,
+          size: product.size,
+          quantity: product.quantity,
+          orderBy: product.orderBy,
+          orderId: id,
+        })),
+      });
+    }
+
+    // Return the updated order including the new products
+    const finalOrder = await prisma.order.findUnique({
+      where: { id },
+      include: {
+        products: true,
+        salesman: true,
+        fulfillments: {
+          include: { fulfilledProducts: true },
+        },
+      },
+    });
+
+    res.status(200).json(finalOrder);
+  } catch (error) {
+    console.error("Error while editing order:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

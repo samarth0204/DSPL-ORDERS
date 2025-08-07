@@ -53,17 +53,24 @@ async function main() {
           })),
         },
         fulfillments: {
-          create: order.fulfillments.map((f) => ({
-            date: new Date(f.date),
-            fulfilledProducts: {
-              create: f.fulfilledProducts.map((fp) => ({
-                name: fp.name,
-                size: fp.size,
-                orderBy: fp.order_by,
-                quantity: fp.quantity,
-              })),
-            },
-          })),
+          create: order.fulfillments.map((f) => {
+            // Calculate amount based on fulfilled products
+            const amount = 100;
+            return {
+              id: f.id,
+              date: new Date(f.date),
+              amount,
+              status: order.status === "Completed" ? "PAID" : "PENDING",
+              fulfilledProducts: {
+                create: f.fulfilledProducts.map((fp) => ({
+                  name: fp.name,
+                  size: fp.size,
+                  orderBy: fp.order_by,
+                  quantity: fp.quantity,
+                })),
+              },
+            };
+          }),
         },
       },
     });

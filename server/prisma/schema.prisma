@@ -45,21 +45,28 @@ model Product {
 }
 
 model Fulfillment {
-  id                String           @id @default(uuid())
+  id                String             @id @default(uuid())
   date              DateTime
   order             Order              @relation(fields: [orderId], references: [id])
   orderId           String
+  amount            Float              // Added: amount of the bill
+  status            FulfillmentStatus  @default(PENDING) // Added: status (paid/pending)
   fulfilledProducts FulfilledProduct[]
 }
 
 model FulfilledProduct {
-  id             String       @id @default(uuid())
-  name           String
-  size           String
-  orderBy        String
-  quantity       Int
-  fulfillment    Fulfillment  @relation(fields: [fulfillmentId], references: [id])
-  fulfillmentId  String
+  id              String       @id @default(uuid())
+  name            String
+  size            String
+  orderBy         String
+  quantity        Int
+  fulfillment     Fulfillment  @relation(fields: [fulfillmentId], references: [id])
+  fulfillmentId   String
+}
+
+enum FulfillmentStatus {
+  PAID
+  PENDING
 }
 
 enum Role {
