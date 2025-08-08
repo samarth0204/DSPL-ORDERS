@@ -1,32 +1,42 @@
-import { useMemo, useState } from "react";
-import { useOrderStore } from "@/store/useOrderStore";
-import type { Order } from "@/types/order";
+import { useState } from "react";
+// import { useOrderStore } from "@/store/useOrderStore";
+// import type { Order } from "@/types/order";
 import AddOrder from "../common/AddOrder";
 import { Input } from "../ui/input";
 import { Search } from "lucide-react";
-import Fuse from "fuse.js";
+// import Fuse from "fuse.js";
 import ShowOrders from "../common/ShowOrders";
+import useFetchOrders from "@/hooks/orderHooks/useFetchOrders";
+import Loader from "../common/Loader";
 const Completed = () => {
-  const orders: Order[] = useOrderStore((state) => state.orders);
+  // const orders: Order[] = useOrderStore((state) => state.orders);
+  const { data, isLoading, error } = useFetchOrders({
+    salesmanId: "d25f6cd6-a798-437c-b9e7-61f4a9ce2fc3",
+  });
   const [query, setQuery] = useState("");
-  const options = {
-    useExtendedSearch: true,
-    keys: [
-      {
-        name: "clientName",
-        weight: 1,
-      },
-    ],
-  };
-  const fuse = useMemo(() => new Fuse(orders, options), [orders]);
+  // const options = {
+  //   useExtendedSearch: true,
+  //   keys: [
+  //     {
+  //       name: "clientName",
+  //       weight: 1,
+  //     },
+  //   ],
+  // };
+  // const fuse = useMemo(() => new Fuse(orders, options), [orders]);
 
-  const filteredOrder = query
-    ? fuse.search(query).map((ele) => ele.item)
-    : orders;
+  // const filteredOrder = query
+  //   ? fuse.search(query).map((ele) => ele.item)
+  //   : orders;
+
+  if (isLoading) return <Loader />;
+  if (error) return <div>Error occurred</div>;
+
+  const filteredOrder = data;
 
   return (
-    <div className="px-3 mt-2 pt-14 ">
-      <div className="w-full flex items-center justify-between gap-3 mb-2">
+    <div className="px-3 mt-2 pt-14 md:pt-0">
+      <div className="w-full flex items-center justify-between gap-3 mb-2 sticky top-14 md:top-0  backdrop-blur-md bg-white/30 border-b border-white/40 z-10 py-2">
         <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
           <Input

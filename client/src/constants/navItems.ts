@@ -17,11 +17,11 @@ export const salesManNavItems: ItemType[] = [
     icon: CircleCheck,
     route: "completed",
   },
-  {
-    title: "Stats",
-    icon: Notebook,
-    route: "stats",
-  },
+  // {
+  //   title: "Stats",
+  //   icon: Notebook,
+  //   route: "stats",
+  // },
   // { title: "Profile", url: "#", icon: User },
 ];
 

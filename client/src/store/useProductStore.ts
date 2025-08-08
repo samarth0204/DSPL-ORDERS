@@ -3,7 +3,7 @@ import currentProducts from "../constants/products.json";
 
 type Product = {
   name: string;
-  sizes: { size: string; order_by: string[] }[];
+  sizes: { size: string; orderBy: string[] }[];
 };
 
 type ProductStore = {

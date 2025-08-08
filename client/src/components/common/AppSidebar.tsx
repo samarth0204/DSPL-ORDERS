@@ -15,6 +15,7 @@ import logo from "../../static/logo.jpg";
 import {
   adminNavItems,
   fulfilmentNavItems,
+  salesManNavItems,
   // salesManNavItems,
 } from "@/constants/navItems";
 import { Link } from "react-router-dom";
@@ -32,6 +33,23 @@ export default function AppSidebar() {
           </div>
         </SidebarHeader>
         <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Your orders</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {salesManNavItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <Link to={item.route ?? "#"}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
           <SidebarGroup>
             <SidebarGroupLabel>Fulfillment Panel</SidebarGroupLabel>
             <SidebarGroupContent>

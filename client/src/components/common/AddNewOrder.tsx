@@ -2,7 +2,6 @@ import * as React from "react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -24,10 +23,10 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { orderSchema } from "@/constants/schema";
 import FormInput from "./FormInput";
-import { useOrderStore } from "@/store/useOrderStore";
 import { useProductStore } from "@/store/useProductStore";
 import { useRef, useState } from "react";
 import FormSelect from "./FormSelect";
+import useAddOrder from "../../hooks/orderHooks/useAddOrder";
 
 type Props = {
   open: boolean;
@@ -36,7 +35,7 @@ type Props = {
 
 type Size = {
   size: string;
-  order_by: string[];
+  orderBy: string[];
 };
 
 type ProductOption = {
@@ -62,6 +61,7 @@ const AddNewOrder: React.FC<Props> = ({ open, setOpen }) => {
     defaultValues: {
       clientName: "",
       deliveryDetails: "",
+      description: "",
       products: [],
     },
     mode: "onTouched",
@@ -73,12 +73,21 @@ const AddNewOrder: React.FC<Props> = ({ open, setOpen }) => {
     name: "products",
   });
 
-  const addOrder = useOrderStore((state) => state.addOrder);
+  const addOrderMutation = useAddOrder();
 
   const onSubmit = (data: any) => {
-    addOrder(data);
-    reset();
-    setOpen(false);
+    const newOrder = {
+      ...data,
+      orderDate: new Date(),
+      salesmanId: "d25f6cd6-a798-437c-b9e7-61f4a9ce2fc3",
+      status: "Not Started",
+    };
+    addOrderMutation.mutate(newOrder, {
+      onSuccess: () => {
+        reset();
+        setOpen(false);
+      },
+    });
   };
 
   const handleClose = (shouldOpen: boolean) => {
@@ -96,8 +105,9 @@ const AddNewOrder: React.FC<Props> = ({ open, setOpen }) => {
     append({
       name: product.name,
       size: "",
-      order_by: "",
-      quantity: "",
+      orderBy: "",
+      quantity: 1,
+      rate: "",
     });
     setPopoverOpen(false);
     setTimeout(() => {
@@ -112,9 +122,6 @@ const AddNewOrder: React.FC<Props> = ({ open, setOpen }) => {
       <DialogContent className="max-w-full md:max-w-[700px] max-h-[95vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Order</DialogTitle>
-          <DialogDescription>
-            Click on the plus icon and select the product to add to the order.
-          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -131,6 +138,14 @@ const AddNewOrder: React.FC<Props> = ({ open, setOpen }) => {
               placeholder="Enter delivery details"
               {...register("deliveryDetails")}
               error={errors.deliveryDetails?.message}
+            />
+          </div>
+          <div className="mt-2">
+            <FormInput
+              label="Order description"
+              placeholder="Enter order description"
+              {...register("description")}
+              error={errors.description?.message}
             />
           </div>
 
@@ -226,7 +241,7 @@ const AddNewOrder: React.FC<Props> = ({ open, setOpen }) => {
                 return (
                   <div
                     key={field.id}
-                    className="relative grid grid-cols-2 md:grid-cols-3 gap-2 border border-gray-300 bg-gray-50 p-4 rounded-xl shadow-sm my-4"
+                    className="relative grid grid-cols-2 gap-2 border border-gray-300 bg-gray-50 p-4 rounded-xl shadow-sm my-4"
                   >
                     <div className="absolute -top-3 left-2 text-sm text-gray-500 bg-white px-1 rounded flex items-center gap-2">
                       {field.name}
@@ -265,7 +280,9 @@ const AddNewOrder: React.FC<Props> = ({ open, setOpen }) => {
                     <FormInput
                       label="Quantity"
                       placeholder="Enter quantity"
-                      {...register(`products.${index}.quantity`)}
+                      {...register(`products.${index}.quantity`, {
+                        valueAsNumber: true,
+                      })}
                       error={errors.products?.[index]?.quantity?.message}
                     />
 
@@ -273,20 +290,27 @@ const AddNewOrder: React.FC<Props> = ({ open, setOpen }) => {
                       <div className="flex gap-2">
                         <FormSelect
                           label="Order By"
-                          value={watch(`products.${index}.order_by`)}
+                          value={watch(`products.${index}.orderBy`)}
                           onChange={(value) =>
-                            setValue(`products.${index}.order_by`, value)
+                            setValue(`products.${index}.orderBy`, value)
                           }
-                          options={selectedSizeObj?.order_by || []}
+                          options={selectedSizeObj?.orderBy || []}
                           placeholder="Select"
-                          error={errors.products?.[index]?.order_by?.message}
+                          error={errors.products?.[index]?.orderBy?.message}
                         />
                       </div>
-                      {errors.products?.[index]?.order_by && (
+                      {errors.products?.[index]?.orderBy && (
                         <p className="text-red-500 text-xs mt-1">
-                          {errors.products[index]?.order_by?.message}
+                          {errors.products[index]?.orderBy?.message}
                         </p>
                       )}
+                    </div>
+                    <div>
+                      <FormInput
+                        label="Custom rate"
+                        placeholder="Enter custom rate"
+                        {...register(`products.${index}.rate`)}
+                      />
                     </div>
                   </div>
                 );

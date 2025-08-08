@@ -4,7 +4,7 @@ export interface Bill {
     name: string;
     size: string;
     quantity: number;
-    order_by: string;
+    orderBy: string;
   }[];
   date: string;
 }

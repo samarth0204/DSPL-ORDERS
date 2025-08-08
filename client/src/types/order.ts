@@ -1,8 +1,9 @@
 export interface Product {
   name: string;
   size: string;
-  order_by: string;
+  orderBy: string;
   quantity: string;
+  rate?: string;
 }
 
 interface Fulfillment {
@@ -11,7 +12,7 @@ interface Fulfillment {
     name: string;
     size: string;
     quantity: number;
-    order_by: string;
+    orderBy: string;
   }[];
   date: string;
 }
@@ -19,6 +20,7 @@ interface Fulfillment {
 export interface Order {
   clientName: string; // Changed from String to string
   deliveryDetails: string;
+  description?: string;
   status: string; // Changed from String to string
   products: Product[];
   fulfillments: Fulfillment[];
@@ -32,4 +34,5 @@ export type UseFetchOrdersParams = {
   sortOrder?: string;
   search?: string;
   filterStatus?: string;
+  salesmanId?: string;
 };

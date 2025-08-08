@@ -68,6 +68,7 @@ const OrderTable = ({ order }: { order: Order }) => {
           <TableHead>Size</TableHead>
           <TableHead className="text-center">Quantity</TableHead>
           <TableHead className="text-right">Order By</TableHead>
+          {<TableHead className="text-right">Rate</TableHead>}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -99,7 +100,8 @@ const OrderTable = ({ order }: { order: Order }) => {
                   )}
                 </span>
               </TableCell>
-              <TableCell className="text-right">{product.order_by}</TableCell>
+              <TableCell className="text-right">{product.orderBy}</TableCell>
+              <TableCell className="text-right">{product.rate}</TableCell>
             </TableRow>
           );
         })}
@@ -182,9 +184,9 @@ const OrderCard = ({ order }: { order: Order }) => {
               <Truck />
               {order.deliveryDetails}
             </div>
-
-            <div className="hidden lg:block">
+            <div className="hidden lg:flex flex-col gap-4">
               <FulfillmentProgress order={order} />
+              <div className="font-semibold">{order.description}</div>
             </div>
           </CardDescription>
           <CardAction className="flex flex-col gap-1 lg:gap-2 items-end">
@@ -195,6 +197,7 @@ const OrderCard = ({ order }: { order: Order }) => {
 
       <CardContent className="flex gap-3 flex-col lg:px-0 lg:col-span-3">
         <div className="lg:hidden">
+          <div className="font-semibold">{order.description}</div>
           <FulfillmentProgress order={order} />
         </div>
         <OrderAccordion order={order} />

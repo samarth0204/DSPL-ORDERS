@@ -91,8 +91,8 @@ const Bills = () => {
       ? [Object.keys(groupedFulfillments)[0]] // Open the first group by default
       : []; // No groups, nothing to open
   return (
-    <div className="px-3 mt-2 pt-14">
-      <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 mb-4">
+    <div className="px-3 mt-2 pt-14 md:pt-0">
+      <div className="w-full flex items-center justify-between gap-3 mb-2 sticky top-14 md:top-0  backdrop-blur-md bg-white/30 border-b border-white/40 z-10 py-2">
         <div className="relative w-full sm:w-1/2">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
           <Input

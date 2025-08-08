@@ -14,7 +14,7 @@ interface FulfilledProduct {
   name: string;
   size: string;
   quantity: string;
-  order_by: string;
+  orderBy: string;
 }
 
 const BillCard = ({ f }: { f?: any }) => {
@@ -50,7 +50,7 @@ const BillCard = ({ f }: { f?: any }) => {
         <ul className="ml-4 list-disc text-sm text-gray-700">
           {f.fulfilledProducts?.map((p: FulfilledProduct, i: number) => (
             <li key={i}>
-              {p.name} - {p.size} : {p.quantity} {p.order_by}
+              {p.name} - {p.size} : {p.quantity} {p.orderBy}
             </li>
           ))}
         </ul>

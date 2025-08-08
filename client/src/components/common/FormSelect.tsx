@@ -24,7 +24,6 @@ const FormSelect: React.FC<Props> = ({
   onChange,
   options,
   placeholder,
-  error,
   className,
 }) => {
   return (
@@ -44,7 +43,6 @@ const FormSelect: React.FC<Props> = ({
           ))}
         </SelectContent>
       </Select>
-      {error && <p className="text-xs text-red-500">{error}</p>}
     </div>
   );
 };
