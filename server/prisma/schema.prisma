@@ -27,6 +27,7 @@ model Order {
   clientName      String
   deliveryDetails String
   status          String
+  description     String?   // <-- Added field
   products        Product[]
   fulfillments    Fulfillment[]
   salesman        User         @relation("SalesmanOrders", fields: [salesmanId], references: [id])
@@ -42,6 +43,7 @@ model Product {
   quantity  Int
   order     Order    @relation(fields: [orderId], references: [id])
   orderId   String
+  rate      String?
 }
 
 model Fulfillment {

@@ -5,28 +5,28 @@ export const dummyOrders = [
     status: "In Progress",
     products: [
       // Changed "87" to 87 and "56" to 56
-      { name: "Mirchi Gold", size: "1 kg", order_by: "Kg", quantity: 87 },
-      { name: "Haldi Gold", size: "500gm", order_by: "Bag", quantity: 56 },
+      { name: "Mirchi Gold", size: "1 kg", orderBy: "Kg", quantity: 87 },
+      { name: "Haldi Gold", size: "500gm", orderBy: "Bag", quantity: 56 },
     ],
     fulfillments: [
       {
         id: "8e3b9c45",
         fulfilledProducts: [
-          { name: "Haldi Gold", size: "500gm", quantity: 40, order_by: "Bag" },
+          { name: "Haldi Gold", size: "500gm", quantity: 40, orderBy: "Bag" },
         ],
         date: "2025-07-10",
       },
       {
         id: "8e3b9c46",
         fulfilledProducts: [
-          { name: "Haldi Gold", size: "500gm", quantity: 16, order_by: "Bag" },
+          { name: "Haldi Gold", size: "500gm", quantity: 16, orderBy: "Bag" },
         ],
         date: "2025-08-10",
       },
       {
         id: "8e3b9c47",
         fulfilledProducts: [
-          { name: "Mirchi Gold", size: "1 kg", quantity: 83, order_by: "Kg" },
+          { name: "Mirchi Gold", size: "1 kg", quantity: 83, orderBy: "Kg" },
         ],
         date: "2025-08-10",
       },
@@ -40,13 +40,13 @@ export const dummyOrders = [
     status: "Completed",
     products: [
       // Changed "99" to 99
-      { name: "Kasuri Methi", size: "25gm", order_by: "Pcs", quantity: 99 },
+      { name: "Kasuri Methi", size: "25gm", orderBy: "Pcs", quantity: 99 },
     ],
     fulfillments: [
       {
         id: "r1a2v3i4",
         fulfilledProducts: [
-          { name: "Kasuri Methi", size: "25gm", quantity: 99, order_by: "Pcs" },
+          { name: "Kasuri Methi", size: "25gm", quantity: 99, orderBy: "Pcs" },
         ],
         date: "2025-07-05",
       },
@@ -60,8 +60,8 @@ export const dummyOrders = [
     status: "Not Started",
     products: [
       // Changed "23" to 23 and "31" to 31
-      { name: "Haldi Gold", size: "100gm", order_by: "Pcs", quantity: 23 },
-      { name: "Kasuri Methi", size: "1 kg", order_by: "Kg", quantity: 31 },
+      { name: "Haldi Gold", size: "100gm", orderBy: "Pcs", quantity: 23 },
+      { name: "Kasuri Methi", size: "1 kg", orderBy: "Kg", quantity: 31 },
     ],
     fulfillments: [],
     salesManName: "Priya",
@@ -73,13 +73,13 @@ export const dummyOrders = [
     status: "Completed",
     products: [
       // Changed "45" to 45
-      { name: "Mirchi Gold", size: "500gm", order_by: "Bag", quantity: 45 },
+      { name: "Mirchi Gold", size: "500gm", orderBy: "Bag", quantity: 45 },
     ],
     fulfillments: [
       {
         id: "v5i6k7a8",
         fulfilledProducts: [
-          { name: "Mirchi Gold", size: "500gm", quantity: 45, order_by: "Bag" },
+          { name: "Mirchi Gold", size: "500gm", quantity: 45, orderBy: "Bag" },
         ],
         date: "2025-07-12",
       },
@@ -93,13 +93,13 @@ export const dummyOrders = [
     status: "In Progress",
     products: [
       // Changed "72" to 72
-      { name: "Haldi Gold", size: "1 kg", order_by: "Kg", quantity: 72 },
+      { name: "Haldi Gold", size: "1 kg", orderBy: "Kg", quantity: 72 },
     ],
     fulfillments: [
       {
         id: "r9a0m1e2",
         fulfilledProducts: [
-          { name: "Haldi Gold", size: "1 kg", quantity: 50, order_by: "Kg" },
+          { name: "Haldi Gold", size: "1 kg", quantity: 50, orderBy: "Kg" },
         ],
         date: "2025-07-08",
       },
@@ -113,8 +113,8 @@ export const dummyOrders = [
     status: "Not Started",
     products: [
       // Changed "50" to 50 and "14" to 14
-      { name: "Kasuri Methi", size: "200gm", order_by: "Bag", quantity: 50 },
-      { name: "Haldi Gold", size: "25gm", order_by: "Pcs", quantity: 14 },
+      { name: "Kasuri Methi", size: "200gm", orderBy: "Bag", quantity: 50 },
+      { name: "Haldi Gold", size: "25gm", orderBy: "Pcs", quantity: 14 },
     ],
     fulfillments: [],
     salesManName: "Priya",
@@ -126,13 +126,13 @@ export const dummyOrders = [
     status: "Completed",
     products: [
       // Changed "76" to 76
-      { name: "Mirchi Gold", size: "100gm", order_by: "Kg", quantity: 76 },
+      { name: "Mirchi Gold", size: "100gm", orderBy: "Kg", quantity: 76 },
     ],
     fulfillments: [
       {
         id: "d3e4e5p6",
         fulfilledProducts: [
-          { name: "Mirchi Gold", size: "100gm", quantity: 76, order_by: "Kg" },
+          { name: "Mirchi Gold", size: "100gm", quantity: 76, orderBy: "Kg" },
         ],
         date: "2025-07-15",
       },
@@ -146,13 +146,13 @@ export const dummyOrders = [
     status: "In Progress",
     products: [
       // Changed "11" to 11
-      { name: "Kasuri Methi", size: "500gm", order_by: "Pcs", quantity: 11 },
+      { name: "Kasuri Methi", size: "500gm", orderBy: "Pcs", quantity: 11 },
     ],
     fulfillments: [
       {
         id: "m7e8e9n0",
         fulfilledProducts: [
-          { name: "Kasuri Methi", size: "500gm", quantity: 5, order_by: "Pcs" },
+          { name: "Kasuri Methi", size: "500gm", quantity: 5, orderBy: "Pcs" },
         ],
         date: "2025-07-09",
       },
@@ -166,15 +166,15 @@ export const dummyOrders = [
     status: "In Progress",
     products: [
       // Changed "61" to 61 and "89" to 89
-      { name: "Haldi Gold", size: "1 kg", order_by: "Kg", quantity: 61 },
-      { name: "Mirchi Gold", size: "25gm", order_by: "Bag", quantity: 89 },
+      { name: "Haldi Gold", size: "1 kg", orderBy: "Kg", quantity: 61 },
+      { name: "Mirchi Gold", size: "25gm", orderBy: "Bag", quantity: 89 },
     ],
     fulfillments: [
       {
         id: "s1u2r3e4",
         fulfilledProducts: [
-          { name: "Haldi Gold", size: "1 kg", quantity: 30, order_by: "Kg" },
-          { name: "Mirchi Gold", size: "25gm", quantity: 40, order_by: "Bag" },
+          { name: "Haldi Gold", size: "1 kg", quantity: 30, orderBy: "Kg" },
+          { name: "Mirchi Gold", size: "25gm", quantity: 40, orderBy: "Bag" },
         ],
         date: "2025-07-11",
       },
@@ -188,7 +188,7 @@ export const dummyOrders = [
     status: "Not Started",
     products: [
       // Changed "34" to 34
-      { name: "Mirchi Gold", size: "500gm", order_by: "Kg", quantity: 34 },
+      { name: "Mirchi Gold", size: "500gm", orderBy: "Kg", quantity: 34 },
     ],
     fulfillments: [],
     salesManName: "Rajesh",
@@ -200,7 +200,7 @@ export const dummyOrders = [
     status: "Completed",
     products: [
       // Changed "66" to 66
-      { name: "Kasuri Methi", size: "200gm", order_by: "Bag", quantity: 66 },
+      { name: "Kasuri Methi", size: "200gm", orderBy: "Bag", quantity: 66 },
     ],
     fulfillments: [
       {
@@ -210,7 +210,7 @@ export const dummyOrders = [
             name: "Kasuri Methi",
             size: "200gm",
             quantity: 66,
-            order_by: "Bag",
+            orderBy: "Bag",
           },
         ],
         date: "2025-07-13",
@@ -225,22 +225,22 @@ export const dummyOrders = [
     status: "In Progress",
     products: [
       // Changed "17" to 17 and "90" to 90
-      { name: "Haldi Gold", size: "100gm", order_by: "Pcs", quantity: 17 },
-      { name: "Mirchi Gold", size: "1 kg", order_by: "Bag", quantity: 90 },
+      { name: "Haldi Gold", size: "100gm", orderBy: "Pcs", quantity: 17 },
+      { name: "Mirchi Gold", size: "1 kg", orderBy: "Bag", quantity: 90 },
     ],
     fulfillments: [
       {
         id: "s9a0n1d2",
         fulfilledProducts: [
-          { name: "Haldi Gold", size: "100gm", quantity: 10, order_by: "Pcs" },
-          { name: "Mirchi Gold", size: "1 kg", quantity: 50, order_by: "Bag" },
+          { name: "Haldi Gold", size: "100gm", quantity: 10, orderBy: "Pcs" },
+          { name: "Mirchi Gold", size: "1 kg", quantity: 50, orderBy: "Bag" },
         ],
         date: "2025-07-07",
       },
       {
         id: "s9a0n1d3",
         fulfilledProducts: [
-          { name: "Mirchi Gold", size: "1 kg", quantity: 40, order_by: "Bag" },
+          { name: "Mirchi Gold", size: "1 kg", quantity: 40, orderBy: "Bag" },
         ],
         date: "2025-07-14",
       },
@@ -254,7 +254,7 @@ export const dummyOrders = [
     status: "Not Started",
     products: [
       // Changed "12" to 12
-      { name: "Kasuri Methi", size: "25gm", order_by: "Pcs", quantity: 12 },
+      { name: "Kasuri Methi", size: "25gm", orderBy: "Pcs", quantity: 12 },
     ],
     fulfillments: [],
     salesManName: "Rajesh",
@@ -266,13 +266,13 @@ export const dummyOrders = [
     status: "Completed",
     products: [
       // Changed "44" to 44
-      { name: "Haldi Gold", size: "200gm", order_by: "Bag", quantity: 44 },
+      { name: "Haldi Gold", size: "200gm", orderBy: "Bag", quantity: 44 },
     ],
     fulfillments: [
       {
         id: "r3o4h5i6",
         fulfilledProducts: [
-          { name: "Haldi Gold", size: "200gm", quantity: 44, order_by: "Bag" },
+          { name: "Haldi Gold", size: "200gm", quantity: 44, orderBy: "Bag" },
         ],
         date: "2025-07-16",
       },
@@ -286,13 +286,13 @@ export const dummyOrders = [
     status: "In Progress",
     products: [
       // Changed "53" to 53
-      { name: "Mirchi Gold", size: "100gm", order_by: "Kg", quantity: 53 },
+      { name: "Mirchi Gold", size: "100gm", orderBy: "Kg", quantity: 53 },
     ],
     fulfillments: [
       {
         id: "k7o8m9a0",
         fulfilledProducts: [
-          { name: "Mirchi Gold", size: "100gm", quantity: 30, order_by: "Kg" },
+          { name: "Mirchi Gold", size: "100gm", quantity: 30, orderBy: "Kg" },
         ],
         date: "2025-07-06",
       },
@@ -306,15 +306,15 @@ export const dummyOrders = [
     status: "Completed",
     products: [
       // Changed "39" to 39 and "22" to 22
-      { name: "Kasuri Methi", size: "1 kg", order_by: "Kg", quantity: 39 },
-      { name: "Haldi Gold", size: "500gm", order_by: "Pcs", quantity: 22 },
+      { name: "Kasuri Methi", size: "1 kg", orderBy: "Kg", quantity: 39 },
+      { name: "Haldi Gold", size: "500gm", orderBy: "Pcs", quantity: 22 },
     ],
     fulfillments: [
       {
         id: "a1j2a3y4",
         fulfilledProducts: [
-          { name: "Kasuri Methi", size: "1 kg", quantity: 39, order_by: "Kg" },
-          { name: "Haldi Gold", size: "500gm", quantity: 22, order_by: "Pcs" },
+          { name: "Kasuri Methi", size: "1 kg", quantity: 39, orderBy: "Kg" },
+          { name: "Haldi Gold", size: "500gm", quantity: 22, orderBy: "Pcs" },
         ],
         date: "2025-07-17",
       },
@@ -328,7 +328,7 @@ export const dummyOrders = [
     status: "Not Started",
     products: [
       // Changed "68" to 68
-      { name: "Mirchi Gold", size: "200gm", order_by: "Bag", quantity: 68 },
+      { name: "Mirchi Gold", size: "200gm", orderBy: "Bag", quantity: 68 },
     ],
     fulfillments: [],
     salesManName: "Akash",
@@ -340,13 +340,13 @@ export const dummyOrders = [
     status: "Completed",
     products: [
       // Changed "29" to 29
-      { name: "Haldi Gold", size: "1 kg", order_by: "Kg", quantity: 29 },
+      { name: "Haldi Gold", size: "1 kg", orderBy: "Kg", quantity: 29 },
     ],
     fulfillments: [
       {
         id: "k5a6r7a8",
         fulfilledProducts: [
-          { name: "Haldi Gold", size: "1 kg", quantity: 29, order_by: "Kg" },
+          { name: "Haldi Gold", size: "1 kg", quantity: 29, orderBy: "Kg" },
         ],
         date: "2025-07-18",
       },
@@ -360,7 +360,7 @@ export const dummyOrders = [
     status: "In Progress",
     products: [
       // Changed "99" to 99
-      { name: "Kasuri Methi", size: "500gm", order_by: "Bag", quantity: 99 },
+      { name: "Kasuri Methi", size: "500gm", orderBy: "Bag", quantity: 99 },
     ],
     fulfillments: [
       {
@@ -370,7 +370,7 @@ export const dummyOrders = [
             name: "Kasuri Methi",
             size: "500gm",
             quantity: 70,
-            order_by: "Bag",
+            orderBy: "Bag",
           },
         ],
         date: "2025-07-04",
@@ -385,7 +385,7 @@ export const dummyOrders = [
     status: "Not Started",
     products: [
       // Changed "37" to 37
-      { name: "Haldi Gold", size: "100gm", order_by: "Pcs", quantity: 37 },
+      { name: "Haldi Gold", size: "100gm", orderBy: "Pcs", quantity: 37 },
     ],
     fulfillments: [],
     salesManName: "Akash",

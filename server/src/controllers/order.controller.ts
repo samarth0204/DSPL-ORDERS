@@ -31,7 +31,9 @@ export const getAllOrders = async (req: Request, res: Response) => {
           },
         },
       },
-      orderBy: sortBy ? { [sortBy as string]: orderDirection } : undefined,
+      orderBy: sortBy
+        ? { [sortBy as string]: orderDirection }
+        : { orderDate: "desc" },
     });
 
     if (groupBy && groupBy !== "none") {
@@ -102,16 +104,20 @@ export const getAllOrdersBySalesman = async (req: Request, res: Response) => {
   }
 };
 
+// ✅ Create Order
 export const addOrder = async (req: Request, res: Response) => {
+  console.log("add order API called", req.body);
   const {
     clientName,
     salesmanId,
     deliveryDetails,
     status,
     orderDate,
+    description,
     products,
   } = req.body;
 
+  // Validation
   if (
     !clientName ||
     !salesmanId ||
@@ -131,6 +137,7 @@ export const addOrder = async (req: Request, res: Response) => {
         salesmanId,
         deliveryDetails,
         status,
+        description,
         orderDate: new Date(orderDate),
         products: {
           createMany: {
@@ -139,6 +146,7 @@ export const addOrder = async (req: Request, res: Response) => {
               size: product.size,
               quantity: product.quantity,
               orderBy: product.orderBy,
+              rate: product.rate ?? null,
             })),
           },
         },
@@ -150,11 +158,10 @@ export const addOrder = async (req: Request, res: Response) => {
 
     res.status(201).json(newOrder);
   } catch (error) {
-    console.error("Error creating new order:", error);
+    console.error("Error creating order:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 export const deleteOrder = async (req: Request, res: Response) => {
   const { id } = req.query;
 

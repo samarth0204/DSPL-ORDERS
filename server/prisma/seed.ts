@@ -48,7 +48,7 @@ async function main() {
           create: order.products.map((p) => ({
             name: p.name,
             size: p.size,
-            orderBy: p.order_by,
+            orderBy: p.orderBy,
             quantity: p.quantity,
           })),
         },
@@ -65,7 +65,7 @@ async function main() {
                 create: f.fulfilledProducts.map((fp) => ({
                   name: fp.name,
                   size: fp.size,
-                  orderBy: fp.order_by,
+                  orderBy: fp.orderBy,
                   quantity: fp.quantity,
                 })),
               },
