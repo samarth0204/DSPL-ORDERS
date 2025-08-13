@@ -106,7 +106,6 @@ export const getAllOrdersBySalesman = async (req: Request, res: Response) => {
 
 // ✅ Create Order
 export const addOrder = async (req: Request, res: Response) => {
-  console.log("add order API called", req.body);
   const {
     clientName,
     salesmanId,
@@ -163,7 +162,7 @@ export const addOrder = async (req: Request, res: Response) => {
   }
 };
 export const deleteOrder = async (req: Request, res: Response) => {
-  const { id } = req.query;
+  const { id } = req.params;
 
   if (!id || typeof id !== "string") {
     return res.status(400).json({ message: "Order ID is required." });
