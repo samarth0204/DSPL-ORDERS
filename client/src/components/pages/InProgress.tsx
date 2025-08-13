@@ -6,7 +6,7 @@ import { Input } from "../ui/input";
 import { Search } from "lucide-react";
 // import Fuse from "fuse.js";
 import ShowOrders from "../common/ShowOrders";
-import useFetchOrders from "@/hooks/orderHooks/useFetchOrders";
+import { useFetchOrders } from "@/hooks/orderHooks";
 import Loader from "../common/Loader";
 const Completed = () => {
   // const orders: Order[] = useOrderStore((state) => state.orders);

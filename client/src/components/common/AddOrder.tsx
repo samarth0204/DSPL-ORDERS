@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
-import AddNewOrder from "./AddNewOrder";
+import OrderFormDialog from "./OrderFormDialog";
 
 const AddOrder = () => {
   const [open, setOpen] = React.useState(false);
@@ -9,7 +9,7 @@ const AddOrder = () => {
     <>
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <AddNewOrder open={open} setOpen={setOpen} />
+          <OrderFormDialog open={open} setOpen={setOpen} />
         </div>
       )}
       {!open && (

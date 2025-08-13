@@ -16,7 +16,7 @@ import {
   AccordionTrigger,
 } from "../ui/accordion";
 import Loader from "../common/Loader";
-import useFetchOrders from "@/hooks/orderHooks/useFetchOrders";
+import { useFetchOrders } from "@/hooks/orderHooks";
 
 const AllOrders = () => {
   // Refined type for groupBy and sortBy states

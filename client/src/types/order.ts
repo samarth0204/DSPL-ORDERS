@@ -4,6 +4,7 @@ export interface Product {
   orderBy: string;
   quantity: string;
   rate?: string;
+  id: string;
 }
 
 interface Fulfillment {
@@ -13,11 +14,13 @@ interface Fulfillment {
     size: string;
     quantity: number;
     orderBy: string;
+    id: string;
   }[];
   date: string;
 }
 
 export interface Order {
+  id: string;
   clientName: string; // Changed from String to string
   deliveryDetails: string;
   description?: string;

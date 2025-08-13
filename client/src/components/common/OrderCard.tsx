@@ -43,10 +43,13 @@ import { Progress } from "@/components/ui/progress";
 import { getFulfilledQuantities, getFulfillmentProgress } from "@/lib/utils";
 import BillCard from "./BillCard";
 import { Button } from "../ui/button";
+import { useState } from "react";
+import OrderFormDialog from "./OrderFormDialog";
+import { useDeleteOrder } from "@/hooks/orderHooks";
+import FulfillmentFormDialog from "./FulfillmentFormDialog";
 
 const FulfillmentProgress = ({ order }: { order: Order }) => {
   const progress = getFulfillmentProgress(order);
-
   return (
     <div className="mt-2">
       <p className="text-sm text-muted-foreground mb-1">
@@ -174,69 +177,115 @@ const FulfillmentAccordion = ({ order }: { order: Order }) => {
 };
 
 const OrderCard = ({ order }: { order: Order }) => {
+  const [openEditOrder, setOpenEditOrder] = useState(false);
+  const [openFulfillmentForm, setOpenFulfillmentForm] = useState(false);
+  const deleteMutation = useDeleteOrder();
   return (
-    <Card className="gap-3 py-4 rounded-sm lg:grid lg:grid-cols-10 lg:px-4">
-      <div className="lg:col-span-3">
-        <CardHeader className="lg:px-0">
-          <CardTitle>{order.clientName}</CardTitle>
-          <CardDescription className="flex lg:flex-col gap-2">
-            <div className="flex gap-2">
-              <Truck />
-              {order.deliveryDetails}
-            </div>
-            <div className="hidden lg:flex flex-col gap-4">
-              <FulfillmentProgress order={order} />
-              <div className="font-semibold">{order.description}</div>
-            </div>
-          </CardDescription>
-          <CardAction className="flex flex-col gap-1 lg:gap-2 items-end">
-            <GetBadge order={order} />
-          </CardAction>
-        </CardHeader>
-      </div>
+    <>
+      <OrderFormDialog
+        open={openEditOrder}
+        setOpen={setOpenEditOrder}
+        order={order}
+      />
+      <FulfillmentFormDialog
+        open={openFulfillmentForm}
+        setOpen={setOpenFulfillmentForm}
+        order={order}
+      />
+      <Card className="gap-3 py-4 rounded-sm lg:grid lg:grid-cols-10 lg:px-4">
+        <div className="lg:col-span-3">
+          <CardHeader className="lg:px-0">
+            <CardTitle>{order.clientName}</CardTitle>
+            <CardDescription className="flex lg:flex-col gap-2">
+              <div className="flex gap-2">
+                <Truck />
+                {order.deliveryDetails}
+              </div>
+              <div className="hidden lg:flex flex-col gap-4">
+                <FulfillmentProgress order={order} />
+                <div className="font-semibold">{order.description}</div>
+              </div>
+            </CardDescription>
+            <CardAction className="flex flex-col gap-1 lg:gap-2 items-end">
+              <GetBadge order={order} />
+            </CardAction>
+          </CardHeader>
+        </div>
 
-      <CardContent className="flex gap-3 flex-col lg:px-0 lg:col-span-3">
-        <div className="lg:hidden">
-          <div className="font-semibold">{order.description}</div>
-          <FulfillmentProgress order={order} />
-        </div>
-        <OrderAccordion order={order} />
-      </CardContent>
+        <CardContent className="flex gap-3 flex-col lg:px-0 lg:col-span-3">
+          <div className="lg:hidden">
+            <div className="font-semibold">{order.description}</div>
+            <FulfillmentProgress order={order} />
+          </div>
+          <OrderAccordion order={order} />
+        </CardContent>
 
-      <CardFooter className="flex flex-col lg:pl-0 lg:pr-0 gap-4 lg:col-span-3">
-        <FulfillmentAccordion order={order} />
-        <div className="flex w-full justify-between lg:hidden">
-          <Button variant="outline" className="gap-2">
-            <Plus />
-            Attach Bill
-          </Button>
-          <Button variant="outline" className="gap-2">
-            <Pencil />
-            Edit
-          </Button>
-          <Button variant="destructive" className="gap-2">
-            <Trash />
-            Delete
-          </Button>
+        <CardFooter className="flex flex-col lg:pl-0 lg:pr-0 gap-4 lg:col-span-3">
+          <FulfillmentAccordion order={order} />
+          <div className="flex w-full justify-between lg:hidden">
+            <Button
+              variant="outline"
+              className="gap-2"
+              onClick={() => setOpenFulfillmentForm(true)}
+            >
+              <Plus />
+              Attach Bill
+            </Button>
+            <Button
+              variant="outline"
+              className="gap-2"
+              onClick={() => setOpenEditOrder(true)}
+            >
+              <Pencil />
+              Edit
+            </Button>
+            <Button
+              variant="destructive"
+              className="gap-2 bg-white text-black hover:text-white"
+              onClick={() => {
+                if (
+                  window.confirm("Are you sure you want to delete this order?")
+                ) {
+                  deleteMutation.mutate(order.id);
+                }
+              }}
+            >
+              <Trash />
+              Delete
+            </Button>
+          </div>
+        </CardFooter>
+        <div className="hidden lg:block lg:col-span-1">
+          <div className="flex flex-col w-full gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setOpenFulfillmentForm(true)}
+            >
+              <Plus />
+              Attach Bill
+            </Button>
+            <Button variant="outline" onClick={() => setOpenEditOrder(true)}>
+              <Pencil />
+              Edit
+            </Button>
+            <Button
+              variant="destructive"
+              className="bg-white text-black hover:text-white"
+              onClick={() => {
+                if (
+                  window.confirm("Are you sure you want to delete this order?")
+                ) {
+                  deleteMutation.mutate(order.id);
+                }
+              }}
+            >
+              <Trash />
+              Delete
+            </Button>
+          </div>
         </div>
-      </CardFooter>
-      <div className="hidden lg:block lg:col-span-1">
-        <div className="flex flex-col w-full gap-2">
-          <Button variant="outline">
-            <Plus />
-            Attach Bill
-          </Button>
-          <Button variant="outline">
-            <Pencil />
-            Edit
-          </Button>
-          <Button variant="destructive">
-            <Trash />
-            Delete
-          </Button>
-        </div>
-      </div>
-    </Card>
+      </Card>
+    </>
   );
 };
 

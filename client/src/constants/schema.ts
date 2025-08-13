@@ -3,7 +3,7 @@ import * as yup from "yup";
 export const orderSchema = yup.object().shape({
   clientName: yup.string().required("Client name is required"),
   deliveryDetails: yup.string().required("Delivery details are required"),
-  description: yup.string(),
+  description: yup.string().notRequired(),
   products: yup
     .array()
     .of(
@@ -16,7 +16,7 @@ export const orderSchema = yup.object().shape({
           .typeError("Quantity is required") // will trigger if empty or not a number
           .required("Quantity is required")
           .min(1, "Quantity must be at least 1"),
-        rate: yup.string(),
+        rate: yup.string().notRequired(),
       })
     )
     .min(1, "Add at least one product"),

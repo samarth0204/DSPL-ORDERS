@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -26,11 +26,12 @@ import FormInput from "./FormInput";
 import { useProductStore } from "@/store/useProductStore";
 import { useRef, useState } from "react";
 import FormSelect from "./FormSelect";
-import useAddOrder from "../../hooks/orderHooks/useAddOrder";
+import { useEditOrder, useAddOrder } from "@/hooks/orderHooks";
 
 type Props = {
   open: boolean;
   setOpen: (value: boolean) => void;
+  order?: any;
 };
 
 type Size = {
@@ -43,10 +44,11 @@ type ProductOption = {
   sizes: Size[];
 };
 
-const AddNewOrder: React.FC<Props> = ({ open, setOpen }) => {
+const OrderFormDialog: React.FC<Props> = ({ open, setOpen, order }) => {
   const availableProducts = useProductStore((store) => store.availableProducts);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const productListRef = useRef<HTMLDivElement>(null);
+  const isEdit = Boolean(order);
 
   const {
     register,
@@ -68,26 +70,52 @@ const AddNewOrder: React.FC<Props> = ({ open, setOpen }) => {
     reValidateMode: "onChange",
   });
 
+  useEffect(() => {
+    if (isEdit) {
+      reset(order);
+    } else {
+      reset({
+        clientName: "",
+        deliveryDetails: "",
+        description: "",
+        products: [],
+      });
+    }
+  }, [isEdit, order, reset]);
+
   const { fields, append, remove, replace } = useFieldArray({
     control,
     name: "products",
   });
 
   const addOrderMutation = useAddOrder();
+  const editOrderMutation = useEditOrder();
 
   const onSubmit = (data: any) => {
-    const newOrder = {
-      ...data,
-      orderDate: new Date(),
-      salesmanId: "d25f6cd6-a798-437c-b9e7-61f4a9ce2fc3",
-      status: "Not Started",
-    };
-    addOrderMutation.mutate(newOrder, {
-      onSuccess: () => {
-        reset();
-        setOpen(false);
-      },
-    });
+    if (isEdit) {
+      editOrderMutation.mutate(
+        { ...order, ...data },
+        {
+          onSuccess: () => {
+            reset();
+            setOpen(false);
+          },
+        }
+      );
+    } else {
+      const newOrder = {
+        ...data,
+        orderDate: new Date(),
+        salesmanId: "d25f6cd6-a798-437c-b9e7-61f4a9ce2fc3",
+        status: "Not Started",
+      };
+      addOrderMutation.mutate(newOrder, {
+        onSuccess: () => {
+          reset();
+          setOpen(false);
+        },
+      });
+    }
   };
 
   const handleClose = (shouldOpen: boolean) => {
@@ -327,4 +355,4 @@ const AddNewOrder: React.FC<Props> = ({ open, setOpen }) => {
   );
 };
 
-export default AddNewOrder;
+export default OrderFormDialog;
