@@ -20,13 +20,13 @@ import {
   CommandEmpty,
 } from "@/components/ui/command";
 import { useForm, useFieldArray } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { orderSchema } from "@/constants/schema";
 import FormInput from "./FormInput";
 import { useProductStore } from "@/store/useProductStore";
 import { useRef, useState } from "react";
 import FormSelect from "./FormSelect";
 import { useEditOrder, useAddOrder } from "@/hooks/orderHooks";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type Props = {
   open: boolean;
@@ -59,7 +59,7 @@ const OrderFormDialog: React.FC<Props> = ({ open, setOpen, order }) => {
     watch,
     setValue,
   } = useForm({
-    resolver: yupResolver(orderSchema),
+    resolver: zodResolver(orderSchema),
     defaultValues: {
       clientName: "",
       deliveryDetails: "",

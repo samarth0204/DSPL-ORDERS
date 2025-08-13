@@ -1,6 +1,5 @@
 import * as React from "react";
 import { ChevronDownIcon } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
@@ -10,9 +9,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-function DatePicker({ label }: { label: string }) {
+interface DatePickerProps {
+  label: string;
+  value?: Date;
+  onChange?: (date?: Date) => void;
+}
+
+function DatePicker({ label, value, onChange }: DatePickerProps) {
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = React.useState<Date | undefined>(undefined);
 
   return (
     <div className="w-full space-y-1">
@@ -29,17 +33,17 @@ function DatePicker({ label }: { label: string }) {
             id="date"
             className="w-48 justify-between font-normal"
           >
-            {date ? date.toLocaleDateString() : "Select date"}
+            {value ? value.toLocaleDateString() : "Select date"}
             <ChevronDownIcon />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto overflow-hidden p-0" align="start">
           <Calendar
             mode="single"
-            selected={date}
+            selected={value}
             captionLayout="dropdown"
-            onSelect={(date) => {
-              setDate(date);
+            onSelect={(selected) => {
+              onChange?.(selected);
               setOpen(false);
             }}
           />

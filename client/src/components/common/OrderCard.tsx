@@ -223,14 +223,16 @@ const OrderCard = ({ order }: { order: Order }) => {
         <CardFooter className="flex flex-col lg:pl-0 lg:pr-0 gap-4 lg:col-span-3">
           <FulfillmentAccordion order={order} />
           <div className="flex w-full justify-between lg:hidden">
-            <Button
-              variant="outline"
-              className="gap-2"
-              onClick={() => setOpenFulfillmentForm(true)}
-            >
-              <Plus />
-              Attach Bill
-            </Button>
+            {order.status !== "Completed" && (
+              <Button
+                variant="outline"
+                className="gap-2"
+                onClick={() => setOpenFulfillmentForm(true)}
+              >
+                <Plus />
+                Attach Bill
+              </Button>
+            )}
             <Button
               variant="outline"
               className="gap-2"

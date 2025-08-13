@@ -2,10 +2,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import FormInput from "./common/FormInput";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/constants/schema";
 import { useState } from "react";
 import Loader from "./common/Loader";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export function LoginForm({
   className,
@@ -18,7 +18,7 @@ export function LoginForm({
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(loginSchema),
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       username: "",
       password: "",
