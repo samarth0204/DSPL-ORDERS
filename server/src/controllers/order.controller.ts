@@ -43,7 +43,11 @@ export const getAllOrders = async (req: Request, res: Response) => {
         if (groupBy === "salesman") {
           key = order.salesman?.username || "Unassigned";
         } else if (groupBy === "orderDate") {
-          key = order.orderDate.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+          const dateObj = new Date(order.orderDate);
+          const dd = String(dateObj.getDate()).padStart(2, "0");
+          const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
+          const yyyy = dateObj.getFullYear();
+          key = `${dd}-${mm}-${yyyy}`;
         } else {
           key = "Other"; // Default or handle other cases
         }
