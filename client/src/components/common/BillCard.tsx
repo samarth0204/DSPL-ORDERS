@@ -6,9 +6,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Calendar } from "lucide-react";
+import { Calendar, Pencil, Trash } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
 
 interface FulfilledProduct {
   name: string;
@@ -60,8 +61,25 @@ const BillCard = ({ fulfillment }: { fulfillment?: any }) => {
         </ul>
       </CardContent>
 
-      <CardFooter className="text-xs text-gray-400">
-        Total items: {fulfillment.fulfilledProducts?.length || 0}
+      <CardFooter className="flex justify-between">
+        <p className="text-xs text-gray-400">
+          Total items: {fulfillment.fulfilledProducts?.length || 0}
+        </p>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => {}}>
+            <Pencil size={18} />
+            Edit
+          </Button>
+
+          <Button
+            variant="destructive"
+            className="bg-white text-black hover:text-white"
+            onClick={() => {}}
+          >
+            <Trash size={18} />
+            Delete
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );
