@@ -8,6 +8,8 @@ enum FulfillmentStatus {
 
 // GET / - Retrieve all fulfillments, grouped by date and orderId, sorted by amount, date, and status
 export const getAllFulfillments = async (req: Request, res: Response) => {
+  const { groupBy, sortBy, sortOrder, search } = req.query;
+  const orderDirection = sortOrder === "desc" ? "desc" : "asc";
   try {
     // Fetch all fulfillments with related data
     const fulfillments = await prisma.fulfillment.findMany({
@@ -15,43 +17,49 @@ export const getAllFulfillments = async (req: Request, res: Response) => {
         order: true,
         fulfilledProducts: true,
       },
-      orderBy: [
-        { amount: "desc" }, // Primary sort: amount (descending)
-        { date: "desc" }, // Secondary sort: date (descending)
-        { status: "asc" }, // Tertiary sort: status (PAID before PENDING)
-      ],
+      orderBy: sortBy
+        ? { [sortBy as string]: orderDirection }
+        : { date: "desc" },
     });
 
-    // Group fulfillments by date and orderId
-    const groupedFulfillments = fulfillments.reduce((acc, fulfillment) => {
-      const dateStr = fulfillment.date.toISOString().split("T")[0]; // Extract YYYY-MM-DD
-      const key = `${dateStr}_${fulfillment.orderId}`;
-      if (!acc[key]) {
-        acc[key] = {
-          date: dateStr,
-          orderId: fulfillment.orderId,
-          fulfillments: [],
-        };
-      }
-      acc[key].fulfillments.push({
-        id: fulfillment.id,
-        amount: fulfillment.amount,
-        status: fulfillment.status,
-        fulfilledProducts: fulfillment.fulfilledProducts.map((fp) => ({
-          id: fp.id,
-          name: fp.name,
-          size: fp.size,
-          orderBy: fp.orderBy,
-          quantity: fp.quantity,
-        })),
+    if (groupBy && groupBy !== "none") {
+      const groups: { [key: string]: typeof fulfillments } = {};
+      fulfillments.forEach((fulfillment) => {
+        let key: string;
+        if (groupBy === "order") {
+          key = fulfillment.orderId || "Unassigned";
+        } else if (groupBy === "date") {
+          key = fulfillment.date.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+        } else {
+          key = "Other"; // Default or handle other cases
+        }
+
+        if (!groups[key]) {
+          groups[key] = [];
+        }
+        groups[key].push(fulfillment);
       });
-      return acc;
-    }, {} as Record<string, { date: string; orderId: string; fulfillments: any[] }>);
 
-    // Convert grouped object to array for response
-    const result = Object.values(groupedFulfillments);
+      const sortedGroupKeys = Object.keys(groups).sort((a, b) => {
+        if (groupBy === "orderDate") {
+          return new Date(a).getTime() - new Date(b).getTime();
+        }
+        return a.localeCompare(b);
+      });
 
-    res.status(200).json(result);
+      const groupedResult = sortedGroupKeys.map((key) => ({
+        groupKey: key,
+        fulfillments: groups[key],
+      }));
+
+      return res.status(200).json(groupedResult);
+    }
+
+    const singleGroup = {
+      groupKey: "All fulfillments",
+      fulfillments: fulfillments,
+    };
+    return res.status(200).json([singleGroup]);
   } catch (error) {
     console.error("Error fetching fulfillments:", error);
     res.status(500).json({ error: "Internal server error" });
