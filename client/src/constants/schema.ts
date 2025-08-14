@@ -22,7 +22,8 @@ export const orderSchema = z.object({
           .min(1, "Order By is required"),
         quantity: z.coerce
           .number({ invalid_type_error: "Quantity is required" })
-          .min(1, "Quantity must be at least 1"),
+          .int({ message: "Quantity must be a whole number" })
+          .min(1, { message: "Quantity must be at least 1" }),
         rate: z.string().optional(),
       })
     )
@@ -36,7 +37,10 @@ export const loginSchema = z.object({
 
 export const fulfillmentSchema = z.object({
   billNumber: z.string().min(1, "Bill number is required"),
-  amount: z.string().min(0, "Amount is required"),
+  amount: z
+    .string()
+    .min(1, "Amount is required")
+    .regex(/^[0-9]+$/, { message: "Amount must contain only digits" }),
   billDate: z.date().optional(),
   description: z.string().optional(),
   fulfillmentProducts: z

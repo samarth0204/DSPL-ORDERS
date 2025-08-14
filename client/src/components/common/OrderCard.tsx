@@ -167,7 +167,7 @@ const FulfillmentAccordion = ({ order }: { order: Order }) => {
         <AccordionContent className="text-sm mt-2">
           <ul className="space-y-2">
             {order.fulfillments.map((f, index) => (
-              <BillCard key={index} f={f} />
+              <BillCard key={index} fulfillment={f} />
             ))}
           </ul>
         </AccordionContent>
@@ -259,13 +259,15 @@ const OrderCard = ({ order }: { order: Order }) => {
         </CardFooter>
         <div className="hidden lg:block lg:col-span-1">
           <div className="flex flex-col w-full gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setOpenFulfillmentForm(true)}
-            >
-              <Plus />
-              Attach Bill
-            </Button>
+            {order.status !== "Completed" && (
+              <Button
+                variant="outline"
+                onClick={() => setOpenFulfillmentForm(true)}
+              >
+                <Plus />
+                Attach Bill
+              </Button>
+            )}
             <Button variant="outline" onClick={() => setOpenEditOrder(true)}>
               <Pencil />
               Edit

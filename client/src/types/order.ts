@@ -4,7 +4,7 @@ export interface Product {
   orderBy: string;
   quantity: string;
   rate?: string;
-  id: string;
+  id?: string;
 }
 
 interface Fulfillment {

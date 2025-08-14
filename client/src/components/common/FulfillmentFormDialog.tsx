@@ -48,7 +48,7 @@ const FulfillmentFormDialog = ({
     reValidateMode: "onChange",
   });
 
-  const { fields, replace } = useFieldArray({
+  const { fields } = useFieldArray({
     control,
     name: "fulfillmentProducts",
   });
@@ -142,7 +142,6 @@ const FulfillmentFormDialog = ({
                     }, 0) || 0;
 
                   const remainingQty = Number(product.quantity) - fulfilledQty;
-                  console.log(remainingQty);
 
                   return (
                     <div

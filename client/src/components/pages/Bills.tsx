@@ -1,8 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { Search } from "lucide-react";
-import BillCard from "../common/BillCard";
 import { Input } from "../ui/input";
-import { dummyFulfillments } from "@/constants/data";
 import {
   Select,
   SelectContent,
@@ -16,6 +14,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"; // Import Accordion components
+import { useFetchFulfillments } from "@/hooks/fulfillmentHooks";
+import Loader from "../common/Loader";
+import ShowFulfillments from "../common/ShowFulfillments";
 
 const Bills = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,73 +24,34 @@ const Bills = () => {
   const [sortBy, setSortBy] = useState<
     "amountAsc" | "amountDesc" | "dateAsc" | "dateDesc" | "none"
   >("none");
-  const [filterStatus, setFilterStatus] = useState<"All" | "Paid" | "Pending">(
+  const [filterStatus, setFilterStatus] = useState<"All" | "PAID" | "PENDING">(
     "All"
   );
+  //   if (groupBy === "none") {
+  //     // If no grouping, treat all fulfillments as a single "group" for consistent rendering
+  //     return { "All Fulfillments": filteredAndSortedFulfillments };
+  //   }
 
-  const filteredAndSortedFulfillments = useMemo(() => {
-    let result = [...dummyFulfillments];
+  //   const groups: { [key: string]: typeof dummyFulfillments } = {};
+  //   filteredAndSortedFulfillments.forEach((fulfillment) => {
+  //     const key = groupBy === "date" ? fulfillment.date : fulfillment.orderId;
+  //     if (!groups[key]) {
+  //       groups[key] = [];
+  //     }
+  //     groups[key].push(fulfillment);
+  //   });
+  //   return groups;
+  // }, [filteredAndSortedFulfillments, groupBy]);
 
-    // 1. Filter by Search Term (if any)
-    if (searchTerm) {
-      result = result.filter(
-        (f) =>
-          f.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          f.orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          f.fulfilledProducts.some(
-            (p) =>
-              p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              p.size.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-      );
-    }
+  const { data, isLoading, error } = useFetchFulfillments({ groupBy });
+  if (isLoading) {
+    return <Loader />;
+  }
+  if (error) {
+    return <div>Error occured</div>;
+  }
+  const groupedFulfillments = data;
 
-    // 2. Filter by Status
-    if (filterStatus !== "All") {
-      result = result.filter((f) => f.status === filterStatus);
-    }
-
-    // 3. Sort
-    result.sort((a, b) => {
-      if (sortBy === "amountAsc") {
-        return a.amount - b.amount;
-      } else if (sortBy === "amountDesc") {
-        return b.amount - a.amount;
-      } else if (sortBy === "dateAsc") {
-        return new Date(a.date).getTime() - new Date(b.date).getTime();
-      } else if (sortBy === "dateDesc") {
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
-      }
-      return 0;
-    });
-
-    return result;
-  }, [dummyFulfillments, searchTerm, filterStatus, sortBy]);
-
-  const groupedFulfillments = useMemo(() => {
-    if (groupBy === "none") {
-      // If no grouping, treat all fulfillments as a single "group" for consistent rendering
-      return { "All Fulfillments": filteredAndSortedFulfillments };
-    }
-
-    const groups: { [key: string]: typeof dummyFulfillments } = {};
-    filteredAndSortedFulfillments.forEach((f) => {
-      const key = groupBy === "date" ? f.date : f.orderId;
-      if (!groups[key]) {
-        groups[key] = [];
-      }
-      groups[key].push(f);
-    });
-    return groups;
-  }, [filteredAndSortedFulfillments, groupBy]);
-
-  // Determine the default value for the accordion (all items open if no grouping, or first group open)
-  const defaultAccordionValue =
-    groupBy === "none"
-      ? ["All Fulfillments"] // If no grouping, ensure the single "All Fulfillments" item is open
-      : Object.keys(groupedFulfillments).length > 0
-      ? [Object.keys(groupedFulfillments)[0]] // Open the first group by default
-      : []; // No groups, nothing to open
   return (
     <div className="px-3 mt-2 pt-14 md:pt-0">
       <div className="w-full flex items-center justify-between gap-3 mb-2 sticky top-14 md:top-0  backdrop-blur-md bg-white/30 border-b border-white/40 z-10 py-2">
@@ -115,9 +77,11 @@ const Bills = () => {
               <SelectValue placeholder="Group By" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="none">- Group by -</SelectItem>
-              <SelectItem value="date">Group by Date</SelectItem>
-              <SelectItem value="order">Group by Order ID</SelectItem>
+              <SelectItem value="none">
+                <p className="text-sm text-muted-foreground">Group by</p>
+              </SelectItem>
+              <SelectItem value="date">Date</SelectItem>
+              <SelectItem value="order">Order ID</SelectItem>
             </SelectContent>
           </Select>
 
@@ -137,7 +101,9 @@ const Bills = () => {
               <SelectValue placeholder="Sort By" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="none">- Sort by -</SelectItem>
+              <SelectItem value="none">
+                <p className="text-sm text-muted-foreground">Sort by</p>
+              </SelectItem>
               <SelectItem value="amountDesc">Amount (High to Low)</SelectItem>
               <SelectItem value="amountAsc">Amount (Low to High)</SelectItem>
               <SelectItem value="dateDesc">Date (Newest First)</SelectItem>
@@ -148,7 +114,7 @@ const Bills = () => {
           {/* Filter by Status Selector */}
           <Select
             value={filterStatus}
-            onValueChange={(value: "All" | "Paid" | "Pending") =>
+            onValueChange={(value: "All" | "PAID" | "PENDING") =>
               setFilterStatus(value)
             }
           >
@@ -156,49 +122,52 @@ const Bills = () => {
               <SelectValue placeholder="Filter by Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="All">All Statuses</SelectItem>
-              <SelectItem value="Paid">Paid</SelectItem>
-              <SelectItem value="Pending">Pending</SelectItem>
+              <SelectItem value="All">
+                <p className="text-sm text-muted-foreground">Status</p>
+              </SelectItem>
+              <SelectItem value="PAID">Paid</SelectItem>
+              <SelectItem value="PENDING">Pending</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
 
       {/* Accordion for Grouped Fulfillments */}
-      <div>
-        {groupBy !== "none" ? (
-          <Accordion
-            type="multiple"
-            defaultValue={defaultAccordionValue}
-            className="w-full"
-          >
-            {Object.entries(groupedFulfillments).map(
-              ([groupKey, fulfillmentsInGroup]) => (
-                <AccordionItem
-                  value={groupKey}
-                  key={groupKey}
-                  className="mb-2 border-0"
-                >
-                  <AccordionTrigger className="text-lg capitalize bg-gray-100 p-3">
-                    {groupKey} ({fulfillmentsInGroup.length})
-                  </AccordionTrigger>
-                  <AccordionContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 py-2">
-                    {fulfillmentsInGroup.map((f) => (
-                      <BillCard key={f.id} f={f} />
-                    ))}
-                  </AccordionContent>
-                </AccordionItem>
-              )
-            )}
-          </Accordion>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 py-2">
-            {filteredAndSortedFulfillments.map((f) => (
-              <BillCard f={f} />
-            ))}
-          </div>
-        )}
-      </div>
+      {groupBy !== "none" ? (
+        <Accordion type="single" collapsible className="w-full">
+          {groupedFulfillments.map(
+            (
+              group: { groupKey: string; fulfillments: any[] },
+              groupIndex: number
+            ) => (
+              <AccordionItem
+                key={groupIndex}
+                value={`item-${groupIndex}`}
+                className="mb-2 border-0"
+              >
+                <AccordionTrigger className="text-lg capitalize bg-gray-100 p-3">
+                  {groupBy === "order"
+                    ? `Order: ${group.groupKey}`
+                    : `Date: ${group.groupKey}`}
+                </AccordionTrigger>
+                <AccordionContent className="mt-2">
+                  <ShowFulfillments
+                    fulfillments={group.fulfillments}
+                    filterStatus={filterStatus}
+                  />
+                </AccordionContent>
+              </AccordionItem>
+            )
+          )}
+        </Accordion>
+      ) : (
+        <ShowFulfillments
+          fulfillments={
+            groupedFulfillments && groupedFulfillments[0]?.fulfillments
+          }
+          filterStatus={filterStatus}
+        />
+      )}
     </div>
   );
 };

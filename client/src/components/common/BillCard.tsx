@@ -17,30 +17,32 @@ interface FulfilledProduct {
   orderBy: string;
 }
 
-const BillCard = ({ f }: { f?: any }) => {
-  if (!f) return null;
+const BillCard = ({ fulfillment }: { fulfillment?: any }) => {
+  if (!fulfillment) return null;
 
   return (
     <Card className="w-full">
       <CardHeader>
         <div className="flex justify-between items-start">
           <div>
-            <CardTitle>Bill #{f.id}</CardTitle>
+            <CardTitle>Bill #{fulfillment.id}</CardTitle>
             <CardDescription className="flex items-center gap-2 mt-1 text-sm text-gray-500">
               <Calendar size={18} />
-              {f.date}
+              {fulfillment.date}
             </CardDescription>
           </div>
           <div className="text-sm font-semibold text-right text-green-600 flex flex-col gap-1 items-end">
-            ₹{f.amount?.toLocaleString() || "0"}
+            ₹{fulfillment.amount?.toLocaleString() || "0"}
             <Badge
-              variant={f.status === "Paid" ? "secondary" : "destructive"}
+              variant={
+                fulfillment.status === "PAID" ? "secondary" : "destructive"
+              }
               className={cn(
-                f.status === "Paid" &&
+                fulfillment.status === "PAID" &&
                   "bg-green-700 text-white dark:bg-blue-600"
               )}
             >
-              {f.status === "Paid" ? "Paid" : "Pending"}
+              {fulfillment.status === "PAID" ? "Paid" : "Pending"}
             </Badge>
           </div>
         </div>
@@ -48,16 +50,18 @@ const BillCard = ({ f }: { f?: any }) => {
 
       <CardContent>
         <ul className="ml-4 list-disc text-sm text-gray-700">
-          {f.fulfilledProducts?.map((p: FulfilledProduct, i: number) => (
-            <li key={i}>
-              {p.name} - {p.size} : {p.quantity} {p.orderBy}
-            </li>
-          ))}
+          {fulfillment.fulfilledProducts?.map(
+            (p: FulfilledProduct, i: number) => (
+              <li key={i}>
+                {p.name} - {p.size} : {p.quantity} {p.orderBy}
+              </li>
+            )
+          )}
         </ul>
       </CardContent>
 
       <CardFooter className="text-xs text-gray-400">
-        Total items: {f.fulfilledProducts?.length || 0}
+        Total items: {fulfillment.fulfilledProducts?.length || 0}
       </CardFooter>
     </Card>
   );

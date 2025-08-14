@@ -11,7 +11,6 @@ function BottomNavbar() {
     <div className="fixed bottom-0 left-0 w-full h-14 bg-white border-t shadow-md z-50 grid grid-cols-2 divide-x-2">
       {salesManNavItems.map((item) => {
         const isActive = location.pathname.slice(1) === item.route;
-        console.log(location.pathname, item.route);
         return (
           <Button
             key={item.title}
