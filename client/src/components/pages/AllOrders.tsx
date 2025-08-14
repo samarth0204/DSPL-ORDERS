@@ -41,8 +41,8 @@ const AllOrders = () => {
   const groupedOrders = data;
 
   return (
-    <div className="px-3 mt-2 pt-14 md:pt-0">
-      <div className="w-full flex items-center gap-3 mb-2 sticky top-14 md:top-0 backdrop-blur-md bg-white/30 border-b border-white/40 z-10 py-2 overflow-scroll">
+    <div>
+      <div className="w-full flex items-center gap-3 mb-2 sticky top-0 backdrop-blur-md bg-white/30 border-b border-white/40 z-10 py-2 overflow-scroll">
         {isMobile ? (
           <div
             className={`flex items-center gap-2 transition-all duration-300 ease-in-out ${

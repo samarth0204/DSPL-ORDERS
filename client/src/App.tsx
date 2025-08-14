@@ -43,14 +43,6 @@ function App() {
               <Route path="/stats" element={<Stats />} />
               <Route path="/bills" element={<AllBills />} />
               <Route path="/all-orders" element={<AllOrders />} />
-              {/* <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          /> */}
             </Route>
           </Routes>
         </HashRouter>

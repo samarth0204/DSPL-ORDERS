@@ -8,84 +8,75 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarProvider,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import logo from "../../static/logo.jpg";
-
 import {
   adminNavItems,
   fulfilmentNavItems,
   salesManNavItems,
-  // salesManNavItems,
 } from "@/constants/navItems";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function AppSidebar() {
+  const navigate = useNavigate();
+  const { toggleSidebar } = useSidebar();
+
+  const handleNavClick = (route?: string) => {
+    navigate(route ?? "#");
+    if (window.innerWidth < 768) {
+      toggleSidebar();
+    }
+  };
+
+  const renderMenuItems = (items: typeof salesManNavItems) =>
+    items.map((item) => (
+      <SidebarMenuItem key={item.title}>
+        <SidebarMenuButton asChild>
+          <button
+            onClick={() => handleNavClick(item.route)}
+            className="flex items-center gap-2 w-full p-2 text-sm hover:bg-accent"
+          >
+            <item.icon />
+            <span>{item.title}</span>
+          </button>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    ));
+
   return (
-    <SidebarProvider>
-      <Sidebar>
-        <SidebarHeader>
-          <div className="flex gap-5 items-center justify-center">
-            <div className="w-20">
-              <img src={logo} alt="logo" className="w-full" />
-            </div>
-            <div className="font-bold">DSPL</div>
+    <Sidebar>
+      <SidebarHeader>
+        <div className="flex gap-5 items-center justify-center">
+          <div className="w-20">
+            <img src={logo} alt="logo" className="w-full" />
           </div>
-        </SidebarHeader>
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupLabel>Your orders</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {salesManNavItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <Link to={item.route ?? "#"}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-          <SidebarGroup>
-            <SidebarGroupLabel>Fulfillment Panel</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {fulfilmentNavItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <Link to={item.route ?? "#"}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-          <SidebarGroup>
-            <SidebarGroupLabel>Admin Panal</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {adminNavItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <Link to={item.route ?? "#"}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-      </Sidebar>
-    </SidebarProvider>
+          <div className="font-bold">DSPL</div>
+        </div>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Your Orders</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>{renderMenuItems(salesManNavItems)}</SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Fulfillment Panel</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>{renderMenuItems(fulfilmentNavItems)}</SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Admin Panel</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>{renderMenuItems(adminNavItems)}</SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
   );
 }
