@@ -15,7 +15,11 @@ export const getAllFulfillments = async (req: Request, res: Response) => {
     const fulfillments = await prisma.fulfillment.findMany({
       include: {
         order: true,
-        fulfilledProducts: true,
+        fulfilledProducts: {
+          include: {
+            product: true,
+          },
+        },
       },
       orderBy: sortBy
         ? { [sortBy as string]: orderDirection }
@@ -70,40 +74,59 @@ export const getAllFulfillments = async (req: Request, res: Response) => {
   }
 };
 
-// POST / - Create a new fulfillment
 export const addFulfillment = async (req: Request, res: Response) => {
   try {
-    const { date, orderId, amount, status, fulfilledProducts } = req.body;
+    const {
+      billNumber,
+      date,
+      orderId,
+      amount,
+      status,
+      description,
+      fulfilledProducts,
+    } = req.body;
 
     // Validate required fields
     if (
+      !billNumber ||
       !date ||
       !orderId ||
       amount == null ||
       !fulfilledProducts ||
-      !Array.isArray(fulfilledProducts)
+      !Array.isArray(fulfilledProducts) ||
+      fulfilledProducts.length === 0
     ) {
       return res.status(400).json({
         error:
-          "Missing required fields: date, orderId, amount, or fulfilledProducts",
+          "Missing required fields: billNumber, date, orderId, amount, or fulfilledProducts",
       });
     }
 
-    // Validate status if provided
+    // Validate status
     if (status && !Object.values(FulfillmentStatus).includes(status)) {
       return res.status(400).json({ error: "Invalid status value" });
     }
 
-    // Validate fulfilledProducts
-    if (
-      fulfilledProducts.some(
-        (fp: any) => !fp.name || !fp.size || !fp.orderBy || fp.quantity == null
-      )
-    ) {
-      return res.status(400).json({ error: "Invalid fulfilledProducts data" });
+    // Validate fulfilledProducts array
+    for (const fp of fulfilledProducts) {
+      if (!fp.productId || fp.quantity == null) {
+        return res
+          .status(400)
+          .json({ error: "Invalid fulfilledProducts data" });
+      }
+
+      // Check product exists
+      const product = await prisma.product.findUnique({
+        where: { id: fp.productId },
+      });
+      if (!product) {
+        return res
+          .status(404)
+          .json({ error: `Product not found: ${fp.productId}` });
+      }
     }
 
-    // Check if order exists
+    // Check order exists
     const order = await prisma.order.findUnique({ where: { id: orderId } });
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
@@ -112,15 +135,15 @@ export const addFulfillment = async (req: Request, res: Response) => {
     // Create fulfillment
     const fulfillment = await prisma.fulfillment.create({
       data: {
+        billNumber,
+        description,
         date: new Date(date),
         orderId,
-        amount,
+        amount: Number(amount),
         status: status || FulfillmentStatus.PENDING,
         fulfilledProducts: {
           create: fulfilledProducts.map((fp: any) => ({
-            name: fp.name,
-            size: fp.size,
-            orderBy: fp.orderBy,
+            productId: fp.productId,
             quantity: fp.quantity,
           })),
         },

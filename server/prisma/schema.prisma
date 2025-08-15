@@ -44,32 +44,37 @@ model Product {
   order     Order    @relation(fields: [orderId], references: [id])
   orderId   String
   rate      String?
+  fulfilledProducts FulfilledProduct[] 
 }
 
 model Fulfillment {
   id                String             @id @default(uuid())
+  billNumber        String
+  description       String?
   date              DateTime
+  amount            Float
+  status            FulfillmentStatus  @default(PENDING)
   order             Order              @relation(fields: [orderId], references: [id])
   orderId           String
-  amount            Float              // Added: amount of the bill
-  status            FulfillmentStatus  @default(PENDING) // Added: status (paid/pending)
   fulfilledProducts FulfilledProduct[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 }
 
 model FulfilledProduct {
-  id              String       @id @default(uuid())
-  name            String
-  size            String
-  orderBy         String
-  quantity        Int
-  fulfillment     Fulfillment  @relation(fields: [fulfillmentId], references: [id])
-  fulfillmentId   String
+  id             String       @id @default(uuid())
+  quantity       Int
+  fulfillment    Fulfillment  @relation(fields: [fulfillmentId], references: [id])
+  fulfillmentId  String
+  product        Product      @relation(fields: [productId], references: [id])
+  productId      String
 }
 
 enum FulfillmentStatus {
   PAID
   PENDING
 }
+
 
 enum Role {
   ADMIN

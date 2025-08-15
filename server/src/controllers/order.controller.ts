@@ -27,7 +27,11 @@ export const getAllOrders = async (req: Request, res: Response) => {
         products: true,
         fulfillments: {
           include: {
-            fulfilledProducts: true,
+            fulfilledProducts: {
+              include: {
+                product: true,
+              },
+            },
           },
         },
       },

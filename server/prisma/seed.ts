@@ -34,7 +34,7 @@ async function main() {
     });
     salesmanMap[name] = user.id;
   }
-
+  console.log("salesmanMap", salesmanMap);
   // 3. Seed orders
   for (const order of dummyOrders) {
     await prisma.order.create({
@@ -51,26 +51,6 @@ async function main() {
             orderBy: p.orderBy,
             quantity: p.quantity,
           })),
-        },
-        fulfillments: {
-          create: order.fulfillments.map((f) => {
-            // Calculate amount based on fulfilled products
-            const amount = 100;
-            return {
-              id: f.id,
-              date: new Date(f.date),
-              amount,
-              status: order.status === "Completed" ? "PAID" : "PENDING",
-              fulfilledProducts: {
-                create: f.fulfilledProducts.map((fp) => ({
-                  name: fp.name,
-                  size: fp.size,
-                  orderBy: fp.orderBy,
-                  quantity: fp.quantity,
-                })),
-              },
-            };
-          }),
         },
       },
     });
