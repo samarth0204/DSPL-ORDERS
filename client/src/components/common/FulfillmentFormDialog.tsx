@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { fulfillmentSchema } from "@/constants/schema";
 import { z } from "zod";
+import { useAddFulfillment } from "@/hooks/fulfillmentHooks";
 
 interface FulfillmentFormDialogProps {
   open: boolean;
@@ -40,9 +41,9 @@ const FulfillmentFormDialog = ({
     defaultValues: {
       billNumber: "",
       amount: "",
-      billDate: new Date(),
+      date: new Date(),
       description: "",
-      fulfillmentProducts: [],
+      fulfilledProducts: [],
     },
     mode: "onTouched",
     reValidateMode: "onChange",
@@ -50,11 +51,20 @@ const FulfillmentFormDialog = ({
 
   const { fields } = useFieldArray({
     control,
-    name: "fulfillmentProducts",
+    name: "fulfilledProducts",
   });
 
-  const onSubmit = (data: FulfillmentFormValues) => {
+  const addFulfillmentMutation = useAddFulfillment();
+
+  const onSubmit = (data: any) => {
     console.log("Form submitted:", data);
+    const newFulfillment = { ...data, orderId: order.id };
+    addFulfillmentMutation.mutate(newFulfillment, {
+      onSuccess: () => {
+        reset();
+        setOpen(false);
+      },
+    });
   };
 
   useEffect(() => {
@@ -62,9 +72,9 @@ const FulfillmentFormDialog = ({
       reset({
         billNumber: "",
         amount: "",
-        billDate: new Date(),
+        date: new Date(),
         description: "",
-        fulfillmentProducts: order.products.map((p) => ({
+        fulfilledProducts: order.products.map((p) => ({
           productId: p.id,
           quantity: 0,
         })),
@@ -107,7 +117,7 @@ const FulfillmentFormDialog = ({
               error={errors.amount?.message}
             />
             <Controller
-              name="billDate"
+              name="date"
               control={control}
               render={({ field }) => (
                 <DatePicker
@@ -165,13 +175,11 @@ const FulfillmentFormDialog = ({
                           className="border rounded px-2 py-1 w-20"
                           placeholder="Qty"
                           disabled={remainingQty <= 0}
-                          {...register(
-                            `fulfillmentProducts.${index}.quantity`,
-                            { valueAsNumber: true }
-                          )}
+                          {...register(`fulfilledProducts.${index}.quantity`, {
+                            valueAsNumber: true,
+                          })}
                           error={
-                            errors.fulfillmentProducts?.[index]?.quantity
-                              ?.message
+                            errors.fulfilledProducts?.[index]?.quantity?.message
                           }
                         />
                         <span className="text-xs text-gray-500">

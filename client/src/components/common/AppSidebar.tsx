@@ -16,11 +16,13 @@ import {
   fulfilmentNavItems,
   salesManNavItems,
 } from "@/constants/navItems";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function AppSidebar() {
   const navigate = useNavigate();
-  const { toggleSidebar } = useSidebar();
+  const { toggleSidebar, isMobile } = useSidebar();
 
   const handleNavClick = (route?: string) => {
     navigate(route ?? "#");
@@ -29,10 +31,15 @@ export default function AppSidebar() {
     }
   };
 
+  const currRoute = useLocation().pathname.split("/")[1];
+
   const renderMenuItems = (items: typeof salesManNavItems) =>
     items.map((item) => (
       <SidebarMenuItem key={item.title}>
-        <SidebarMenuButton asChild>
+        <SidebarMenuButton
+          asChild
+          className={cn(currRoute === item.route && "bg-gray-200")}
+        >
           <button
             onClick={() => handleNavClick(item.route)}
             className="flex items-center gap-2 w-full p-2 text-sm hover:bg-accent"
@@ -46,13 +53,21 @@ export default function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader>
+      <SidebarHeader className="relative">
         <div className="flex gap-5 items-center justify-center">
           <div className="w-20">
             <img src={logo} alt="logo" className="w-full" />
           </div>
           <div className="font-bold">DSPL</div>
         </div>
+        {isMobile && (
+          <div
+            className="absolute top-1 right-1 hover:bg-accent rounded-full p-2"
+            onClick={() => toggleSidebar()}
+          >
+            <X />
+          </div>
+        )}
       </SidebarHeader>
 
       <SidebarContent>

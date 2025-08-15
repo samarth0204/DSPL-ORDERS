@@ -10,12 +10,14 @@ import { Calendar, Pencil, Trash } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
+import type { Product } from "@/types/order";
 
 interface FulfilledProduct {
   name: string;
   size: string;
   quantity: string;
   orderBy: string;
+  product: Product;
 }
 
 const BillCard = ({ fulfillment }: { fulfillment?: any }) => {
@@ -54,7 +56,8 @@ const BillCard = ({ fulfillment }: { fulfillment?: any }) => {
           {fulfillment.fulfilledProducts?.map(
             (p: FulfilledProduct, i: number) => (
               <li key={i}>
-                {p.name} - {p.size} : {p.quantity} {p.orderBy}
+                {p.product.name} - {p.product.size} : {p.quantity}{" "}
+                {p.product.orderBy}
               </li>
             )
           )}

@@ -41,9 +41,9 @@ export const fulfillmentSchema = z.object({
     .string()
     .min(1, "Amount is required")
     .regex(/^[0-9]+$/, { message: "Amount must contain only digits" }),
-  billDate: z.date().optional(),
+  date: z.date().optional(),
   description: z.string().optional(),
-  fulfillmentProducts: z
+  fulfilledProducts: z
     .array(
       z.object({
         productId: z.string(),
