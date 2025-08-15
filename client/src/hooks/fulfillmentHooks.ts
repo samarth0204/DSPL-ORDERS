@@ -56,5 +56,70 @@ export const useAddFulfillment = () => {
     },
   });
 };
-export const useEditFulfillment = () => {};
-export const useDeleteFulfillment = () => {};
+type Fulfillment = {
+  id: string;
+  billNumber?: string;
+  description?: string;
+  date?: string;
+  orderId?: string;
+  amount?: number;
+  status?: string;
+};
+export const useEditFulfillment = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (updatedFulfillment: Fulfillment) => {
+      const res = await axios.put(
+        `http://localhost:3001/api/fulfillment/${updatedFulfillment.id}`,
+        updatedFulfillment
+      );
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["fulfillment"] });
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      toast.success("Fulfillment updated!", {
+        position: "bottom-right",
+        autoClose: 5000,
+        theme: "colored",
+      });
+    },
+    onError: (error) => {
+      console.log("Error updating fulfillment:", error);
+      toast.error("Something went wrong!", {
+        hideProgressBar: true,
+        closeOnClick: true,
+      });
+    },
+  });
+};
+
+export const useDeleteFulfillment = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const res = await axios.delete(
+        `http://localhost:3001/api/fulfillment/${id}`
+      );
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["fulfillment"] });
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      toast.success("Fulfillment deleted!", {
+        position: "bottom-right",
+        autoClose: 5000,
+        theme: "colored",
+      });
+    },
+    onError: (error) => {
+      console.error("Error deleting fulfillment:", error);
+      toast.error("Something went wrong!", {
+        hideProgressBar: true,
+        closeOnClick: true,
+      });
+    },
+  });
+};

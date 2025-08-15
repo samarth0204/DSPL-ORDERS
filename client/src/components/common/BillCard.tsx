@@ -11,6 +11,7 @@ import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import type { Product } from "@/types/order";
+import { useDeleteFulfillment } from "@/hooks/fulfillmentHooks";
 
 interface FulfilledProduct {
   name: string;
@@ -21,6 +22,7 @@ interface FulfilledProduct {
 }
 
 const BillCard = ({ fulfillment }: { fulfillment?: any }) => {
+  const deleteMutation = useDeleteFulfillment();
   if (!fulfillment) return null;
 
   return (
@@ -77,7 +79,15 @@ const BillCard = ({ fulfillment }: { fulfillment?: any }) => {
           <Button
             variant="destructive"
             className="bg-white text-black hover:text-white"
-            onClick={() => {}}
+            onClick={() => {
+              if (
+                window.confirm(
+                  "Are you sure you want to delete this fulfillment?"
+                )
+              ) {
+                deleteMutation.mutate(fulfillment.id);
+              }
+            }}
           >
             <Trash size={18} />
             Delete
