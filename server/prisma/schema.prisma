@@ -23,50 +23,50 @@ model User {
 }
 
 model Order {
-  id              String      @id @default(uuid())
+  id              String        @id @default(uuid())
   clientName      String
   deliveryDetails String
   status          String
-  description     String?   // <-- Added field
+  description     String?
   products        Product[]
   fulfillments    Fulfillment[]
-  salesman        User         @relation("SalesmanOrders", fields: [salesmanId], references: [id])
+  salesman        User          @relation("SalesmanOrders", fields: [salesmanId], references: [id])
   salesmanId      String
   orderDate       DateTime
 }
 
 model Product {
-  id        String   @id @default(uuid())
-  name      String
-  size      String
-  orderBy   String
-  quantity  Int
-  order     Order    @relation(fields: [orderId], references: [id])
-  orderId   String
-  rate      String?
-  fulfilledProducts FulfilledProduct[] 
+  id                 String              @id @default(uuid())
+  name               String
+  size               String
+  orderBy            String
+  quantity           Int
+  order              Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId            String
+  rate               String?
+  fulfilledProducts  FulfilledProduct[]
 }
 
 model Fulfillment {
-  id                String             @id @default(uuid())
+  id                String              @id @default(uuid())
   billNumber        String
   description       String?
   date              DateTime
   amount            Float
-  status            FulfillmentStatus  @default(PENDING)
-  order             Order              @relation(fields: [orderId], references: [id])
+  status            FulfillmentStatus   @default(PENDING)
+  order             Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId           String
   fulfilledProducts FulfilledProduct[]
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
 }
 
 model FulfilledProduct {
   id             String       @id @default(uuid())
   quantity       Int
-  fulfillment    Fulfillment  @relation(fields: [fulfillmentId], references: [id])
+  fulfillment    Fulfillment  @relation(fields: [fulfillmentId], references: [id], onDelete: Cascade)
   fulfillmentId  String
-  product        Product      @relation(fields: [productId], references: [id])
+  product        Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId      String
 }
 
@@ -74,8 +74,6 @@ enum FulfillmentStatus {
   PAID
   PENDING
 }
-
-
 enum Role {
   ADMIN
   SALESMAN
