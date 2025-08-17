@@ -10,7 +10,7 @@ import { Calendar, Pencil, Trash } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
-import type { Order, Product } from "@/types/order";
+import type { Order } from "@/types/order";
 import { useDeleteFulfillment } from "@/hooks/fulfillmentHooks";
 import { useState } from "react";
 import FulfillmentFormDialog from "./FulfillmentFormDialog";
