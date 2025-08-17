@@ -106,7 +106,7 @@ const OrderFormDialog: React.FC<Props> = ({ open, setOpen, order }) => {
       const newOrder = {
         ...data,
         orderDate: new Date(),
-        salesmanId: "29ac3b02-6df8-4b07-bf06-381ec326a2e2",
+        salesmanId: "f8fbdd21-d655-49d8-9002-424f44a048b6",
         status: "Not Started",
       };
       addOrderMutation.mutate(newOrder, {

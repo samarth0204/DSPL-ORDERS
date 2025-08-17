@@ -167,7 +167,7 @@ const FulfillmentAccordion = ({ order }: { order: Order }) => {
         <AccordionContent className="text-sm mt-2">
           <ul className="space-y-2">
             {order.fulfillments.map((f, index) => (
-              <BillCard key={index} fulfillment={f} />
+              <BillCard key={index} fulfillment={f} order={order} />
             ))}
           </ul>
         </AccordionContent>

@@ -15,12 +15,16 @@ import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { fulfillmentSchema } from "@/constants/schema";
 import { z } from "zod";
-import { useAddFulfillment } from "@/hooks/fulfillmentHooks";
+import {
+  useAddFulfillment,
+  useEditFulfillment,
+} from "@/hooks/fulfillmentHooks";
 
 interface FulfillmentFormDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   order: Order;
+  fulfillment?: any;
 }
 
 type FulfillmentFormValues = z.infer<typeof fulfillmentSchema>;
@@ -29,6 +33,7 @@ const FulfillmentFormDialog = ({
   open,
   setOpen,
   order,
+  fulfillment,
 }: FulfillmentFormDialogProps) => {
   const {
     register,
@@ -54,33 +59,33 @@ const FulfillmentFormDialog = ({
     name: "fulfilledProducts",
   });
 
-  const addFulfillmentMutation = useAddFulfillment();
-
-  const onSubmit = (data: any) => {
-    console.log("Form submitted:", data);
-    const newFulfillment = { ...data, orderId: order.id };
-    addFulfillmentMutation.mutate(newFulfillment, {
-      onSuccess: () => {
-        reset();
-        setOpen(false);
-      },
-    });
-  };
-
   useEffect(() => {
-    if (open && order?.products?.length) {
-      reset({
-        billNumber: "",
-        amount: "",
-        date: new Date(),
-        description: "",
-        fulfilledProducts: order.products.map((p) => ({
-          productId: p.id,
-          quantity: 0,
-        })),
-      });
+    if (open) {
+      if (fulfillment) {
+        reset({
+          billNumber: fulfillment.billNumber,
+          amount: String(fulfillment.amount),
+          date: new Date(fulfillment.date),
+          description: fulfillment.description || "",
+          fulfilledProducts: fulfillment.fulfilledProducts.map((fp: any) => ({
+            productId: fp.productId,
+            quantity: fp.quantity,
+          })),
+        });
+      } else if (order?.products?.length) {
+        reset({
+          billNumber: "",
+          amount: "",
+          date: new Date(),
+          description: "",
+          fulfilledProducts: order.products.map((p) => ({
+            productId: p.id,
+            quantity: 0,
+          })),
+        });
+      }
     }
-  }, [open, order, reset]);
+  }, [open, fulfillment, order, reset]);
 
   const handleClose = (shouldOpen: boolean) => {
     if (!shouldOpen) {
@@ -92,7 +97,32 @@ const FulfillmentFormDialog = ({
     }
     setOpen(shouldOpen);
   };
+  const addFulfillmentMutation = useAddFulfillment();
+  const editFulfillmentMutation = useEditFulfillment();
+  const onSubmit = (data: any) => {
+    const payload = { ...data, orderId: order.id };
 
+    if (fulfillment) {
+      // Editing
+      editFulfillmentMutation.mutate(
+        { id: fulfillment.id, ...payload },
+        {
+          onSuccess: () => {
+            reset();
+            setOpen(false);
+          },
+        }
+      );
+    } else {
+      // Adding new
+      addFulfillmentMutation.mutate(payload, {
+        onSuccess: () => {
+          reset();
+          setOpen(false);
+        },
+      });
+    }
+  };
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-full md:max-w-[700px] max-h-[95vh] overflow-y-auto">

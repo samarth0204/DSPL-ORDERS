@@ -7,7 +7,6 @@ const ShowFulfillments = ({
   fulfillments: any;
   filterStatus: "All" | "PAID" | "PENDING";
 }) => {
-  console.log(fulfillments, filterStatus);
   const filteredFulfillments =
     filterStatus === "All"
       ? fulfillments

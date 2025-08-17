@@ -4,9 +4,7 @@ export const orderSchema = z.object({
   clientName: z
     .string({ required_error: "Client name is required" })
     .min(1, "Client name is required"),
-  deliveryDetails: z
-    .string({ required_error: "Delivery details are required" })
-    .min(1, "Delivery details are required"),
+  deliveryDetails: z.string().optional(),
   description: z.string().optional(),
   products: z
     .array(
