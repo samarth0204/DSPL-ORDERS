@@ -99,7 +99,11 @@ export const getAllOrdersBySalesman = async (req: Request, res: Response) => {
         products: true,
         fulfillments: {
           include: {
-            fulfilledProducts: true,
+            fulfilledProducts: {
+              include: {
+                product: true,
+              },
+            },
           },
         },
       },
@@ -128,7 +132,6 @@ export const addOrder = async (req: Request, res: Response) => {
   if (
     !clientName ||
     !salesmanId ||
-    !deliveryDetails ||
     !status ||
     !orderDate ||
     !products ||
@@ -253,6 +256,7 @@ export const editOrder = async (req: Request, res: Response) => {
           quantity: product.quantity,
           orderBy: product.orderBy,
           orderId: id,
+          rate: product.rate ?? null,
         })),
       });
     }

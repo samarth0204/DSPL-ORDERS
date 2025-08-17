@@ -162,7 +162,15 @@ export const addFulfillment = async (req: Request, res: Response) => {
 export const editFulfillment = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { date, orderId, amount, status, fulfilledProducts } = req.body;
+    const {
+      billNumber,
+      date,
+      orderId,
+      amount,
+      status,
+      description,
+      fulfilledProducts,
+    } = req.body;
 
     // Check if fulfillment exists
     const existingFulfillment = await prisma.fulfillment.findUnique({
@@ -189,9 +197,7 @@ export const editFulfillment = async (req: Request, res: Response) => {
     }
     if (
       fulfilledProducts &&
-      fulfilledProducts.some(
-        (fp: any) => !fp.name || !fp.size || !fp.orderBy || fp.quantity == null
-      )
+      fulfilledProducts.some((fp: any) => !fp.productId || fp.quantity == null)
     ) {
       return res.status(400).json({ error: "Invalid fulfilledProducts data" });
     }
@@ -200,17 +206,17 @@ export const editFulfillment = async (req: Request, res: Response) => {
     const fulfillment = await prisma.fulfillment.update({
       where: { id },
       data: {
+        billNumber,
+        description,
         date: date ? new Date(date) : undefined,
         orderId: orderId || undefined,
-        amount: amount != null ? amount : undefined,
-        status: status || undefined,
+        amount: amount != null ? Number(amount) : undefined,
+        status: status || FulfillmentStatus.PENDING,
         fulfilledProducts: fulfilledProducts
           ? {
               deleteMany: {}, // Delete existing fulfilled products
               create: fulfilledProducts.map((fp: any) => ({
-                name: fp.name,
-                size: fp.size,
-                orderBy: fp.orderBy,
+                productId: fp.productId,
                 quantity: fp.quantity,
               })),
             }
