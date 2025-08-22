@@ -23,7 +23,12 @@ export const getAllOrders = async (req: Request, res: Response) => {
           : undefined,
       },
       include: {
-        salesman: true,
+        salesman: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
         products: true,
         fulfillments: {
           include: {
@@ -95,7 +100,6 @@ export const getAllOrdersBySalesman = async (req: Request, res: Response) => {
         salesmanId: salesmanId as string,
       },
       include: {
-        salesman: true,
         products: true,
         fulfillments: {
           include: {

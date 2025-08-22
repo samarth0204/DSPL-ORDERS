@@ -18,8 +18,10 @@ model User {
   id       String   @id @default(uuid())
   username String   @unique
   password String
-  role     Role
+  roles     Role[]
   orders   Order[]  @relation("SalesmanOrders")
+  createdAt         DateTime            @default(now())
+  updatedAt DateTime @updatedAt @default(now())
 }
 
 model Order {
@@ -33,6 +35,8 @@ model Order {
   salesman        User          @relation("SalesmanOrders", fields: [salesmanId], references: [id])
   salesmanId      String
   orderDate       DateTime
+  createdAt         DateTime            @default(now())
+  updatedAt DateTime @updatedAt @default(now())
 }
 
 model Product {
@@ -45,6 +49,8 @@ model Product {
   orderId            String
   rate               String?
   fulfilledProducts  FulfilledProduct[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
 }
 
 model Fulfillment {
@@ -68,6 +74,8 @@ model FulfilledProduct {
   fulfillmentId  String
   product        Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId      String
+  createdAt      DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
 }
 
 enum FulfillmentStatus {
@@ -77,4 +85,5 @@ enum FulfillmentStatus {
 enum Role {
   ADMIN
   SALESMAN
+  FULFILLMENT
 }

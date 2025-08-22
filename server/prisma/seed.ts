@@ -13,7 +13,7 @@ async function main() {
     create: {
       username: "admin-akash",
       password: hashedAdminPass,
-      role: "ADMIN",
+      roles: ["ADMIN", "FULFILLMENT", "SALESMAN"], // 👈 fix here
     },
   });
 
@@ -29,7 +29,7 @@ async function main() {
       create: {
         username: name,
         password,
-        role: "SALESMAN",
+        roles: ["SALESMAN"], // 👈 fix here
       },
     });
     salesmanMap[name] = user.id;
