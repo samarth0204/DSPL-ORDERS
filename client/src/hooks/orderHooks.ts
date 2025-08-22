@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 import type { UseFetchOrdersParams } from "@/types/order";
+import { showToast } from "@/components/common/showToast";
 
 type Order = {
   id: string;
@@ -22,18 +22,11 @@ export const useEditOrder = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
-      toast.success("Order updated!", {
-        position: "bottom-right",
-        autoClose: 5000,
-        theme: "colored",
-      });
+      showToast.success("Order updated!");
     },
     onError: (error) => {
       console.log("Error updating order:", error);
-      toast.error("Something went wrong!", {
-        hideProgressBar: true,
-        closeOnClick: true,
-      });
+      showToast.error("Something went wrong!");
     },
   });
 };
@@ -72,19 +65,12 @@ export const useAddOrder = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
-      toast.success("Order added!", {
-        position: "bottom-right",
-        autoClose: 5000,
-        theme: "colored",
-      });
+      showToast.success("Order added!");
     },
 
     onError: (error) => {
       console.log("Error adding order:", error);
-      toast.error("Something went wrong!", {
-        hideProgressBar: true,
-        closeOnClick: true,
-      });
+      showToast.error("Something went wrong!");
     },
   });
 };
@@ -99,18 +85,11 @@ export const useDeleteOrder = () => {
     },
     onSuccess: () => {
       queryClinet.invalidateQueries({ queryKey: ["orders"] });
-      toast.success("Order deleted!", {
-        position: "bottom-right",
-        autoClose: 5000,
-        theme: "colored",
-      });
+      showToast.success("Order deleted!");
     },
     onError: (error) => {
       console.error("Error deleting order:", error);
-      toast.error("Something went wrong!", {
-        hideProgressBar: true,
-        closeOnClick: true,
-      });
+      showToast.error("Something went wrong!");
     },
   });
 };

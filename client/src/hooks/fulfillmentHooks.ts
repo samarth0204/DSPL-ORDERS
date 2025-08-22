@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { showToast } from "@/components/common/showToast";
 
 type UseFetchFulfillmentsParams = {
   groupBy?: string;
@@ -41,18 +41,11 @@ export const useAddFulfillment = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["fulfillment"] });
       queryClient.invalidateQueries({ queryKey: ["orders"] });
-      toast.success("Bill added!", {
-        position: "bottom-right",
-        autoClose: 5000,
-        theme: "colored",
-      });
+      showToast.success("Bill added!");
     },
     onError: (error) => {
       console.log("Error adding order:", error);
-      toast.error("Something went wrong!", {
-        hideProgressBar: true,
-        closeOnClick: true,
-      });
+      showToast.error("Something went wrong!");
     },
   });
 };
@@ -79,18 +72,11 @@ export const useEditFulfillment = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["fulfillment"] });
       queryClient.invalidateQueries({ queryKey: ["orders"] });
-      toast.success("Fulfillment updated!", {
-        position: "bottom-right",
-        autoClose: 5000,
-        theme: "colored",
-      });
+      showToast.success("Bill updated!");
     },
     onError: (error) => {
       console.log("Error updating fulfillment:", error);
-      toast.error("Something went wrong!", {
-        hideProgressBar: true,
-        closeOnClick: true,
-      });
+      showToast.error("Something went wrong!");
     },
   });
 };
@@ -108,18 +94,11 @@ export const useDeleteFulfillment = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["fulfillment"] });
       queryClient.invalidateQueries({ queryKey: ["orders"] });
-      toast.success("Fulfillment deleted!", {
-        position: "bottom-right",
-        autoClose: 5000,
-        theme: "colored",
-      });
+      showToast.success("Bill deleted!");
     },
     onError: (error) => {
       console.error("Error deleting fulfillment:", error);
-      toast.error("Something went wrong!", {
-        hideProgressBar: true,
-        closeOnClick: true,
-      });
+      showToast.error("Something went wrong!");
     },
   });
 };
