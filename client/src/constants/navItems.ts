@@ -1,4 +1,11 @@
-import { User, Clock, CircleCheck, Notebook, ChartBarBig } from "lucide-react";
+import {
+  Clock,
+  CircleCheck,
+  Notebook,
+  ChartBarBig,
+  Users,
+  UserRoundCog,
+} from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 type ItemType = {
   title: string;
@@ -45,12 +52,13 @@ export const fulfilmentNavItems: ItemType[] = [
 
 export const adminNavItems: ItemType[] = [
   {
-    title: "Salesman",
-    icon: Clock,
+    title: "Users",
+    icon: Users,
+    route: "users",
   },
   // {
   //   title: "Stock Mangement",
   //   icon: CircleCheck,
   // },
-  { title: "Profile", icon: User },
+  { title: "Profile", icon: UserRoundCog },
 ];

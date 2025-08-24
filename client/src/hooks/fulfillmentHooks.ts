@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import { showToast } from "@/components/common/showToast";
+import api from "@/utils/api"; // <-- import your axios instance
 
 type UseFetchFulfillmentsParams = {
   groupBy?: string;
@@ -20,7 +20,7 @@ export const useFetchFulfillments = ({
   return useQuery({
     queryKey: ["fulfillment", { groupBy, sortBy, sortOrder, search, orderId }],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3001/api/fulfillment/all", {
+      const res = await api.get("/fulfillment/all", {
         params: { groupBy, sortBy, sortOrder, search, orderId },
       });
       return res.data;
@@ -32,10 +32,7 @@ export const useAddFulfillment = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (newFulfillment) => {
-      const res = await axios.post(
-        "http://localhost:3001/api/fulfillment",
-        newFulfillment
-      );
+      const res = await api.post("/fulfillment", newFulfillment);
       return res.data;
     },
     onSuccess: () => {
@@ -49,6 +46,7 @@ export const useAddFulfillment = () => {
     },
   });
 };
+
 type Fulfillment = {
   id: string;
   billNumber?: string;
@@ -58,13 +56,14 @@ type Fulfillment = {
   amount?: number;
   status?: string;
 };
+
 export const useEditFulfillment = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (updatedFulfillment: Fulfillment) => {
-      const res = await axios.put(
-        `http://localhost:3001/api/fulfillment/${updatedFulfillment.id}`,
+      const res = await api.put(
+        `/fulfillment/${updatedFulfillment.id}`,
         updatedFulfillment
       );
       return res.data;
@@ -86,9 +85,7 @@ export const useDeleteFulfillment = () => {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const res = await axios.delete(
-        `http://localhost:3001/api/fulfillment/${id}`
-      );
+      const res = await api.delete(`/fulfillment/${id}`);
       return res.data;
     },
     onSuccess: () => {

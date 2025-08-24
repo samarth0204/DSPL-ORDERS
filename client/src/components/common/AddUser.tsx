@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
 import OrderFormDialog from "./OrderFormDialog";
 
-const AddOrder = () => {
+const AddUser = () => {
   const [open, setOpen] = React.useState(false);
   return (
     <>
@@ -14,10 +14,10 @@ const AddOrder = () => {
       )}
       <Button size="lg" className="rounded-full" onClick={() => setOpen(true)}>
         <Plus />
-        New Order
+        New User
       </Button>
     </>
   );
 };
 
-export default AddOrder;
+export default AddUser;
