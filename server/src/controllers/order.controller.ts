@@ -227,6 +227,7 @@ export const editOrder = async (req: Request, res: Response) => {
     status,
     orderDate,
     products,
+    description,
   } = req.body;
 
   if (!id) {
@@ -242,6 +243,7 @@ export const editOrder = async (req: Request, res: Response) => {
         salesmanId,
         deliveryDetails,
         status,
+        description,
         orderDate: new Date(orderDate),
       },
     });

@@ -6,6 +6,7 @@ import {
   getCurrentUser,
   getUserById,
   login,
+  refresh,
   updateUser,
 } from "../controllers/user.controller";
 import {
@@ -17,6 +18,7 @@ const router = Router();
 
 // public
 router.post("/login", login);
+router.post("/auth/refresh", refresh);
 
 // protected (ADMIN only)
 router.post("/", authenticateJWT, authorizeRoles(["ADMIN"]), createUser);

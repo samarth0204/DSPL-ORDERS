@@ -3,7 +3,8 @@ import { Request, Response } from "express";
 import prisma from "../config/prisma";
 import bcrypt from "bcrypt";
 
-const JWT_SECRET = process.env.JWT_SECRET || "super-secret";
+const JWT_SECRET = process.env.JWT_SECRET || "akash-secret";
+const REFRESH_SECRET = process.env.REFRES_SECRET || "akash-secret";
 const allowedRoles = ["ADMIN", "SALESMAN", "FULFILLMENT"];
 
 export const login = async (req: Request, res: Response) => {
@@ -27,7 +28,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign(
+    const accessToken = jwt.sign(
       {
         username: user.username,
         roles: user.roles,
@@ -36,11 +37,22 @@ export const login = async (req: Request, res: Response) => {
       { expiresIn: "1h" }
     );
 
-    res.cookie("token", token, {
+    const refreshToken = jwt.sign({ id: user.id }, REFRESH_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 60 * 60 * 1000,
+      maxAge: 15 * 60 * 1000,
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     return res.json({
@@ -56,6 +68,60 @@ export const login = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const refresh = async (req: Request, res: Response) => {
+  try {
+    const token = req.cookies.refreshToken;
+    if (!token) {
+      return res.status(401).json({ message: "No refresh token" });
+    }
+
+    // Verify refresh token
+    const decoded: any = jwt.verify(token, REFRESH_SECRET);
+
+    // Check if refresh token is valid in DB
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+    });
+
+    if (!user) {
+      return res.status(403).json({ message: "Invalid refresh token" });
+    }
+
+    // Create new access token
+    const newAccessToken = jwt.sign(
+      {
+        id: user.id,
+        username: user.username,
+        roles: user.roles,
+      },
+      JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+
+    res.cookie("accessToken", newAccessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 15 * 60 * 1000,
+    });
+
+    return res.json({
+      message: "Login successful",
+      user: {
+        id: user.id,
+        username: user.username,
+        roles: user.roles,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(403)
+      .json({ message: "Invalid or expired refresh token" });
+  }
+};
+
 export const createUser = async (req: Request, res: Response) => {
   try {
     const { username, password, roles } = req.body;
