@@ -90,26 +90,24 @@ const Users = () => {
 
   return (
     <div className="pt-4">
+      <div className="w-full flex items-center justify-between gap-3 mb-2 sticky top-0 backdrop-blur-md bg-white/30 border-b border-white/40 z-10 py-2">
+        <div className="relative w-full">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
+          <Input
+            placeholder="Search users..."
+            className="pl-10"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
+        <AddUser />
+      </div>
       <Tabs defaultValue="admin">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList>
           <TabsTrigger value="admin">Admin</TabsTrigger>
           <TabsTrigger value="salesman">Salesman</TabsTrigger>
           <TabsTrigger value="fulfillment">Fulfillment</TabsTrigger>
         </TabsList>
-
-        <div className="w-full flex items-center justify-between gap-3 mb-2 sticky top-0 backdrop-blur-md bg-white/30 border-b border-white/40 z-10 py-2">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
-            <Input
-              placeholder="Search users..."
-              className="pl-10"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </div>
-          <AddUser />
-        </div>
-
         <TabsContent value="admin" className="p-4">
           {data?.admin && renderTable(filteredUsers(data.admin))}
         </TabsContent>
