@@ -7,6 +7,7 @@ import Loader from "./common/Loader";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLogin } from "@/hooks/userHooks";
 import { useNavigate } from "react-router-dom";
+import { useUserStore } from "@/store/useUserStore";
 
 export function LoginForm({
   className,
@@ -28,14 +29,24 @@ export function LoginForm({
 
   const login = useLogin();
   const navigate = useNavigate();
+  const setRoles = useUserStore((store) => store.setRoles);
 
   const onSubmit = (data: any) => {
     login.mutate(data, {
       onSuccess: (userData) => {
         localStorage.setItem("id", userData.user.id);
-        localStorage.setItem("roles", userData.user.roles);
+        setRoles(userData.user.roles);
         localStorage.setItem("username", userData.user.username);
-        navigate("/in-progress");
+        const roles = userData.user.roles;
+        if (roles.includes("ADMIN")) {
+          navigate("/in-progress"); // or a dashboard route
+        } else if (roles.includes("SALESMAN")) {
+          navigate("/in-progress");
+        } else if (roles.includes("FULFILLMENT")) {
+          navigate("/all-orders");
+        } else {
+          navigate("/login"); // fallback
+        }
       },
     });
   };

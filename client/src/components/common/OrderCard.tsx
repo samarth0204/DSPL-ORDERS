@@ -94,7 +94,7 @@ const OrderTable = ({ order }: { order: Order }) => {
               <TableCell className="text-center">
                 <span className="text-green-900 font-semibold">
                   {product.quantity}
-                </span>{" "}
+                </span>
                 <span>
                   {remainingQuantity > 0 && (
                     <span className="text-sm font-semibold text-red-600 dark:text-red-400 ml-2">

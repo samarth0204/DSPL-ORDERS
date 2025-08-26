@@ -1,5 +1,5 @@
 import { Suspense, lazy, type ReactNode } from "react";
-import { HashRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./components/pages/LoginPage";
 import Layout from "./components/common/Layout";
 import Stats from "./components/pages/Stats";
@@ -8,6 +8,7 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import NotAuthorized from "./components/pages/NotAuthorized";
 
 const InProgress = lazy(() => import("./components/pages/InProgress"));
 const Completed = lazy(() => import("./components/pages/Completed"));
@@ -18,11 +19,31 @@ const AllOrders = lazy(() => import("./components/pages/AllOrders"));
 const LazyLoad = ({ children }: { children: ReactNode }) => {
   return <Suspense fallback={<Loader />}>{children}</Suspense>;
 };
-const ProtectedRoute = () => {
+
+const RoleBasedRoute = ({
+  allowedRoles,
+  children,
+}: {
+  allowedRoles: string[];
+  children: ReactNode;
+}) => {
   const loggedIn = !!localStorage.getItem("username");
-  console.log(loggedIn);
+  const roles = localStorage.getItem("roles");
+
   if (!loggedIn) return <Navigate to="/login" replace />;
-  return <Outlet />;
+
+  let parsedRoles: string[] = [];
+  try {
+    parsedRoles = roles ? JSON.parse(roles) : [];
+  } catch {
+    parsedRoles = [];
+  }
+
+  if (parsedRoles.some((role) => allowedRoles.includes(role))) {
+    return <>{children}</>;
+  }
+
+  return <Navigate to="/not-authorized" replace />;
 };
 
 function App() {
@@ -33,51 +54,84 @@ function App() {
         <HashRouter>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
-            {/* <Route path="/" element={}/> */}
-            <Route element={<ProtectedRoute />}>
-              <Route element={<Layout />}>
-                <Route
-                  path="/in-progress"
-                  element={
+            <Route
+              path="/not-authorized"
+              element={
+                <LazyLoad>
+                  <NotAuthorized />
+                </LazyLoad>
+              }
+            />
+            <Route element={<Layout />}>
+              {/* In-progress → ADMIN + SALESMAN */}
+              <Route
+                path="/in-progress"
+                element={
+                  <RoleBasedRoute allowedRoles={["ADMIN", "SALESMAN"]}>
                     <LazyLoad>
                       <InProgress />
                     </LazyLoad>
-                  }
-                />
-                <Route
-                  path="/completed"
-                  element={
+                  </RoleBasedRoute>
+                }
+              />
+
+              {/* Completed → ADMIN + SALESMAN */}
+              <Route
+                path="/completed"
+                element={
+                  <RoleBasedRoute allowedRoles={["ADMIN", "SALESMAN"]}>
                     <LazyLoad>
                       <Completed />
                     </LazyLoad>
-                  }
-                />
-                <Route path="/stats" element={<Stats />} />
-                <Route
-                  path="/bills"
-                  element={
-                    <LazyLoad>
-                      <AllBills />
-                    </LazyLoad>
-                  }
-                />
-                <Route
-                  path="/all-orders"
-                  element={
-                    <LazyLoad>
-                      <AllOrders />
-                    </LazyLoad>
-                  }
-                />
-                <Route
-                  path="/users"
-                  element={
+                  </RoleBasedRoute>
+                }
+              />
+
+              {/* Users → only ADMIN */}
+              <Route
+                path="/users"
+                element={
+                  <RoleBasedRoute allowedRoles={["ADMIN"]}>
                     <LazyLoad>
                       <Users />
                     </LazyLoad>
-                  }
-                />
-              </Route>
+                  </RoleBasedRoute>
+                }
+              />
+
+              {/* Orders → ADMIN + FULFILLMENT */}
+              <Route
+                path="/all-orders"
+                element={
+                  <RoleBasedRoute allowedRoles={["ADMIN", "FULFILLMENT"]}>
+                    <LazyLoad>
+                      <AllOrders />
+                    </LazyLoad>
+                  </RoleBasedRoute>
+                }
+              />
+
+              {/* Bills → ADMIN + FULFILLMENT */}
+              <Route
+                path="/bills"
+                element={
+                  <RoleBasedRoute allowedRoles={["ADMIN", "FULFILLMENT"]}>
+                    <LazyLoad>
+                      <AllBills />
+                    </LazyLoad>
+                  </RoleBasedRoute>
+                }
+              />
+
+              {/* Stats → ADMIN + FULFILLMENT */}
+              <Route
+                path="/stats"
+                element={
+                  <RoleBasedRoute allowedRoles={["ADMIN", "FULFILLMENT"]}>
+                    <Stats />
+                  </RoleBasedRoute>
+                }
+              />
             </Route>
           </Routes>
         </HashRouter>

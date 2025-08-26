@@ -52,3 +52,16 @@ export const fulfillmentSchema = z.object({
     )
     .min(1, "At least one product is required"),
 });
+
+export const userSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(1, "Passoword is required"),
+  contactNumber: z
+    .string()
+    .min(1, "Contact number is required")
+    .regex(/^[0-9]+$/, "Contact number must only contain digits (0-9)")
+    .length(10, "Contact number must be exactly 10 digits"),
+  roles: z.array(z.string()).refine((value) => value.some((item) => item), {
+    message: "You have to select at least one item.",
+  }),
+});

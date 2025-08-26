@@ -15,7 +15,7 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       try {
         // attempt token refresh
-        await api.post("/auth/refresh");
+        await api.post("users/auth/refresh");
         return api(originalRequest); // retry original request
       } catch (refreshError) {
         // refresh failed -> logout
