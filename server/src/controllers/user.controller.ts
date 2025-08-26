@@ -2,11 +2,24 @@ import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import prisma from "../config/prisma";
 import bcrypt from "bcrypt";
+import { Role, User } from "../generated/prisma";
 
 const JWT_SECRET = process.env.JWT_SECRET || "akash-secret";
 const REFRESH_SECRET = process.env.REFRES_SECRET || "akash-secret";
 const allowedRoles = ["ADMIN", "SALESMAN", "FULFILLMENT"];
 
+type MinimalUser = {
+  id: string;
+  username: string;
+  contactNumber: string;
+  roles: Role[];
+};
+
+type GroupedUsers = {
+  admin: MinimalUser[];
+  salesman: MinimalUser[];
+  fulfillment: MinimalUser[];
+};
 export const login = async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
@@ -21,11 +34,11 @@ export const login = async (req: Request, res: Response) => {
       },
     });
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const accessToken = jwt.sign(
@@ -61,6 +74,7 @@ export const login = async (req: Request, res: Response) => {
         id: user.id,
         username: user.username,
         roles: user.roles,
+        contactNumber: user.contactNumber,
       },
     });
   } catch (error) {
@@ -124,7 +138,7 @@ export const refresh = async (req: Request, res: Response) => {
 
 export const createUser = async (req: Request, res: Response) => {
   try {
-    const { username, password, roles } = req.body;
+    const { username, password, roles, contactNumber } = req.body;
     if (!username || !password || !roles || roles.length === 0) {
       return res
         .status(400)
@@ -132,11 +146,12 @@ export const createUser = async (req: Request, res: Response) => {
     }
 
     if (roles.some((role: string) => !allowedRoles.includes(role))) {
-      return res.status(401).json({ message: "Not valid role" });
+      return res.status(400).json({ message: "Not valid role" });
     }
     //check if username already exists
+    const normalizedUsername = username.trim().toLowerCase();
     const existingUser = await prisma.user.findUnique({
-      where: { username },
+      where: { username: normalizedUsername },
     });
 
     if (existingUser) {
@@ -146,14 +161,16 @@ export const createUser = async (req: Request, res: Response) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await prisma.user.create({
       data: {
-        username,
+        username: normalizedUsername,
         password: hashedPassword,
         roles,
+        contactNumber,
       },
       select: {
         id: true,
         username: true,
         roles: true,
+        contactNumber: true,
       },
     });
     return res.status(201).json(newUser);
@@ -162,6 +179,7 @@ export const createUser = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await prisma.user.findMany({
@@ -169,10 +187,20 @@ export const getAllUsers = async (req: Request, res: Response) => {
         id: true,
         username: true,
         roles: true,
+        contactNumber: true,
       },
     });
 
-    return res.status(200).json(users);
+    const groupedUsers = users.reduce((acc, user) => {
+      user.roles.forEach((role) => {
+        const key = role.toLowerCase() as keyof GroupedUsers;
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(user);
+      });
+      return acc;
+    }, {} as Partial<GroupedUsers>);
+
+    return res.status(200).json(groupedUsers);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
@@ -193,6 +221,7 @@ export const getUserById = async (req: Request, res: Response) => {
         username: true,
         roles: true,
         createdAt: true,
+        contactNumber: true,
       },
     });
 
@@ -210,7 +239,7 @@ export const getUserById = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { username, password, roles } = req.body;
+    const { username, password, roles, contactNumber } = req.body;
 
     if (!id) {
       return res.status(400).json({ message: "User id is required" });
@@ -221,7 +250,7 @@ export const updateUser = async (req: Request, res: Response) => {
         .json({ message: "username, password and roles are required" });
     }
     if (roles.some((role: string) => !allowedRoles.includes(role))) {
-      return res.status(401).json({ message: "Not valid role" });
+      return res.status(400).json({ message: "Not valid role" });
     }
 
     const userExists = await prisma.user.findUnique({ where: { id } });
@@ -237,11 +266,13 @@ export const updateUser = async (req: Request, res: Response) => {
         username,
         password: hashedPassword,
         roles,
+        contactNumber,
       },
       select: {
         id: true,
         username: true,
         roles: true,
+        contactNumber: true,
         updatedAt: true,
       },
     });
@@ -260,6 +291,13 @@ export const deleteUser = async (req: Request, res: Response) => {
     if (!id) {
       return res.status(400).json({ message: "User id is required" });
     }
+    const currentUserId = req.user?.id; // assuming you attach user info from JWT in middleware
+
+    if (id === currentUserId) {
+      return res
+        .status(400)
+        .json({ message: "You cannot delete your own account." });
+    }
 
     const userExists = await prisma.user.findUnique({ where: { id } });
     if (!userExists) {
@@ -272,6 +310,7 @@ export const deleteUser = async (req: Request, res: Response) => {
         id: true,
         username: true,
         roles: true,
+        contactNumber: true,
       },
     });
 
@@ -296,6 +335,7 @@ export const getCurrentUser = async (req: Request, res: Response) => {
         id: true,
         username: true,
         roles: true,
+        contactNumber: true,
         createdAt: true,
       },
     });
@@ -308,5 +348,27 @@ export const getCurrentUser = async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const logout = (req: Request, res: Response) => {
+  try {
+    const isProd = process.env.NODE_ENV === "production";
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: isProd,
+      path: "/",
+    });
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: isProd,
+      path: "/",
+    });
+    return res.status(200).json({ message: "user Successfully logged out" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Setver error" });
   }
 };

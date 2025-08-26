@@ -6,6 +6,7 @@ import {
   getCurrentUser,
   getUserById,
   login,
+  logout,
   refresh,
   updateUser,
 } from "../controllers/user.controller";
@@ -18,6 +19,7 @@ const router = Router();
 
 // public
 router.post("/login", login);
+router.post("/logout", logout);
 router.post("/auth/refresh", refresh);
 
 // protected (ADMIN only)

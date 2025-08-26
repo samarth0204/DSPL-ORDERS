@@ -18,6 +18,7 @@ model User {
   id       String   @id @default(uuid())
   username String   @unique
   password String
+  contactNumber String
   roles     Role[]
   orders   Order[]  @relation("SalesmanOrders")
   createdAt         DateTime            @default(now())

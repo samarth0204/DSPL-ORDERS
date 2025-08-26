@@ -16,13 +16,13 @@ const router = express.Router();
 router.get(
   "/all",
   authenticateJWT,
-  authorizeRoles(["ADMIN", "SALESMAN"]),
+  authorizeRoles(["ADMIN", "FULFILLMENT"]),
   getAllOrders
 );
 router.get(
   "/",
   authenticateJWT,
-  authorizeRoles(["SALESMAN"]),
+  authorizeRoles(["ADMIN", "SALESMAN"]),
   getAllOrdersBySalesman
 );
 router.post("/", authenticateJWT, authorizeRoles(["SALESMAN"]), addOrder);
