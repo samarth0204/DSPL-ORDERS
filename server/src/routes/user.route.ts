@@ -30,6 +30,6 @@ router.put("/:id", authenticateJWT, authorizeRoles(["ADMIN"]), updateUser);
 router.delete("/:id", authenticateJWT, authorizeRoles(["ADMIN"]), deleteUser);
 
 // optional (any logged-in user)
-router.get("/me", authenticateJWT, getCurrentUser);
+router.get("/me/:id", authenticateJWT, getCurrentUser);
 
 export default router;
