@@ -10,7 +10,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 import type { Order } from "@/types/order";
-// import { Button } from "../ui/button";
 import {
   Accordion,
   AccordionContent,
@@ -20,24 +19,12 @@ import {
 import {
   Table,
   TableBody,
-  // TableCaption,
   TableCell,
-  // TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-// import { Button } from "../ui/button";
-import {
-  BadgeCheck,
-  Clock,
-  Pencil,
-  Plus,
-  Trash,
-  // Pencil,
-  // Trash,
-  Truck,
-} from "lucide-react";
+import { BadgeCheck, Clock, Pencil, Plus, Trash, Truck } from "lucide-react";
 
 import { Progress } from "@/components/ui/progress";
 import { getFulfilledQuantities, getFulfillmentProgress } from "@/lib/utils";

@@ -60,5 +60,4 @@ export const adminNavItems: ItemType[] = [
   //   title: "Stock Mangement",
   //   icon: CircleCheck,
   // },
-  { title: "Profile", icon: UserRoundCog },
 ];

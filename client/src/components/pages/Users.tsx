@@ -14,9 +14,11 @@ import { Input } from "../ui/input";
 import AddUser from "../common/AddUser";
 import { useDeleteUser, useFetchUsers } from "@/hooks/userHooks";
 import Loader from "../common/Loader";
+import UserFormDialog from "../common/UserFormDialog";
 
 const Users = () => {
   const { data, isLoading, error } = useFetchUsers();
+  const [open, setOpen] = useState(false);
   const deleteMutation = useDeleteUser();
   const [query, setQuery] = useState("");
   const currentId = localStorage.getItem("id");
@@ -45,28 +47,42 @@ const Users = () => {
       </TableHeader>
       <TableBody>
         {users.map((user) => (
-          <TableRow key={user.id}>
-            <TableCell className="font-medium">{user.username}</TableCell>
-            <TableCell>
-              {user.roles.map((role: string, i: number) => (
-                <p key={i}>{role}</p>
-              ))}
-            </TableCell>
-            <TableCell>{user.contactNumber}</TableCell>
-            <TableCell className="text-right space-x-2">
-              <Button size="sm" variant="outline">
-                <Pencil />
-              </Button>
-              <Button
-                size="sm"
-                variant="destructive"
-                onClick={() => handleDelete(user.id)}
-                disabled={!!currentId && currentId === user.id}
-              >
-                <Trash />
-              </Button>
-            </TableCell>
-          </TableRow>
+          <>
+            <UserFormDialog open={open} setOpen={setOpen} user={user} />
+            <TableRow key={user.id}>
+              <TableCell className="font-medium flex items-center gap-2">
+                {user.username}
+                {currentId === user.id && (
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-600 font-medium">
+                    You
+                  </span>
+                )}
+              </TableCell>
+              <TableCell>
+                {user.roles.map((role: string, i: number) => (
+                  <p key={i}>{role}</p>
+                ))}
+              </TableCell>
+              <TableCell>{user.contactNumber}</TableCell>
+              <TableCell className="text-right space-x-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setOpen(true)}
+                >
+                  <Pencil />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => handleDelete(user.id)}
+                  disabled={!!currentId && currentId === user.id}
+                >
+                  <Trash />
+                </Button>
+              </TableCell>
+            </TableRow>
+          </>
         ))}
       </TableBody>
     </Table>

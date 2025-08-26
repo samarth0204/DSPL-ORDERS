@@ -80,3 +80,34 @@ export const useLogout = () => {
     },
   });
 };
+
+export const useEditUser = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      const res = await api.put(`/users/${id}`, data);
+      return res.data;
+    },
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["profile", id] });
+      showToast.success("User updated");
+    },
+    onError: (error) => {
+      console.error("Error updating user", error);
+      showToast.error("Something went wrong");
+    },
+  });
+};
+
+export const useGetProfile = (id: any) => {
+  return useQuery({
+    queryKey: ["profile", id],
+    queryFn: async () => {
+      const res = await api.get(`/users/me/${id}`);
+      return res.data;
+    },
+    enabled: !!id,
+  });
+};

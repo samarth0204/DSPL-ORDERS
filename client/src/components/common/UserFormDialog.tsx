@@ -7,7 +7,8 @@ import FormInput from "./FormInput";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userSchema } from "@/constants/schema";
 import { z } from "zod";
-import { useAddUser } from "@/hooks/userHooks";
+import { useAddUser, useEditUser } from "@/hooks/userHooks";
+import { useEffect } from "react";
 
 const roles = [
   { id: "ADMIN", label: "Admin" },
@@ -20,9 +21,11 @@ type UserForm = z.infer<typeof userSchema>;
 const UserFormDialog = ({
   open,
   setOpen,
+  user,
 }: {
   open: boolean;
   setOpen: Function;
+  user?: any;
 }) => {
   const {
     register,
@@ -42,6 +45,26 @@ const UserFormDialog = ({
     reValidateMode: "onChange",
   });
 
+  useEffect(() => {
+    if (open) {
+      if (user) {
+        reset({
+          username: user.username || "",
+          password: "", // always reset password empty
+          contactNumber: user.contactNumber || "",
+          roles: user.roles || [], // must be an array of strings
+        });
+      } else {
+        reset({
+          username: "",
+          password: "",
+          contactNumber: "",
+          roles: [],
+        });
+      }
+    }
+  }, [open, user, reset]);
+
   const handleClose = (shouldOpen: boolean) => {
     if (!shouldOpen) {
       const confirmClose = window.confirm(
@@ -54,14 +77,25 @@ const UserFormDialog = ({
   };
 
   const addUserMutation = useAddUser();
+  const editUserMutation = useEditUser();
 
   const onSubmit = (data: any) => {
-    addUserMutation.mutate(data, {
-      onSuccess: () => {
-        reset();
-        setOpen(false);
-      },
-    });
+    if (user) {
+      const payload = { id: user.id, data };
+      editUserMutation.mutate(payload, {
+        onSuccess: () => {
+          reset();
+          setOpen(false);
+        },
+      });
+    } else {
+      addUserMutation.mutate(data, {
+        onSuccess: () => {
+          reset();
+          setOpen(false);
+        },
+      });
+    }
   };
 
   return (
