@@ -102,7 +102,7 @@ const UserFormDialog = ({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-full md:max-w-[700px] max-h-[95vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add New User</DialogTitle>
+          <DialogTitle>{user ? "Edit User" : "Add New User"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mt-2">
