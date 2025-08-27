@@ -1,8 +1,7 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import { toast } from "react-toastify";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { showToast } from "@/components/common/showToast";
 import type { UseFetchOrdersParams } from "@/types/order";
+import api from "@/utils/api"; // ✅ use your api instance
 
 type Order = {
   id: string;
@@ -14,26 +13,16 @@ export const useEditOrder = () => {
 
   return useMutation({
     mutationFn: async (updatedOrder: Order) => {
-      const res = await axios.put(
-        `http://localhost:3001/api/orders/${updatedOrder.id}`,
-        updatedOrder
-      );
+      const res = await api.put(`/orders/${updatedOrder.id}`, updatedOrder);
       return res.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
-      toast.success("Order updated!", {
-        position: "bottom-right",
-        autoClose: 5000,
-        theme: "colored",
-      });
+      showToast.success("Order updated!");
     },
     onError: (error) => {
-      console.log("Error updating order:", error);
-      toast.error("Something went wrong!", {
-        hideProgressBar: true,
-        closeOnClick: true,
-      });
+      console.error("Error updating order:", error);
+      showToast.error("Something went wrong!");
     },
   });
 };
@@ -45,14 +34,12 @@ export const useFetchOrders = ({
   search,
   salesmanId,
 }: UseFetchOrdersParams) => {
-  let url;
-  if (salesmanId) {
-    url = "http://localhost:3001/api/orders";
-  } else url = "http://localhost:3001/api/orders/all";
+  const url = salesmanId ? "/orders" : "/orders/all";
+
   return useQuery({
-    queryKey: ["orders", { groupBy, sortBy, sortOrder, search }],
+    queryKey: ["orders", { groupBy, sortBy, sortOrder, search, salesmanId }],
     queryFn: async () => {
-      const res = await axios.get(url, {
+      const res = await api.get(url, {
         params: { groupBy, sortBy, sortOrder, search, salesmanId },
       });
       return res.data;
@@ -62,55 +49,38 @@ export const useFetchOrders = ({
 
 export const useAddOrder = () => {
   const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: async (newOrder) => {
-      const res = await axios.post(
-        "http://localhost:3001/api/orders",
-        newOrder
-      );
+    mutationFn: async (newOrder: any) => {
+      const res = await api.post("/orders", newOrder);
       return res.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
-      toast.success("Order added!", {
-        position: "bottom-right",
-        autoClose: 5000,
-        theme: "colored",
-      });
+      showToast.success("Order added!");
     },
-
     onError: (error) => {
-      console.log("Error adding order:", error);
-      toast.error("Something went wrong!", {
-        hideProgressBar: true,
-        closeOnClick: true,
-      });
+      console.error("Error adding order:", error);
+      showToast.error("Something went wrong!");
     },
   });
 };
 
 export const useDeleteOrder = () => {
-  const queryClinet = useQueryClient();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const res = await axios.delete(`http://localhost:3001/api/orders/${id}`);
+      const res = await api.delete(`/orders/${id}`);
       return res.data;
     },
     onSuccess: () => {
-      queryClinet.invalidateQueries({ queryKey: ["orders"] });
-      toast.success("Order deleted!", {
-        position: "bottom-right",
-        autoClose: 5000,
-        theme: "colored",
-      });
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      showToast.success("Order deleted!");
     },
     onError: (error) => {
       console.error("Error deleting order:", error);
-      toast.error("Something went wrong!", {
-        hideProgressBar: true,
-        closeOnClick: true,
-      });
+      showToast.error("Something went wrong!");
     },
   });
 };

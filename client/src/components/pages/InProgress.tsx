@@ -1,32 +1,14 @@
 import { useState } from "react";
-// import { useOrderStore } from "@/store/useOrderStore";
-// import type { Order } from "@/types/order";
 import AddOrder from "../common/AddOrder";
 import { Input } from "../ui/input";
 import { Search } from "lucide-react";
-// import Fuse from "fuse.js";
 import ShowOrders from "../common/ShowOrders";
 import { useFetchOrders } from "@/hooks/orderHooks";
 import Loader from "../common/Loader";
 const Completed = () => {
-  // const orders: Order[] = useOrderStore((state) => state.orders);
   const [query, setQuery] = useState("");
-  // const options = {
-  //   useExtendedSearch: true,
-  //   keys: [
-  //     {
-  //       name: "clientName",
-  //       weight: 1,
-  //     },
-  //   ],
-  // };
-  // const fuse = useMemo(() => new Fuse(orders, options), [orders]);
-
-  // const filteredOrder = query
-  //   ? fuse.search(query).map((ele) => ele.item)
-  //   : orders;
   const { data, isLoading, error } = useFetchOrders({
-    salesmanId: "f8fbdd21-d655-49d8-9002-424f44a048b6",
+    salesmanId: localStorage.getItem("id"),
   });
 
   if (isLoading) return <Loader />;

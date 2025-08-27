@@ -191,7 +191,7 @@ const FulfillmentFormDialog = ({
                       <div className="flex flex-col">
                         <span className="font-medium">{product.name}</span>
                         <span className="text-xs text-gray-500">
-                          {product.size} • Ordered: {product.quantity}{" "}
+                          {product.size} • Ordered: {product.quantity}
                           {product.orderBy}
                         </span>
                       </div>

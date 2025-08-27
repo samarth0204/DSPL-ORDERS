@@ -10,7 +10,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 import type { Order } from "@/types/order";
-// import { Button } from "../ui/button";
 import {
   Accordion,
   AccordionContent,
@@ -20,24 +19,12 @@ import {
 import {
   Table,
   TableBody,
-  // TableCaption,
   TableCell,
-  // TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-// import { Button } from "../ui/button";
-import {
-  BadgeCheck,
-  Clock,
-  Pencil,
-  Plus,
-  Trash,
-  // Pencil,
-  // Trash,
-  Truck,
-} from "lucide-react";
+import { BadgeCheck, Clock, Pencil, Plus, Trash, Truck } from "lucide-react";
 
 import { Progress } from "@/components/ui/progress";
 import { getFulfilledQuantities, getFulfillmentProgress } from "@/lib/utils";
@@ -47,6 +34,7 @@ import { useState } from "react";
 import OrderFormDialog from "./OrderFormDialog";
 import { useDeleteOrder } from "@/hooks/orderHooks";
 import FulfillmentFormDialog from "./FulfillmentFormDialog";
+import { useUserStore } from "@/store/useUserStore";
 
 const FulfillmentProgress = ({ order }: { order: Order }) => {
   const progress = getFulfillmentProgress(order);
@@ -94,7 +82,7 @@ const OrderTable = ({ order }: { order: Order }) => {
               <TableCell className="text-center">
                 <span className="text-green-900 font-semibold">
                   {product.quantity}
-                </span>{" "}
+                </span>
                 <span>
                   {remainingQuantity > 0 && (
                     <span className="text-sm font-semibold text-red-600 dark:text-red-400 ml-2">
@@ -180,6 +168,7 @@ const OrderCard = ({ order }: { order: Order }) => {
   const [openEditOrder, setOpenEditOrder] = useState(false);
   const [openFulfillmentForm, setOpenFulfillmentForm] = useState(false);
   const deleteMutation = useDeleteOrder();
+  const { isAdmin, isFulfillment } = useUserStore();
   return (
     <>
       <OrderFormDialog
@@ -220,74 +209,82 @@ const OrderCard = ({ order }: { order: Order }) => {
           <OrderAccordion order={order} />
         </CardContent>
 
-        <CardFooter className="flex flex-col lg:pl-0 lg:pr-0 gap-4 lg:col-span-3">
-          <FulfillmentAccordion order={order} />
-          <div className="flex w-full justify-between lg:hidden">
-            {order.status !== "Completed" && (
+        {(isAdmin || isFulfillment) && (
+          <CardFooter className="flex flex-col lg:pl-0 lg:pr-0 gap-4 lg:col-span-3">
+            <FulfillmentAccordion order={order} />
+            <div className="flex w-full justify-between lg:hidden">
+              {order.status !== "Completed" && (
+                <Button
+                  variant="outline"
+                  className="gap-2"
+                  onClick={() => setOpenFulfillmentForm(true)}
+                >
+                  <Plus />
+                  Attach Bill
+                </Button>
+              )}
               <Button
                 variant="outline"
                 className="gap-2"
-                onClick={() => setOpenFulfillmentForm(true)}
+                onClick={() => setOpenEditOrder(true)}
               >
-                <Plus />
-                Attach Bill
+                <Pencil />
+                Edit
               </Button>
-            )}
-            <Button
-              variant="outline"
-              className="gap-2"
-              onClick={() => setOpenEditOrder(true)}
-            >
-              <Pencil />
-              Edit
-            </Button>
-            <Button
-              variant="destructive"
-              className="gap-2 bg-white text-black hover:text-white"
-              onClick={() => {
-                if (
-                  window.confirm("Are you sure you want to delete this order?")
-                ) {
-                  deleteMutation.mutate(order.id);
-                }
-              }}
-            >
-              <Trash />
-              Delete
-            </Button>
-          </div>
-        </CardFooter>
-        <div className="hidden lg:block lg:col-span-1">
-          <div className="flex flex-col w-full gap-2">
-            {order.status !== "Completed" && (
               <Button
-                variant="outline"
-                onClick={() => setOpenFulfillmentForm(true)}
+                variant="destructive"
+                className="gap-2 bg-white text-black hover:text-white"
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      "Are you sure you want to delete this order?"
+                    )
+                  ) {
+                    deleteMutation.mutate(order.id);
+                  }
+                }}
               >
-                <Plus />
-                Attach Bill
+                <Trash />
+                Delete
               </Button>
-            )}
-            <Button variant="outline" onClick={() => setOpenEditOrder(true)}>
-              <Pencil />
-              Edit
-            </Button>
-            <Button
-              variant="destructive"
-              className="bg-white text-black hover:text-white"
-              onClick={() => {
-                if (
-                  window.confirm("Are you sure you want to delete this order?")
-                ) {
-                  deleteMutation.mutate(order.id);
-                }
-              }}
-            >
-              <Trash />
-              Delete
-            </Button>
+            </div>
+          </CardFooter>
+        )}
+        {(isAdmin || isFulfillment) && (
+          <div className="hidden lg:block lg:col-span-1">
+            <div className="flex flex-col w-full gap-2">
+              {order.status !== "Completed" && (
+                <Button
+                  variant="outline"
+                  onClick={() => setOpenFulfillmentForm(true)}
+                >
+                  <Plus />
+                  Attach Bill
+                </Button>
+              )}
+              <Button variant="outline" onClick={() => setOpenEditOrder(true)}>
+                <Pencil />
+                Edit
+              </Button>
+              <Button
+                variant="destructive"
+                className="bg-white text-black hover:text-white"
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      "Are you sure you want to delete this order?"
+                    )
+                  ) {
+                    deleteMutation.mutate(order.id);
+                  }
+                }}
+              >
+                <Trash />
+                Delete
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
       </Card>
     </>
   );

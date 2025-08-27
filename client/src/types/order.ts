@@ -37,5 +37,5 @@ export type UseFetchOrdersParams = {
   sortOrder?: string;
   search?: string;
   filterStatus?: string;
-  salesmanId?: string;
+  salesmanId?: any;
 };

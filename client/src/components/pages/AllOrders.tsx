@@ -149,7 +149,13 @@ const AllOrders = () => {
       {/* Orders Display */}
       <div>
         {groupBy !== "none" ? (
-          <Accordion type="single" collapsible className="w-full">
+          <Accordion
+            type="multiple"
+            className="w-full"
+            defaultValue={groupedOrders.map(
+              (_: any, groupIndex: any) => `item-${groupIndex}`
+            )}
+          >
             {groupedOrders.map((group: any, groupIndex: any) => (
               <AccordionItem
                 key={groupIndex}
