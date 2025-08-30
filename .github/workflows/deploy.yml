@@ -1,0 +1,41 @@
+name: Deploy dspl-orders
+
+on:
+  push:
+    branches:
+      - gcp-prod # trigger only on prod branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Build React client
+      - name: Build client
+        run: |
+          cd client
+          npm ci
+          npm run build
+
+      # Build Express server
+      - name: Build server
+        run: |
+          cd server
+          npm ci
+          npm run build
+
+      # Deploy artifacts to VM
+      - name: Copy files to VM
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          source: |
+            server/dist/*
+            server/package*.json
+            client/build/*
+          target: "/var/www/dspl-orders"

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3001/api",
+  baseURL: "https://dspl-orders-production.up.railway.app/api",
   withCredentials: true, // send cookies
 });
 
@@ -19,7 +19,7 @@ api.interceptors.response.use(
         return api(originalRequest); // retry original request
       } catch (refreshError) {
         // refresh failed -> logout
-        window.location.href = "/DSPL-ORDERS/#/login";
+        window.location.href = "/login";
       }
     }
 

@@ -5,8 +5,16 @@ import bcrypt from "bcrypt";
 import { Role, User } from "../generated/prisma";
 
 const JWT_SECRET = process.env.JWT_SECRET || "akash-secret";
-const REFRESH_SECRET = process.env.REFRES_SECRET || "akash-secret";
+const REFRESH_SECRET = process.env.REFRESH_SECRET || "akash-secret";
 const allowedRoles = ["ADMIN", "SALESMAN", "FULFILLMENT"];
+
+const isProd = process.env.NODE_ENV === "production";
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: isProd,
+  sameSite: isProd ? ("none" as const) : ("lax" as const),
+};
 
 type MinimalUser = {
   id: string;
@@ -43,6 +51,7 @@ export const login = async (req: Request, res: Response) => {
 
     const accessToken = jwt.sign(
       {
+        id: user.id,
         username: user.username,
         roles: user.roles,
       },
@@ -50,21 +59,25 @@ export const login = async (req: Request, res: Response) => {
       { expiresIn: "1h" }
     );
 
-    const refreshToken = jwt.sign({ id: user.id }, REFRESH_SECRET, {
-      expiresIn: "7d",
-    });
+    const refreshToken = jwt.sign(
+      {
+        id: user.id,
+        username: user.username,
+        roles: user.roles,
+      },
+      REFRESH_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
 
     res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      ...cookieOptions,
       maxAge: 15 * 60 * 1000,
     });
 
     res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      ...cookieOptions,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -114,9 +127,7 @@ export const refresh = async (req: Request, res: Response) => {
     );
 
     res.cookie("accessToken", newAccessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      ...cookieOptions,
       maxAge: 15 * 60 * 1000,
     });
 
@@ -355,15 +366,11 @@ export const logout = (req: Request, res: Response) => {
   try {
     const isProd = process.env.NODE_ENV === "production";
     res.clearCookie("accessToken", {
-      httpOnly: true,
-      sameSite: "strict",
-      secure: isProd,
+      ...cookieOptions,
       path: "/",
     });
     res.clearCookie("refreshToken", {
-      httpOnly: true,
-      sameSite: "strict",
-      secure: isProd,
+      ...cookieOptions,
       path: "/",
     });
     return res.status(200).json({ message: "user Successfully logged out" });
