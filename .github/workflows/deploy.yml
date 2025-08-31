@@ -34,7 +34,6 @@ jobs:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
-          # The source is the entire repository folder
-          source: "."  
+          source: "."
           target: /var/www/dspl-orders
           port: 22
