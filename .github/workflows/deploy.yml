@@ -38,33 +38,3 @@ jobs:
           source: "."  
           target: /var/www/dspl-orders
           port: 22
-          
-      - name: Build and deploy on VM
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.VM_SSH_KEY }}
-          port: 22
-          script: |
-            # Navigate to the repository directory on the VM
-            cd /var/www/dspl-orders
-
-            # Install dependencies and build the client
-            echo "Installing client dependencies..."
-            cd client
-            npm ci
-            npm run build
-
-            # Install dependencies and build the server
-            echo "Installing server dependencies..."
-            cd ../server
-            npm ci
-            npm run build
-
-            # Move back to the root directory
-            cd ..
-
-            # Restart the PM2 process
-            echo "Restarting PM2 process..."
-            pm2 restart dspl-orders || pm2 start server/dist/index.js --name dspl-orders
