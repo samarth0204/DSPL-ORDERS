@@ -25,10 +25,7 @@ type GroupedUsers = {
 const cookieOptions: CookieOptions = {
   maxAge: 24 * 60 * 60 * 1000,
   httpOnly: true,
-  sameSite:
-    process.env.NODE_ENV === "production"
-      ? ("none" as "none")
-      : ("lax" as "lax"),
+  sameSite: "none",
   secure: process.env.NODE_ENV === "production",
 };
 
