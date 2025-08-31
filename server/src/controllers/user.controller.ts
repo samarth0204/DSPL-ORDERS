@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import prisma from "../config/prisma";
 import bcrypt from "bcrypt";
 import { Role, User } from "../generated/prisma";
+import { CookieOptions } from "express";
 
 const JWT_SECRET = process.env.JWT_SECRET || "akash-secret";
 const REFRESH_SECRET = process.env.REFRES_SECRET || "akash-secret";
@@ -21,10 +22,14 @@ type GroupedUsers = {
   fulfillment: MinimalUser[];
 };
 
-const cookieOptions = {
+const cookieOptions: CookieOptions = {
+  maxAge: 24 * 60 * 60 * 1000,
   httpOnly: true,
-  sameSite: "none" as const,
-  secure: true,
+  sameSite:
+    process.env.NODE_ENV === "production"
+      ? ("none" as "none")
+      : ("lax" as "lax"),
+  secure: process.env.NODE_ENV === "production",
 };
 
 export const login = async (req: Request, res: Response) => {
