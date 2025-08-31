@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://dspl-orders-production.up.railway.app/api",
+  baseURL: "http://34.93.169.218:3001/api",
   withCredentials: true, // send cookies
 });
 
