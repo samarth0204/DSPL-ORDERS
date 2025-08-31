@@ -23,14 +23,7 @@ jobs:
       - name: Verify build artifacts
         run: |
           ls -la server/dist
-
-      - name: Debug source paths
-        run: |
-          pwd
-          ls -la client/dist
-          ls -la server/dist
-          echo "Source paths: client/dist/**,server/dist/**"
-
+          
       #Copy the entire repository to the VM
       - name: Copy build artifacts to VM
         uses: appleboy/scp-action@v0.1.7
