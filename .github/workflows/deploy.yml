@@ -31,7 +31,17 @@ jobs:
           npm run build
           echo "Server dist contents:"
           ls -la dist
-
+      - name: Test SSH connection
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          port: 22
+          script: |
+            echo "Connected successfully to GCP VM"
+            whoami
+            pwd
       # 4️⃣ Copy artifacts to VM
       - name: Copy files to VM
         uses: appleboy/scp-action@v0.1.7
