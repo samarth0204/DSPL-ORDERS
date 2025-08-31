@@ -12,20 +12,6 @@ jobs:
       #Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      #Build React (Vite) client
-      - name: Build client
-        run: |
-          cd client
-          npm ci
-          npm run build
-
-      #Build Express server (TypeScript)
-      - name: Build server
-        run: |
-          cd server
-          npm ci
-          npm run build
         
       #Copy the entire repository to the VM
       - name: Copy entire repository to VM
