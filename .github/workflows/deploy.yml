@@ -23,16 +23,3 @@ jobs:
           source: server/**
           target: /var/www/dspl-orders
           port: 22
-
-      - name: Build on VM
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.VM_SSH_KEY }}
-          script: |
-            cd /var/www/dspl-orders/server
-            npm ci
-            npx prisma generate
-            npm run build
-            pm2 restart server || pm2 start dist/index.js --name server

@@ -5,16 +5,8 @@ import bcrypt from "bcrypt";
 import { Role, User } from "../generated/prisma";
 
 const JWT_SECRET = process.env.JWT_SECRET || "akash-secret";
-const REFRESH_SECRET = process.env.REFRESH_SECRET || "akash-secret";
+const REFRESH_SECRET = process.env.REFRES_SECRET || "akash-secret";
 const allowedRoles = ["ADMIN", "SALESMAN", "FULFILLMENT"];
-
-const isProd = process.env.NODE_ENV === "production";
-
-const cookieOptions = {
-  httpOnly: true,
-  secure: isProd,
-  sameSite: isProd ? ("none" as const) : ("lax" as const),
-};
 
 type MinimalUser = {
   id: string;
@@ -28,6 +20,13 @@ type GroupedUsers = {
   salesman: MinimalUser[];
   fulfillment: MinimalUser[];
 };
+
+const cookieOptions = {
+  httpOnly: true,
+  sameSite: "none" as const,
+  secure: true,
+};
+
 export const login = async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
@@ -51,7 +50,6 @@ export const login = async (req: Request, res: Response) => {
 
     const accessToken = jwt.sign(
       {
-        id: user.id,
         username: user.username,
         roles: user.roles,
       },
@@ -59,17 +57,9 @@ export const login = async (req: Request, res: Response) => {
       { expiresIn: "1h" }
     );
 
-    const refreshToken = jwt.sign(
-      {
-        id: user.id,
-        username: user.username,
-        roles: user.roles,
-      },
-      REFRESH_SECRET,
-      {
-        expiresIn: "7d",
-      }
-    );
+    const refreshToken = jwt.sign({ id: user.id }, REFRESH_SECRET, {
+      expiresIn: "7d",
+    });
 
     res.cookie("accessToken", accessToken, {
       ...cookieOptions,
@@ -364,15 +354,8 @@ export const getCurrentUser = async (req: Request, res: Response) => {
 
 export const logout = (req: Request, res: Response) => {
   try {
-    const isProd = process.env.NODE_ENV === "production";
-    res.clearCookie("accessToken", {
-      ...cookieOptions,
-      path: "/",
-    });
-    res.clearCookie("refreshToken", {
-      ...cookieOptions,
-      path: "/",
-    });
+    res.clearCookie("accessToken", { ...cookieOptions, path: "/" });
+    res.clearCookie("refreshToken", { ...cookieOptions, path: "/" });
     return res.status(200).json({ message: "user Successfully logged out" });
   } catch (error) {
     console.log(error);
