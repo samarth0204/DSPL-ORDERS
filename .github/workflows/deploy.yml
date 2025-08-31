@@ -22,7 +22,6 @@ jobs:
 
       - name: Verify build artifacts
         run: |
-          ls -la client/dist
           ls -la server/dist
 
       - name: Debug source paths
