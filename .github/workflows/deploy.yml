@@ -41,7 +41,7 @@ jobs:
         
       #Copy the entire repository to the VM
       - name: Copy build artifacts to VM
-        uses: appleboy/scp-action@v0.1.9
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
