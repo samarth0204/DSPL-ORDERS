@@ -18,7 +18,6 @@ jobs:
         run: |
           cd server
           npm ci
-          npx prisma generate --binary-targets=debian-openssl-3.0.x
           npm run build
 
       - name: Verify build artifacts
