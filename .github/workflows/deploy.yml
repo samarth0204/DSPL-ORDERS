@@ -20,8 +20,13 @@ jobs:
           cd client
           npm ci
           npm run build
-          echo "Client dist contents:"
-          ls -la dist
+
+      # 3️⃣ Build Express server (TypeScript)
+      - name: Build server
+        run: |
+          cd server
+          npm ci
+          npm run build
 
       - name: Check build output
         run: |
