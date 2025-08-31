@@ -46,6 +46,6 @@ jobs:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
-          source: client/dist/**,server/dist/**
+          source: server/dist/**,server/package*.json,server/package-lock.json,client/dist/**
           target: /var/www/dspl-orders
           port: 22
