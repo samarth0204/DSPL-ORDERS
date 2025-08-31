@@ -3,33 +3,34 @@ name: Deploy dspl-orders
 on:
   push:
     branches:
-      - gcp-prod # trigger only on prod branch
+      - gcp-prod  # trigger only on prod branch
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Build React client
+      # 2️⃣ Build React client
       - name: Build client
         run: |
           cd client
           npm ci
           npm run build
-          ls -R dist   # DEBUG: check client/dist exists
+          ls -R build # debug: check output
 
-      # Build Express server
+      # 3️⃣ Build Express server
       - name: Build server
         run: |
           cd server
           npm ci
           npm run build
-          ls -R dist    # DEBUG: check server/dist exists
+          ls -R dist # debug: check output
 
-      # Deploy artifacts to VM
+      # 4️⃣ Copy files to VM
       - name: Copy files to VM
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -37,7 +38,21 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
           source: |
-            server/dist/*
+            server/dist/**
             server/package*.json
-            client/dist/*
-          target: "/var/www/dspl-orders"
+            client/build/**
+          target: /var/www/dspl-orders
+          port: 22
+
+      # 5️⃣ Restart server on VM (assuming PM2)
+      - name: Restart server on VM
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          port: 22
+          script: |
+            cd /var/www/dspl-orders
+            npm ci --production
+            pm2 restart dspl-orders || pm2 start server/dist/index.js --name dspl-orders
