@@ -19,6 +19,7 @@ jobs:
           cd client
           npm ci
           npm run build
+          ls -R dist   # DEBUG: check client/dist exists
 
       # Build Express server
       - name: Build server
@@ -26,6 +27,7 @@ jobs:
           cd server
           npm ci
           npm run build
+          ls -R dist    # DEBUG: check server/dist exists
 
       # Deploy artifacts to VM
       - name: Copy files to VM
@@ -37,5 +39,5 @@ jobs:
           source: |
             server/dist/*
             server/package*.json
-            client/build/*
+            client/dist/*
           target: "/var/www/dspl-orders"
