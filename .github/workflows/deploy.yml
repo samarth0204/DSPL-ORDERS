@@ -26,7 +26,11 @@ jobs:
           cd server
           npm ci
           npm run build
-        
+          
+      - name: Verify build artifacts
+        run: |
+          ls -la client/dist
+          ls -la server/dist
         
       #Copy the entire repository to the VM
       - name: Copy build artifacts to VM
