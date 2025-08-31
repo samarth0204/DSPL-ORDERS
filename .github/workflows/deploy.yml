@@ -13,17 +13,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      #Build Express server (TypeScript)
-      - name: Build server
-        run: |
-          cd server
-          npm ci
-          npm run build
-
-      - name: Verify build artifacts
-        run: |
-          ls -la server/dist
-
       #Copy the entire repository to the VM
       - name: Copy build artifacts to VM
         uses: appleboy/scp-action@v0.1.7
@@ -31,6 +20,6 @@ jobs:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
-          source: server/dist/**,server/package*.json,server/package-lock.json
+          source: server/**
           target: /var/www/dspl-orders
           port: 22
