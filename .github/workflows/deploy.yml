@@ -8,7 +8,6 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
       # 1️⃣ Checkout the repository
       - name: Checkout repository
@@ -28,12 +27,39 @@ jobs:
           npm ci
           npm run build
 
-      - name: Check build output
+      # 4️⃣ Upload build artifacts
+      - name: Upload server artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: server-dist
+          path: server/dist
+
+      - name: Upload client artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: client-dist
+          path: client/dist
+
+      # 5️⃣ Download artifacts to ensure they are available
+      - name: Download server artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: server-dist
+          path: server/dist
+
+      - name: Download client artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: client-dist
+          path: client/dist
+
+      - name: Check build output (for debugging)
         run: |
           ls -la server/dist
           ls -la client/dist
+          ls -la server/package*.json
 
-      # 4️⃣ Copy artifacts to VM
+      # 6️⃣ Copy artifacts to VM
       - name: Copy files to VM
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -47,7 +73,7 @@ jobs:
           target: /var/www/dspl-orders
           port: 22
 
-      # 5️⃣ Install server dependencies & restart server
+      # 7️⃣ Install server dependencies & restart server
       - name: Restart server on VM
         uses: appleboy/ssh-action@v0.1.7
         with:
