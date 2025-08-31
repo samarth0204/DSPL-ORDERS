@@ -13,13 +13,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         
+      #Build React (Vite) client
+      - name: Build client
+        run: |
+          cd client
+          npm ci
+          npm run build
+
+      #Build Express server (TypeScript)
+      - name: Build server
+        run: |
+          cd server
+          npm ci
+          npm run build
+        
+        
       #Copy the entire repository to the VM
-      - name: Copy entire repository to VM
-        uses: appleboy/scp-action@v0.1.7
+      - name: Copy build artifacts to VM
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
-          source: "."
+          source: |
+            client/dist/**
+            server/dist/**
           target: /var/www/dspl-orders
           port: 22
