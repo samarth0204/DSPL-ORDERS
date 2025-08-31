@@ -9,81 +9,32 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1️⃣ Checkout the repository
+      #Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Build React (Vite) client
+      #Build React (Vite) client
       - name: Build client
         run: |
           cd client
           npm ci
           npm run build
 
-      # 3️⃣ Build Express server (TypeScript)
+      #Build Express server (TypeScript)
       - name: Build server
         run: |
           cd server
           npm ci
           npm run build
-
-      # 4️⃣ Upload build artifacts
-      - name: Upload server artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: server-dist
-          path: server/dist
-
-      - name: Upload client artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: client-dist
-          path: client/dist
-
-      # 5️⃣ Download artifacts to ensure they are available
-      - name: Download server artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: server-dist
-          path: server/dist
-
-      - name: Download client artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: client-dist
-          path: client/dist
-
-      - name: Check build output (for debugging)
-        run: |
-          ls -la server/dist
-          ls -la client/dist
-          ls -la server/package*.json
-
-      # 6️⃣ Copy artifacts to VM
-      - name: Copy files to VM
+        
+      #Copy the entire repository to the VM
+      - name: Copy entire repository to VM
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
-          source: |
-            server/dist/**/*
-            server/package*.json
-            client/dist/**/*
+          # The source is the entire repository folder
+          source: "."  
           target: /var/www/dspl-orders
           port: 22
-
-      # 7️⃣ Install server dependencies & restart server
-      - name: Restart server on VM
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.VM_SSH_KEY }}
-          port: 22
-          script: |
-            cd /var/www/dspl-orders
-            echo "Installing server dependencies..."
-            npm ci --production
-            echo "Restarting PM2 process..."
-            pm2 restart dspl-orders || pm2 start server/dist/index.js --name dspl-orders
