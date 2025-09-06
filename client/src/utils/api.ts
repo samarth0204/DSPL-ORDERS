@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://34.93.169.218:3001/api",
+  baseURL: "https://dspl-server-288823573837.asia-south2.run.app/api",
   withCredentials: true, // send cookies
 });
 

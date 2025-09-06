@@ -39,7 +39,7 @@ export const fulfilmentNavItems: ItemType[] = [
   {
     title: "Stats",
     icon: ChartBarBig,
-    route: "stats",
+    route: "",
   },
 ];
 

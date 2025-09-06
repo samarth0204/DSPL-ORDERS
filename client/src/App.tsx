@@ -1,5 +1,5 @@
 import { Suspense, lazy, type ReactNode } from "react";
-import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
 import LoginPage from "./components/pages/LoginPage";
 import Layout from "./components/common/Layout";
 import Stats from "./components/pages/Stats";
@@ -51,7 +51,7 @@ function App() {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        <HashRouter>
+        <BrowserRouter>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route
@@ -125,7 +125,7 @@ function App() {
 
               {/* Stats → ADMIN + FULFILLMENT */}
               <Route
-                path="/stats"
+                path="/"
                 element={
                   <RoleBasedRoute allowedRoles={["ADMIN", "FULFILLMENT"]}>
                     <Stats />
@@ -134,7 +134,7 @@ function App() {
               />
             </Route>
           </Routes>
-        </HashRouter>
+        </BrowserRouter>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
       <ToastContainer position="top-right" autoClose={3000} />
