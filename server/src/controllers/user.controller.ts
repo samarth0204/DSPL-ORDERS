@@ -194,14 +194,14 @@ export const getAllUsers = async (req: Request, res: Response) => {
       },
     });
 
-    const groupedUsers = users.reduce((acc, user) => {
-      user.roles.forEach((role) => {
+    const groupedUsers = users.reduce((acc: any, user: any) => {
+      user.roles.forEach((role: Role) => {
         const key = role.toLowerCase() as keyof GroupedUsers;
-        if (!acc[key]) acc[key] = [];
-        acc[key].push(user);
+        if (!acc[key]) acc[key] = [] as User[];
+        acc[key]!.push(user);
       });
       return acc;
-    }, {} as Partial<GroupedUsers>);
+    }, {} as GroupedUsers);
 
     return res.status(200).json(groupedUsers);
   } catch (error) {

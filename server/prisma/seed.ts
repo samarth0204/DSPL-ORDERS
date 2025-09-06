@@ -1,4 +1,4 @@
-import { PrismaClient } from "../src/generated/prisma";
+import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 // import { dummyOrders } from "../src/constants"; // assume this is the file where your array is
 
