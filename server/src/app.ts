@@ -9,7 +9,11 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://dspl-orders-1i1.pages.dev"],
+    origin: [
+      "http://localhost:5173",
+      "https://dspl-orders-1i1.pages.dev",
+      "https://order.divydaminispices.com",
+    ],
     credentials: true,
   })
 );
