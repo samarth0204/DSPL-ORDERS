@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import prisma from "../config/prisma";
 import bcrypt from "bcrypt";
-import { Role, User } from "../generated/prisma";
 import { CookieOptions } from "express";
 
 const JWT_SECRET = process.env.JWT_SECRET || "akash-secret";
@@ -13,7 +12,7 @@ type MinimalUser = {
   id: string;
   username: string;
   contactNumber: string;
-  roles: Role[];
+  roles: any;
 };
 
 type GroupedUsers = {
@@ -195,9 +194,9 @@ export const getAllUsers = async (req: Request, res: Response) => {
     });
 
     const groupedUsers = users.reduce((acc: any, user: any) => {
-      user.roles.forEach((role: Role) => {
+      user.roles.forEach((role: any) => {
         const key = role.toLowerCase() as keyof GroupedUsers;
-        if (!acc[key]) acc[key] = [] as User[];
+        if (!acc[key]) acc[key] = [] as any;
         acc[key]!.push(user);
       });
       return acc;
