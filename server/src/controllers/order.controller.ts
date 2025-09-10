@@ -23,7 +23,12 @@ export const getAllOrders = async (req: Request, res: Response) => {
           : undefined,
       },
       include: {
-        salesman: true,
+        salesman: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
         products: true,
         fulfillments: {
           include: {
@@ -95,7 +100,6 @@ export const getAllOrdersBySalesman = async (req: Request, res: Response) => {
         salesmanId: salesmanId as string,
       },
       include: {
-        salesman: true,
         products: true,
         fulfillments: {
           include: {
@@ -223,6 +227,7 @@ export const editOrder = async (req: Request, res: Response) => {
     status,
     orderDate,
     products,
+    description,
   } = req.body;
 
   if (!id) {
@@ -238,6 +243,7 @@ export const editOrder = async (req: Request, res: Response) => {
         salesmanId,
         deliveryDetails,
         status,
+        description,
         orderDate: new Date(orderDate),
       },
     });

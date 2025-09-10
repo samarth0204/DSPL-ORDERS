@@ -1,42 +1,34 @@
 import { useState } from "react";
-// import { useOrderStore } from "@/store/useOrderStore";
-// import type { Order } from "@/types/order";
 import AddOrder from "../common/AddOrder";
 import { Input } from "../ui/input";
 import { Search } from "lucide-react";
-// import Fuse from "fuse.js";
 import ShowOrders from "../common/ShowOrders";
 import { useFetchOrders } from "@/hooks/orderHooks";
 import Loader from "../common/Loader";
+
 const Completed = () => {
-  // const orders: Order[] = useOrderStore((state) => state.orders);
   const { data, isLoading, error } = useFetchOrders({
-    salesmanId: "f8fbdd21-d655-49d8-9002-424f44a048b6",
+    salesmanId: localStorage.getItem("id"),
   });
   const [query, setQuery] = useState("");
-  // const options = {
-  //   useExtendedSearch: true,
-  //   keys: [
-  //     {
-  //       name: "clientName",
-  //       weight: 1,
-  //     },
-  //   ],
-  // };
-  // const fuse = useMemo(() => new Fuse(orders, options), [orders]);
-
-  // const filteredOrder = query
-  //   ? fuse.search(query).map((ele) => ele.item)
-  //   : orders;
 
   if (isLoading) return <Loader />;
-  if (error) return <div>Error occurred</div>;
+  if (error)
+    return (
+      <div className="text-red-500 text-center mt-4">
+        Failed to load orders. Please try again.
+      </div>
+    );
 
-  const filteredOrder = data;
+  const filteredOrder = data?.filter(
+    (order: any) =>
+      order.product?.toLowerCase().includes(query.toLowerCase()) ||
+      order.description?.toLowerCase().includes(query.toLowerCase())
+  );
 
   return (
     <div>
-      <div className="w-full flex items-center justify-between gap-3 mb-2 sticky top-0  backdrop-blur-md bg-white/30 border-b border-white/40 z-10 py-2">
+      <div className="w-full flex items-center justify-between gap-3 mb-2 sticky top-0 backdrop-blur-md bg-white/30 border-b border-white/40 z-10 py-2">
         <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
           <Input
@@ -48,7 +40,7 @@ const Completed = () => {
         </div>
         <AddOrder />
       </div>
-      <ShowOrders orders={filteredOrder} filterStatus="Completed" />
+      <ShowOrders orders={filteredOrder ?? []} filterStatus="Completed" />
     </div>
   );
 };

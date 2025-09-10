@@ -1,0 +1,28 @@
+# Node modules (host machine)
+node_modules
+
+# Build output (you'll rebuild inside container)
+dist
+build
+
+# Logs
+npm-debug.log
+yarn-error.log
+*.log
+
+# Local env files
+.env
+.env.*
+
+# Docker files themselves
+Dockerfile
+.dockerignore
+
+# Git & editor stuff
+.git
+.gitignore
+.vscode
+.idea
+
+# OS artifacts
+.DS_Store
