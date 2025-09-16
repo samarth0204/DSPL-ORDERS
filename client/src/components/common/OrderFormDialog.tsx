@@ -253,7 +253,7 @@ const OrderFormDialog: React.FC<Props> = ({ open, setOpen, order }) => {
           </div>
           <div className="mt-2">
             <FormInput
-              label="transport details"
+              label="Transport details"
               placeholder="Enter transport details"
               {...register("description")}
               error={errors.description?.message}
