@@ -60,7 +60,7 @@ const OrderFormDialog: React.FC<Props> = ({ open, setOpen, order }) => {
     }
   }, [isEdit, order, reset]);
 
-  const { fields, append, remove, replace } = useFieldArray({
+  const { fields, prepend, remove, replace } = useFieldArray({
     control,
     name: "products",
   });
@@ -107,16 +107,16 @@ const OrderFormDialog: React.FC<Props> = ({ open, setOpen, order }) => {
   };
 
   const handleAddProduct = () => {
-    append({
+    prepend({
       name: "",
       size: "",
-      orderBy: "",
+      orderBy: "Kg",
       quantity: 1,
       rate: "",
     });
     setTimeout(() => {
       if (productListRef.current) {
-        productListRef.current.scrollTop = productListRef.current.scrollHeight;
+        productListRef.current.scrollLeft = 0;
       }
     }, 0);
   };
@@ -163,7 +163,7 @@ const OrderFormDialog: React.FC<Props> = ({ open, setOpen, order }) => {
             )}
 
             <div
-              className="max-h-[400px] md:max-h-[220px] overflow-y-auto px-1 rounded-xl space-y-2"
+              className="max-h-[400px] md:max-h-[220px] max-w-[88vw] px-1 rounded-xl overflow-x-scroll md:overflow-x-hidden md:overflow-y-auto flex md:block gap-2 space-x-2 md:space-x-0 md:space-y-2"
               ref={productListRef}
             >
               <AnimatePresence>
@@ -172,10 +172,10 @@ const OrderFormDialog: React.FC<Props> = ({ open, setOpen, order }) => {
                     key={field.id}
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="relative grid grid-cols-3 gap-2 border border-gray-300 bg-gray-50 p-4 rounded-xl shadow-sm my-4"
+                    className="relative grid grid-cols-3 min-w-[350px] md:min-w-0 gap-2 border border-gray-300 bg-gray-50 p-4 rounded-xl shadow-sm my-4"
                   >
                     <div className="absolute -top-3 left-2 text-sm text-gray-500 bg-white px-1 rounded flex items-center gap-2">
-                      {index + 1}
+                      {fields.length - index}
                     </div>
                     <div className="absolute -top-3 right-2">
                       <Button
@@ -245,16 +245,16 @@ const OrderFormDialog: React.FC<Props> = ({ open, setOpen, order }) => {
             />
 
             <FormInput
-              label="Delivery Option"
-              placeholder="Enter delivery details"
+              label="Town"
+              placeholder="Enter Town"
               {...register("deliveryDetails")}
               error={errors.deliveryDetails?.message}
             />
           </div>
           <div className="mt-2">
             <FormInput
-              label="Order description"
-              placeholder="Enter order description"
+              label="transport details"
+              placeholder="Enter transport details"
               {...register("description")}
               error={errors.description?.message}
             />

@@ -24,7 +24,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { BadgeCheck, Clock, Pencil, Plus, Trash, Truck } from "lucide-react";
+import {
+  BadgeCheck,
+  Clock,
+  MapPin,
+  Pencil,
+  Plus,
+  Trash,
+  TruckIcon,
+} from "lucide-react";
 
 import { Progress } from "@/components/ui/progress";
 import { getFulfilledQuantities, getFulfillmentProgress } from "@/lib/utils";
@@ -187,12 +195,17 @@ const OrderCard = ({ order }: { order: Order }) => {
             <CardTitle>{order.clientName}</CardTitle>
             <CardDescription className="flex lg:flex-col gap-2">
               <div className="flex gap-2">
-                <Truck />
+                <MapPin />
                 {order.deliveryDetails}
               </div>
               <div className="hidden lg:flex flex-col gap-4">
                 <FulfillmentProgress order={order} />
-                <div className="font-semibold">{order.description}</div>
+                {order.description && (
+                  <div className="font-semibold">
+                    <TruckIcon />
+                    {order.description}
+                  </div>
+                )}
               </div>
             </CardDescription>
             <CardAction className="flex flex-col gap-1 lg:gap-2 items-end">
@@ -203,7 +216,12 @@ const OrderCard = ({ order }: { order: Order }) => {
 
         <CardContent className="flex gap-3 flex-col lg:px-0 lg:col-span-3">
           <div className="lg:hidden">
-            <div className="font-semibold">{order.description}</div>
+            {order.description && (
+              <div className="font-semibold">
+                <TruckIcon />
+                {order.description}
+              </div>
+            )}
             <FulfillmentProgress order={order} />
           </div>
           <OrderAccordion order={order} />
