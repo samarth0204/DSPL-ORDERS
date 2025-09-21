@@ -19,6 +19,7 @@ import {
   useAddFulfillment,
   useEditFulfillment,
 } from "@/hooks/fulfillmentHooks";
+import { Checkbox } from "../ui/checkbox";
 
 interface FulfillmentFormDialogProps {
   open: boolean;
@@ -40,11 +41,12 @@ const FulfillmentFormDialog = ({
     control,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<FulfillmentFormValues>({
     resolver: zodResolver(fulfillmentSchema),
     defaultValues: {
-      billNumber: "",
+      billNumber: "DSPL/25-26/",
       amount: "",
       date: new Date(),
       description: "",
@@ -74,7 +76,7 @@ const FulfillmentFormDialog = ({
         });
       } else if (order?.products?.length) {
         reset({
-          billNumber: "",
+          billNumber: "DSPL/25-26/",
           amount: "",
           date: new Date(),
           description: "",
@@ -167,16 +169,46 @@ const FulfillmentFormDialog = ({
 
           {fields.length > 0 && (
             <div className="mt-4">
-              <div className="font-semibold mb-2">Products</div>
+              <div className="flex justify-between items-center mb-2">
+                <div className="font-semibold">Products</div>
+                <div className="mt-4 flex items-center gap-2">
+                  <Checkbox
+                    id="selectAll"
+                    onCheckedChange={(checked) => {
+                      const selectAll = checked === true;
+                      fields.forEach((_, i) => {
+                        const product = order.products[i];
+                        const fulfilledQty =
+                          order.fulfillments?.reduce((total, f) => {
+                            const match = f.fulfilledProducts?.find(
+                              (fp) => fp.productId === product.id
+                            );
+                            return total + (match?.quantity || 0);
+                          }, 0) || 0;
+                        const remainingQty =
+                          Number(product.quantity) - fulfilledQty;
+                        setValue(
+                          `fulfilledProducts.${i}.quantity`,
+                          selectAll ? remainingQty : 0
+                        );
+                      });
+                    }}
+                  />
+                  <label htmlFor="selectAll" className="font-medium">
+                    Select All
+                  </label>
+                </div>
+              </div>
+
+              {/* Product List */}
               <div className="space-y-3">
                 {fields.map((field, index) => {
                   const product = order.products[index];
 
-                  // Calculate fulfilled quantity
                   const fulfilledQty =
                     order.fulfillments?.reduce((total, f) => {
                       const match = f.fulfilledProducts?.find(
-                        (fp) => fp.id === product.id
+                        (fp) => fp.productId === product.id
                       );
                       return total + (match?.quantity || 0);
                     }, 0) || 0;

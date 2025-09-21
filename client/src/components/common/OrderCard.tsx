@@ -138,7 +138,10 @@ const GetBadge = ({ order }: { order: Order }) => {
       </Badge>
     );
   }
-  if (order.status === "In Progress") {
+  const createdAtMs = order.createdAt ? new Date(order.createdAt).getTime() : 0;
+  const diffMinutes = Math.floor((Date.now() - createdAtMs) / (1000 * 60));
+  console.log(diffMinutes);
+  if (diffMinutes >= 5) {
     return (
       <Badge
         variant="secondary"
@@ -201,7 +204,7 @@ const OrderCard = ({ order }: { order: Order }) => {
               <div className="hidden lg:flex flex-col gap-4">
                 <FulfillmentProgress order={order} />
                 {order.description && (
-                  <div className="font-semibold">
+                  <div className="flex gap-2 font-semibold">
                     <TruckIcon />
                     {order.description}
                   </div>
@@ -217,7 +220,7 @@ const OrderCard = ({ order }: { order: Order }) => {
         <CardContent className="flex gap-3 flex-col lg:px-0 lg:col-span-3">
           <div className="lg:hidden">
             {order.description && (
-              <div className="font-semibold">
+              <div className="flex gap-2 font-semibold">
                 <TruckIcon />
                 {order.description}
               </div>

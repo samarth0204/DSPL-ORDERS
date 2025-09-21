@@ -5,20 +5,26 @@ const api = axios.create({
   withCredentials: true, // send cookies
 });
 
-// Interceptor to handle expired tokens
+let refreshAttempts = 0;
+const MAX_REFRESH_ATTEMPTS = 2;
+
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
     const originalRequest = error.config;
-
     if (error.response?.status === 401 && !originalRequest._retry) {
+      if (refreshAttempts >= MAX_REFRESH_ATTEMPTS) {
+        window.location.href = "/login";
+        return Promise.reject(error);
+      }
+
       originalRequest._retry = true;
+      refreshAttempts += 1;
+
       try {
-        // attempt token refresh
         await api.post("users/auth/refresh");
-        return api(originalRequest); // retry original request
+        return api(originalRequest);
       } catch (refreshError) {
-        // refresh failed -> logout
         window.location.href = "/login";
       }
     }

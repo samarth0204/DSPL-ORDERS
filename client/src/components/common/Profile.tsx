@@ -8,6 +8,8 @@ import { useState } from "react";
 
 const Profile = ({ open, setOpen }: { open: boolean; setOpen: Function }) => {
   const id = localStorage.getItem("id");
+  const roles = localStorage.getItem("roles");
+  const isAdmin = roles?.includes("ADMIN");
   const { data: user, isLoading } = useGetProfile(id);
   const [openEdit, setOpenEdit] = useState(false);
 
@@ -29,16 +31,18 @@ const Profile = ({ open, setOpen }: { open: boolean; setOpen: Function }) => {
             <CardContent className="p-6 flex flex-col items-center space-y-6">
               <div className="relative w-28 h-28 rounded-full bg-gray-200 flex items-center justify-center">
                 <UserRound className="w-20 h-20 text-gray-700" />
-                <div
-                  className="absolute w-10 h-10 bottom-1 right-1 flex items-center justify-center 
+                {isAdmin && (
+                  <div
+                    className="absolute w-10 h-10 bottom-1 right-1 flex items-center justify-center 
                   bg-black rounded-full shadow-md cursor-pointer 
                   hover:bg-gray-800 transition-colors"
-                  onClick={() => {
-                    setOpenEdit(true);
-                  }}
-                >
-                  <Pencil className="w-5 h-5 text-white" />
-                </div>
+                    onClick={() => {
+                      setOpenEdit(true);
+                    }}
+                  >
+                    <Pencil className="w-5 h-5 text-white" />
+                  </div>
+                )}
               </div>
 
               <div className="w-full space-y-4 text-center">

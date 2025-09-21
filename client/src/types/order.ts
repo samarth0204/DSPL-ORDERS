@@ -15,6 +15,7 @@ interface Fulfillment {
     quantity: number;
     orderBy: string;
     id: string;
+    productId: string;
   }[];
   date: string;
 }
@@ -29,6 +30,7 @@ export interface Order {
   fulfillments: Fulfillment[];
   salesManName: string;
   orderDate: string;
+  createdAt?: string;
 }
 
 export type UseFetchOrdersParams = {

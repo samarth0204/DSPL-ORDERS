@@ -4,7 +4,7 @@ export const showToast = {
   success: (msg: string) =>
     toast.success(msg, {
       position: "bottom-right",
-      autoClose: 5000,
+      autoClose: 1000,
       theme: "colored",
     }),
   error: (msg: string) =>
