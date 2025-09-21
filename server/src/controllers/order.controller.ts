@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../config/prisma";
+import { checkAndUpdateOrderStatus } from "../utils/orderUtils";
 
 //only admin can access this route
 export const getAllOrders = async (req: Request, res: Response) => {
@@ -266,6 +267,8 @@ export const editOrder = async (req: Request, res: Response) => {
         })),
       });
     }
+
+    await checkAndUpdateOrderStatus(id);
 
     // Return the updated order including the new products
     const finalOrder = await prisma.order.findUnique({

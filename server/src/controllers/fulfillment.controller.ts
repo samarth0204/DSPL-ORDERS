@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
 import prisma from "../config/prisma";
+import {
+  checkAndUpdateOrderStatus,
+  checkValidProductQuantity,
+} from "../utils/orderUtils";
 
 enum FulfillmentStatus {
   PAID = "PAID",
@@ -107,32 +111,31 @@ export const addFulfillment = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Invalid status value" });
     }
 
-    // Validate fulfilledProducts array
-    for (const fp of fulfilledProducts) {
-      if (!fp.productId || fp.quantity == null) {
-        return res
-          .status(400)
-          .json({ error: "Invalid fulfilledProducts data" });
-      }
-
-      // Check product exists
-      const product = await prisma.product.findUnique({
-        where: { id: fp.productId },
-      });
-      if (!product) {
-        return res
-          .status(404)
-          .json({ error: `Product not found: ${fp.productId}` });
-      }
-    }
-
-    // Check order exists
-    const order = await prisma.order.findUnique({ where: { id: orderId } });
+    // Check order exists with products & fulfilledProducts
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        products: {
+          include: {
+            fulfilledProducts: true,
+          },
+        },
+      },
+    });
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
     }
 
-    // Create fulfillment
+    // Check product quantities
+    if (fulfilledProducts) {
+      try {
+        await checkValidProductQuantity(orderId, fulfilledProducts);
+      } catch (err: any) {
+        return res.status(400).json({ error: err.message });
+      }
+    }
+
+    // Create the fulfillment
     const fulfillment = await prisma.fulfillment.create({
       data: {
         billNumber,
@@ -150,6 +153,8 @@ export const addFulfillment = async (req: Request, res: Response) => {
       },
       include: { fulfilledProducts: true },
     });
+
+    await checkAndUpdateOrderStatus(orderId);
 
     res.status(201).json(fulfillment);
   } catch (error) {
@@ -180,16 +185,17 @@ export const editFulfillment = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Fulfillment not found" });
     }
 
-    // Validate inputs
-    if (orderId) {
-      const order = await prisma.order.findUnique({ where: { id: orderId } });
-      if (!order) {
-        return res.status(404).json({ error: "Order not found" });
-      }
+    // Validate orderId
+    if (!orderId) {
+      return res.status(400).json({ error: "Order ID not provided" });
     }
+
+    // Validate status
     if (status && !Object.values(FulfillmentStatus).includes(status)) {
       return res.status(400).json({ error: "Invalid status value" });
     }
+
+    // Validate fulfilledProducts
     if (fulfilledProducts && !Array.isArray(fulfilledProducts)) {
       return res
         .status(400)
@@ -202,19 +208,37 @@ export const editFulfillment = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Invalid fulfilledProducts data" });
     }
 
+    // Validate order exists
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: { products: { include: { fulfilledProducts: true } } },
+    });
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    // Check product quantities
+    if (fulfilledProducts) {
+      try {
+        await checkValidProductQuantity(orderId, fulfilledProducts, id);
+      } catch (err: any) {
+        return res.status(400).json({ error: err.message });
+      }
+    }
+
     // Update fulfillment
     const fulfillment = await prisma.fulfillment.update({
       where: { id },
       data: {
-        billNumber,
-        description,
+        billNumber: billNumber ?? undefined,
+        description: description ?? undefined,
         date: date ? new Date(date) : undefined,
-        orderId: orderId || undefined,
+        orderId: orderId ?? undefined,
         amount: amount != null ? Number(amount) : undefined,
-        status: status || FulfillmentStatus.PENDING,
+        status: status ?? undefined, // only update if provided
         fulfilledProducts: fulfilledProducts
           ? {
-              deleteMany: {}, // Delete existing fulfilled products
+              deleteMany: {}, // wipe and recreate
               create: fulfilledProducts.map((fp: any) => ({
                 productId: fp.productId,
                 quantity: fp.quantity,
@@ -225,30 +249,34 @@ export const editFulfillment = async (req: Request, res: Response) => {
       include: { fulfilledProducts: true },
     });
 
-    res.status(200).json(fulfillment);
+    // Recalculate order status
+    await checkAndUpdateOrderStatus(orderId);
+
+    return res.status(200).json(fulfillment);
   } catch (error) {
     console.error("Error updating fulfillment:", error);
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 
-// DELETE /:id - Delete a fulfillment
 export const deleteFulfillment = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    // Check if fulfillment exists
     const fulfillment = await prisma.fulfillment.findUnique({ where: { id } });
     if (!fulfillment) {
       return res.status(404).json({ error: "Fulfillment not found" });
     }
 
-    // Delete fulfillment (cascades to fulfilledProducts due to Prisma schema)
+    const orderId = fulfillment.orderId;
+
     await prisma.fulfillment.delete({ where: { id } });
 
-    res.status(204).send();
+    await checkAndUpdateOrderStatus(orderId);
+
+    return res.status(204).send();
   } catch (error) {
     console.error("Error deleting fulfillment:", error);
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
