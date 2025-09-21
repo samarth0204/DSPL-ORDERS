@@ -47,7 +47,7 @@ export const fulfillmentSchema = z.object({
         productId: z.string(),
         quantity: z
           .number({ invalid_type_error: "Quantity must be a number" })
-          .min(1, "Quantity must be a non-negative number"),
+          .min(0, "Quantity must be a non-negative number"),
       })
     )
     .min(1, "At least one product is required"),
