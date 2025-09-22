@@ -4,25 +4,30 @@ import { checkAndUpdateOrderStatus } from "../utils/orderUtils";
 
 //only admin can access this route
 export const getAllOrders = async (req: Request, res: Response) => {
-  const { groupBy, sortBy, sortOrder, search } = req.query;
+  const { groupBy, sortBy, sortOrder, search, status } = req.query;
   const orderDirection = sortOrder === "desc" ? "desc" : "asc";
-
   try {
+    const where: any = {};
+
+    if (status && status !== "All") {
+      where.status = status as string;
+    }
+
+    if (search) {
+      where.OR = [
+        {
+          clientName: { contains: search as string, mode: "insensitive" },
+        },
+        {
+          salesman: {
+            username: { contains: search as string, mode: "insensitive" },
+          },
+        },
+      ];
+    }
+
     const orders = await prisma.order.findMany({
-      where: {
-        OR: search
-          ? [
-              {
-                clientName: { contains: search as string, mode: "insensitive" },
-              },
-              {
-                salesman: {
-                  username: { contains: search as string, mode: "insensitive" },
-                },
-              },
-            ]
-          : undefined,
-      },
+      where,
       include: {
         salesman: {
           select: {
@@ -59,12 +64,10 @@ export const getAllOrders = async (req: Request, res: Response) => {
           const yyyy = dateObj.getFullYear();
           key = `${dd}-${mm}-${yyyy}`;
         } else {
-          key = "Other"; // Default or handle other cases
+          key = "Other";
         }
 
-        if (!groups[key]) {
-          groups[key] = [];
-        }
+        if (!groups[key]) groups[key] = [];
         groups[key].push(order);
       });
 
@@ -83,9 +86,8 @@ export const getAllOrders = async (req: Request, res: Response) => {
       return res.status(200).json(groupedResult);
     }
 
-    // Return a single group containing all orders if groupBy is 'none' or not specified
-    const singleGroup = { groupKey: "All Orders", orders: orders };
-    return res.status(200).json([singleGroup]);
+    // Default single group
+    return res.status(200).json([{ groupKey: "All Orders", orders }]);
   } catch (error) {
     console.error("Error fetching all orders:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -94,30 +96,48 @@ export const getAllOrders = async (req: Request, res: Response) => {
 
 // route for salesman and admin
 export const getAllOrdersBySalesman = async (req: Request, res: Response) => {
-  const { salesmanId } = req.query;
   try {
+    const { salesmanId, status, search } = req.query;
+
+    if (!salesmanId) {
+      return res.status(400).json({ message: "salesmanId is required" });
+    }
+
+    // build where condition dynamically
+    const where: any = {
+      salesmanId: salesmanId as string,
+    };
+
+    if (status) {
+      where.status = status as string;
+    }
+
+    if (search) {
+      where.clientName = {
+        contains: search as string,
+        mode: "insensitive", // case-insensitive search
+      };
+    }
+
     const orders = await prisma.order.findMany({
-      where: {
-        salesmanId: salesmanId as string,
-      },
+      where,
       include: {
         products: true,
         fulfillments: {
           include: {
             fulfilledProducts: {
-              include: {
-                product: true,
-              },
+              include: { product: true },
             },
           },
         },
       },
       orderBy: { orderDate: "desc" },
     });
+
     return res.status(200).json(orders);
   } catch (error) {
-    console.log("Error while fetching orders", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error while fetching orders", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
