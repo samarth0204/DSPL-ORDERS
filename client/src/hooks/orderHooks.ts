@@ -33,14 +33,18 @@ export const useFetchOrders = ({
   sortOrder,
   search,
   salesmanId,
+  status,
 }: UseFetchOrdersParams) => {
   const url = salesmanId ? "/orders" : "/orders/all";
 
   return useQuery({
-    queryKey: ["orders", { groupBy, sortBy, sortOrder, search, salesmanId }],
+    queryKey: [
+      "orders",
+      { groupBy, sortBy, sortOrder, search, salesmanId, status },
+    ],
     queryFn: async () => {
       const res = await api.get(url, {
-        params: { groupBy, sortBy, sortOrder, search, salesmanId },
+        params: { groupBy, sortBy, sortOrder, search, salesmanId, status },
       });
       return res.data;
     },

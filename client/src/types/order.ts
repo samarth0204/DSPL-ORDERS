@@ -40,4 +40,6 @@ export type UseFetchOrdersParams = {
   search?: string;
   filterStatus?: string;
   salesmanId?: any;
+  status?: string;
+  enabled?: boolean;
 };

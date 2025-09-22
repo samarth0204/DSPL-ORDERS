@@ -12,7 +12,12 @@ const AddOrder = () => {
           <OrderFormDialog open={open} setOpen={setOpen} />
         </div>
       )}
-      <Button size="lg" className="rounded-full" onClick={() => setOpen(true)}>
+      <Button
+        type="button"
+        size="lg"
+        className="rounded-full"
+        onClick={() => setOpen(true)}
+      >
         <Plus />
         New Order
       </Button>

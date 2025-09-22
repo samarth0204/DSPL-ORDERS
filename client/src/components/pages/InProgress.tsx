@@ -7,14 +7,23 @@ import { useFetchOrders } from "@/hooks/orderHooks";
 import Loader from "../common/Loader";
 const Completed = () => {
   const [query, setQuery] = useState("");
-  const { data, isLoading, error } = useFetchOrders({
+  const {
+    data = [],
+    isLoading,
+    error,
+  } = useFetchOrders({
     salesmanId: localStorage.getItem("id"),
+    status: "In Progress",
+    search: query,
   });
 
-  if (isLoading) return <Loader />;
-  if (error) return <div>Error occurred</div>;
+  if (error)
+    return (
+      <div className="text-red-500 text-center mt-4">
+        Failed to load orders. Please try again.
+      </div>
+    );
 
-  const filteredOrder = data;
   return (
     <div>
       <div className="w-full flex items-center justify-between gap-3 mb-2 sticky top-0  backdrop-blur-md bg-white/30 border-b border-white/40 z-10 py-2">
@@ -29,10 +38,15 @@ const Completed = () => {
         </div>
         <AddOrder />
       </div>
-      <ShowOrders
-        orders={filteredOrder}
-        filterStatus={["In Progress", "Not Started"]}
-      />
+      {isLoading ? (
+        <Loader />
+      ) : data.length ? (
+        <ShowOrders orders={data} />
+      ) : (
+        <div className="text-gray-500 text-center mt-4">
+          No order In progress!
+        </div>
+      )}
     </div>
   );
 };
