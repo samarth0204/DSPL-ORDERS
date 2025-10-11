@@ -4,6 +4,7 @@ import {
   checkAndUpdateOrderStatus,
   checkValidProductQuantity,
 } from "../utils/orderUtils";
+import { notifyBillAction } from "../utils/billNotification";
 
 enum FulfillmentStatus {
   PAID = "PAID",
@@ -156,6 +157,25 @@ export const addFulfillment = async (req: Request, res: Response) => {
 
     await checkAndUpdateOrderStatus(orderId);
 
+    // Fetch all admins, fulfillment users, and the salesmanId
+    const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          { roles: { has: "ADMIN" } },
+          { roles: { has: "FULFILLMENT" } },
+          { id: order.salesmanId },
+        ],
+      },
+      select: { id: true },
+    });
+    const notifyUserIds = Array.from(new Set(users.map((u) => u.id)));
+    await notifyBillAction({
+      userId: notifyUserIds,
+      action: "created",
+      order,
+      bill: fulfillment,
+    });
+
     res.status(201).json(fulfillment);
   } catch (error) {
     console.error("Error creating fulfillment:", error);
@@ -252,6 +272,25 @@ export const editFulfillment = async (req: Request, res: Response) => {
     // Recalculate order status
     await checkAndUpdateOrderStatus(orderId);
 
+    // Fetch all admins, fulfillment users, and the salesmanId
+    const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          { roles: { has: "ADMIN" } },
+          { roles: { has: "FULFILLMENT" } },
+          { id: order.salesmanId },
+        ],
+      },
+      select: { id: true },
+    });
+    const notifyUserIds = Array.from(new Set(users.map((u) => u.id)));
+    await notifyBillAction({
+      userId: notifyUserIds,
+      action: "edited",
+      order,
+      bill: fulfillment,
+    });
+
     return res.status(200).json(fulfillment);
   } catch (error) {
     console.error("Error updating fulfillment:", error);
@@ -268,11 +307,35 @@ export const deleteFulfillment = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Fulfillment not found" });
     }
 
-    const orderId = fulfillment.orderId;
+    const order = await prisma.order.findUnique({
+      where: { id: fulfillment.orderId },
+    });
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
 
     await prisma.fulfillment.delete({ where: { id } });
 
-    await checkAndUpdateOrderStatus(orderId);
+    await checkAndUpdateOrderStatus(order.id);
+
+    // Fetch all admins, fulfillment users, and the salesmanId
+    const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          { roles: { has: "ADMIN" } },
+          { roles: { has: "FULFILLMENT" } },
+          { id: order.salesmanId },
+        ],
+      },
+      select: { id: true },
+    });
+    const notifyUserIds = Array.from(new Set(users.map((u) => u.id)));
+    await notifyBillAction({
+      userId: notifyUserIds,
+      action: "deleted",
+      order,
+      bill: fulfillment,
+    });
 
     return res.status(204).send();
   } catch (error) {

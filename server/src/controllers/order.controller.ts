@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import prisma from "../config/prisma";
 import { checkAndUpdateOrderStatus } from "../utils/orderUtils";
 import { sendNotification } from "../services/notificationService";
+import { notifyOrderAction } from "../utils/billNotification";
 
 //only admin can access this route
 export const getAllOrders = async (req: Request, res: Response) => {
@@ -91,6 +92,49 @@ export const getAllOrders = async (req: Request, res: Response) => {
     return res.status(200).json([{ groupKey: "All Orders", orders }]);
   } catch (error) {
     console.error("Error fetching all orders:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//get an order by ID
+
+export const getOrder = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (!id || typeof id !== "string") {
+    return res.status(400).json({ message: "Order ID is required." });
+  }
+
+  try {
+    const order = await prisma.order.findUnique({
+      where: { id },
+      include: {
+        salesman: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        products: true,
+        fulfillments: {
+          include: {
+            fulfilledProducts: {
+              include: {
+                product: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found." });
+    }
+
+    return res.status(200).json(order);
+  } catch (error) {
+    console.error("Error fetching order by ID:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -192,10 +236,22 @@ export const addOrder = async (req: Request, res: Response) => {
       },
     });
 
-    await sendNotification(salesmanId, {
-      title: "Bill Added",
-      body: `A bill has been added to your order.`,
-      url: "https://order.divydaminispices.com/sales/orders",
+    // Fetch all admins, fulfillment users, and the salesmanId
+    const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          { roles: { has: "ADMIN" } },
+          { roles: { has: "FULFILLMENT" } },
+          { id: newOrder.salesmanId },
+        ],
+      },
+      select: { id: true },
+    });
+    const notifyUserIds = Array.from(new Set(users.map((u) => u.id)));
+    await notifyOrderAction({
+      userId: notifyUserIds,
+      action: "created",
+      order: newOrder,
     });
 
     res.status(201).json(newOrder);
@@ -237,9 +293,25 @@ export const deleteOrder = async (req: Request, res: Response) => {
       where: { id },
     });
 
-    res
-      .status(200)
-      .json({ message: "Order deleted successfully", deletedOrder });
+    // Fetch all admins, fulfillment users, and the order's salesmanId
+    const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          { roles: { has: "ADMIN" } },
+          { roles: { has: "FULFILLMENT" } },
+          { id: deletedOrder.salesmanId },
+        ],
+      },
+      select: { id: true },
+    });
+    const notifyUserIds = Array.from(new Set(users.map((u) => u.id)));
+    await notifyOrderAction({
+      userId: notifyUserIds,
+      action: "deleted",
+      order: deletedOrder,
+    });
+
+    res.status(200).json(deletedOrder);
   } catch (error) {
     console.error("Error while deleting order:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -296,6 +368,24 @@ export const editOrder = async (req: Request, res: Response) => {
     }
 
     await checkAndUpdateOrderStatus(id);
+
+    // Fetch all admins, fulfillment users, and the salesmanId
+    const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          { roles: { has: "ADMIN" } },
+          { roles: { has: "FULFILLMENT" } },
+          { id: updatedOrder.salesmanId },
+        ],
+      },
+      select: { id: true },
+    });
+    const notifyUserIds = Array.from(new Set(users.map((u) => u.id)));
+    await notifyOrderAction({
+      userId: notifyUserIds,
+      action: "edited",
+      order: updatedOrder,
+    });
 
     // Return the updated order including the new products
     const finalOrder = await prisma.order.findUnique({

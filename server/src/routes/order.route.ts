@@ -5,6 +5,7 @@ import {
   editOrder,
   getAllOrders,
   getAllOrdersBySalesman,
+  getOrder,
 } from "../controllers/order.controller";
 import {
   authenticateJWT,
@@ -25,7 +26,16 @@ router.get(
   authorizeRoles(["ADMIN", "SALESMAN"]),
   getAllOrdersBySalesman
 );
+
 router.post("/", authenticateJWT, authorizeRoles(["SALESMAN"]), addOrder);
+
+router.get(
+  "/:id",
+  authenticateJWT,
+  authorizeRoles(["ADMIN", "SALESMAN", "FULFILLMENT"]),
+  getOrder
+);
+
 router.delete("/:id", authenticateJWT, authorizeRoles(["ADMIN"]), deleteOrder);
 router.put("/:id", authenticateJWT, authorizeRoles(["ADMIN"]), editOrder);
 
