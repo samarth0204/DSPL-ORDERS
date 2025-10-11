@@ -53,7 +53,7 @@ const FulfillmentProgress = ({ order }: { order: Order }) => {
   return (
     <div className="mt-2">
       <p className="text-sm text-muted-foreground mb-1">
-        Fulfillment: {progress}%
+        Dispatch: {progress}%
       </p>
       <Progress value={progress} className="h-2 bg-gray-200" />
     </div>
@@ -138,7 +138,7 @@ const FulfillmentAccordion = ({ order }: { order: Order }) => {
     <Accordion type="single" collapsible className="w-full">
       <AccordionItem value="fulfillment-1">
         <AccordionTrigger className=" bg-gray-100 p-3 ">
-          Fulfillment History
+          Dispatch History
         </AccordionTrigger>
         <AccordionContent className="text-sm mt-2">
           <ul className="space-y-2">

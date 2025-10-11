@@ -83,7 +83,7 @@ export default function AppSidebar() {
         <SidebarContent>
           {(isAdmin || isFulfillment) && (
             <SidebarGroup>
-              <SidebarGroupLabel>Fulfillment Panel</SidebarGroupLabel>
+              <SidebarGroupLabel>Dispatch Panel</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>{renderMenuItems(fulfilmentNavItems)}</SidebarMenu>
               </SidebarGroupContent>

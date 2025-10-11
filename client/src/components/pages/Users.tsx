@@ -106,7 +106,7 @@ const Users = () => {
         <TabsList>
           <TabsTrigger value="admin">Admin</TabsTrigger>
           <TabsTrigger value="salesman">Salesman</TabsTrigger>
-          <TabsTrigger value="fulfillment">Fulfillment</TabsTrigger>
+          <TabsTrigger value="fulfillment">Dispatch</TabsTrigger>
         </TabsList>
         <TabsContent value="admin" className="p-4">
           {data?.admin && renderTable(filteredUsers(data.admin))}
