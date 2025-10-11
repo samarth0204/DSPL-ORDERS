@@ -8,7 +8,7 @@ type ItemType = {
 
 export const salesManNavItems: ItemType[] = [
   {
-    title: "In Progress",
+    title: "In progress",
     icon: Clock,
     route: "in-progress",
   },

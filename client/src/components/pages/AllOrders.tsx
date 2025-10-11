@@ -33,8 +33,8 @@ const AllOrders = () => {
   const debouncedSearch = useDebounce(searchQuery);
 
   const [filterStatus, setFilterStatus] = useState<
-    "All" | "Completed" | "In Progress"
-  >("In Progress");
+    "All" | "Completed" | "In progress"
+  >("In progress");
   const [showSearchBar, setShowSearchBar] = useState(false);
 
   const { data, isLoading, error } = useFetchOrders({
@@ -95,7 +95,7 @@ const AllOrders = () => {
         {(!isMobile || !showSearchBar) && (
           <div className="flex gap-2 w-full sm:w-auto transition-opacity duration-300">
             <Select
-              onValueChange={(value: "All" | "Completed" | "In Progress") =>
+              onValueChange={(value: "All" | "Completed" | "In progress") =>
                 setFilterStatus(value)
               }
               value={filterStatus}
@@ -106,8 +106,8 @@ const AllOrders = () => {
               <SelectContent>
                 <SelectItem value="All">All</SelectItem>
                 <SelectItem value="Completed">Completed</SelectItem>
-                <SelectItem value="In Progress">
-                  In Progress | Not Started
+                <SelectItem value="In progress">
+                  In progress | Not Started
                 </SelectItem>
               </SelectContent>
             </Select>

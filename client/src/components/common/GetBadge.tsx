@@ -23,7 +23,7 @@ const GetBadge = ({ order }: { order: Order }) => {
         className="bg-yellow-500 text-white dark:bg-blue-600"
       >
         <Clock />
-        In Progress
+        In progress
       </Badge>
     );
   }
