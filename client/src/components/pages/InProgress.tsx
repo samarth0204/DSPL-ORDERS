@@ -5,8 +5,12 @@ import { Search } from "lucide-react";
 import ShowOrders from "../common/ShowOrders";
 import { useFetchOrders } from "@/hooks/orderHooks";
 import Loader from "../common/Loader";
+import useDebounce from "@/hooks/useDebounce";
 const Completed = () => {
   const [query, setQuery] = useState("");
+
+  const debouncedSearch = useDebounce(query);
+
   const {
     data = [],
     isLoading,
@@ -14,7 +18,7 @@ const Completed = () => {
   } = useFetchOrders({
     salesmanId: localStorage.getItem("id"),
     status: "In Progress",
-    search: query,
+    search: debouncedSearch,
   });
 
   if (error)

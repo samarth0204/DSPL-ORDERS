@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import FormInput from "./common/FormInput";
 import { loginSchema } from "@/constants/schema";
 import Loader from "./common/Loader";
@@ -8,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useLogin } from "@/hooks/userHooks";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "@/store/useUserStore";
+import { Eye, EyeOff } from "lucide-react";
 
 export function LoginForm({
   className,
@@ -37,6 +39,13 @@ export function LoginForm({
         localStorage.setItem("id", userData.user.id);
         setRoles(userData.user.roles);
         localStorage.setItem("username", userData.user.username);
+        // Store tokens in localStorage
+        if (userData.accessToken) {
+          localStorage.setItem("accessToken", userData.accessToken);
+        }
+        if (userData.refreshToken) {
+          localStorage.setItem("refreshToken", userData.refreshToken);
+        }
         const roles = userData.user.roles;
         if (roles.includes("ADMIN")) {
           navigate("/in-progress"); // or a dashboard route
@@ -50,6 +59,8 @@ export function LoginForm({
       },
     });
   };
+
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <form
@@ -72,13 +83,28 @@ export function LoginForm({
           error={errors.username?.message}
         />
 
-        <FormInput
-          label="Password"
-          type="password"
-          autoComplete="current-password"
-          {...register("password")}
-          error={errors.password?.message}
-        />
+        <div className="relative">
+          <FormInput
+            label="Password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="current-password"
+            {...register("password")}
+            error={errors.password?.message}
+          />
+          <button
+            type="button"
+            tabIndex={-1}
+            className="absolute right-3 top-1/2 text-muted-foreground text-sm focus:outline-none"
+            onClick={() => setShowPassword((v) => !v)}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? (
+              <EyeOff color="black" size={18} />
+            ) : (
+              <Eye color="black" size={18} />
+            )}
+          </button>
+        </div>
 
         {login.isPending ? (
           <Loader />

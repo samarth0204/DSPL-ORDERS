@@ -71,6 +71,8 @@ export const useLogout = () => {
       localStorage.removeItem("id");
       localStorage.removeItem("roles");
       localStorage.removeItem("username");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
       clearRoles();
       navigate("/login");
     },

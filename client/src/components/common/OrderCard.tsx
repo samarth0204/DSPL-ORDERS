@@ -140,7 +140,6 @@ const GetBadge = ({ order }: { order: Order }) => {
   }
   const createdAtMs = order.createdAt ? new Date(order.createdAt).getTime() : 0;
   const diffMinutes = Math.floor((Date.now() - createdAtMs) / (1000 * 60));
-  console.log(diffMinutes);
   if (diffMinutes >= 5) {
     return (
       <Badge

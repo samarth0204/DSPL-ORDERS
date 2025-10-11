@@ -18,6 +18,7 @@ import {
 import Loader from "../common/Loader";
 import { useFetchOrders } from "@/hooks/orderHooks";
 import { useIsMobile } from "@/hooks/use-mobile";
+import useDebounce from "@/hooks/useDebounce";
 
 const AllOrders = () => {
   const isMobile = useIsMobile();
@@ -27,16 +28,19 @@ const AllOrders = () => {
   // const [sortBy, setSortBy] = useState<
   //   "none" | "dateAsc" | "dateDesc" | "clientNameAsc" | "clientNameDesc"
   // >("dateDesc");
+
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearch = useDebounce(searchQuery);
+
   const [filterStatus, setFilterStatus] = useState<
     "All" | "Completed" | "In Progress"
-  >("All");
+  >("In Progress");
   const [showSearchBar, setShowSearchBar] = useState(false);
 
   const { data, isLoading, error } = useFetchOrders({
     groupBy,
     status: filterStatus,
-    search: searchQuery,
+    search: debouncedSearch,
   });
 
   if (error) return <div>Error occurred</div>;

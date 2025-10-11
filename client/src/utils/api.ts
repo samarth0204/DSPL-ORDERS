@@ -1,12 +1,25 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://dspl-server-288823573837.asia-south2.run.app/api",
-  withCredentials: true, // send cookies
+  baseURL: "http://localhost:3001/api",
 });
+
+// Attach accessToken from localStorage to every request
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      config.headers = config.headers || {};
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 let refreshAttempts = 0;
 const MAX_REFRESH_ATTEMPTS = 2;
+
 
 api.interceptors.response.use(
   (res) => res,
@@ -22,7 +35,22 @@ api.interceptors.response.use(
       refreshAttempts += 1;
 
       try {
-        await api.post("users/auth/refresh");
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (!refreshToken) throw new Error("No refresh token");
+        // Send refresh token in Authorization header
+        const refreshRes = await api.post(
+          "users/auth/refresh",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${refreshToken}`,
+            },
+          }
+        );
+        // Save new accessToken if present
+        if (refreshRes.data?.accessToken) {
+          localStorage.setItem("accessToken", refreshRes.data.accessToken);
+        }
         return api(originalRequest);
       } catch (refreshError) {
         window.location.href = "/login";

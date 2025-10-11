@@ -81,20 +81,20 @@ export default function AppSidebar() {
         </SidebarHeader>
 
         <SidebarContent>
-          {(isAdmin || isSalesman) && (
-            <SidebarGroup>
-              <SidebarGroupLabel>Your Orders</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>{renderMenuItems(salesManNavItems)}</SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          )}
-
           {(isAdmin || isFulfillment) && (
             <SidebarGroup>
               <SidebarGroupLabel>Fulfillment Panel</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>{renderMenuItems(fulfilmentNavItems)}</SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          )}
+
+          {(isAdmin || isSalesman) && (
+            <SidebarGroup>
+              <SidebarGroupLabel>Your Orders</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>{renderMenuItems(salesManNavItems)}</SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
           )}

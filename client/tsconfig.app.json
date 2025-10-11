@@ -29,5 +29,5 @@
       ]
     }
   },
-  "include": ["src"]
+  "include": ["src", "../server/src/utils/urlBase64ToUint8Array.ts"]
 }

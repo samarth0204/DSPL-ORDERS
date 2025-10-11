@@ -9,6 +9,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NotAuthorized from "./components/pages/NotAuthorized";
+import usePushNotification from "./hooks/usePushNotification";
 
 const InProgress = lazy(() => import("./components/pages/InProgress"));
 const Completed = lazy(() => import("./components/pages/Completed"));
@@ -48,6 +49,8 @@ const RoleBasedRoute = ({
 
 function App() {
   const queryClient = new QueryClient();
+  const id = localStorage.getItem("id");
+  usePushNotification(id);
   return (
     <>
       <QueryClientProvider client={queryClient}>
