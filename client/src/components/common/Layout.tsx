@@ -22,7 +22,7 @@ const Layout = () => {
 
               <div className="flex gap-4 items-center">
                 <img src={logo} alt="Logo" className="h-10 w-auto rounded-sm" />
-                <h1 className="text-lg font-semibold">Sales Dashboard</h1>
+                <h1 className="text-lg font-semibold">DSPL</h1>
               </div>
             </header>
           )}
