@@ -123,7 +123,7 @@ const OrderFormDialog: React.FC<Props> = ({ open, setOpen, order }) => {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent>
+      <DialogContent className="max-w-full md:max-w-[700px] overflow-y-auto overscroll-contain">
         <DialogHeader>
           <DialogTitle>{order ? "Edit Order" : "Add Order"}</DialogTitle>
         </DialogHeader>
