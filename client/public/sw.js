@@ -11,7 +11,7 @@ self.addEventListener("push", (event) => {
 
   self.registration.showNotification(data.title || "Notification", {
     body: data.body || "",
-    icon: "/logo.jpg", // make sure this file exists in public/
+    icon: "/logo.jpg",
     data: { url: data.url || "/" },
   });
 
