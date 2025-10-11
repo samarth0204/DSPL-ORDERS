@@ -78,7 +78,14 @@ export async function notifyOrderAction({
   }
 
   if (order.status) body += `\nStatus: ${order.status}`;
-  if (order.orderDate) body += `\n, Date: ${order.orderDate.toLocaleString()}`;
+  if (order.orderDate) {
+    const date = new Date(order.orderDate);
+    body += `\nDate: ${date.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    })}`;
+  }
 
   const userIds = Array.isArray(userId) ? userId : [userId];
 
