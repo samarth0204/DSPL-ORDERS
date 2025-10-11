@@ -30,7 +30,6 @@ export async function notifyBillAction({
       break;
   }
 
-  // Add more details if bill info is present
   if (bill) {
     body += `\nBill Number: ${bill.billNumber || bill.id}`;
     if (bill.amount) body += `, Amount: ₹${bill.amount}`;
@@ -38,12 +37,15 @@ export async function notifyBillAction({
   }
 
   const userIds = Array.isArray(userId) ? userId : [userId];
+
   await Promise.all(
     userIds.map((uid) =>
       sendNotification(uid, {
         title,
         body,
-        url: `https://order.divydaminispices.com/order/${order.id}`,
+        ...(action !== "deleted" && {
+          url: `https://order.divydaminispices.com/order/${order.id}`,
+        }),
       })
     )
   );
@@ -76,17 +78,19 @@ export async function notifyOrderAction({
       break;
   }
 
-  // Add more order details if available
   if (order.status) body += `\nStatus: ${order.status}`;
   if (order.orderDate) body += `, Date: ${order.orderDate}`;
 
   const userIds = Array.isArray(userId) ? userId : [userId];
+
   await Promise.all(
     userIds.map((uid) =>
       sendNotification(uid, {
         title,
         body,
-        url: `https://order.divydaminispices.com/order/${order.id}`,
+        ...(action !== "deleted" && {
+          url: `https://order.divydaminispices.com/order/${order.id}`,
+        }),
       })
     )
   );
