@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import logo from "../../static/logo.jpg";
+import logo from "../../assets/logo.png";
 import {
   adminNavItems,
   fulfilmentNavItems,

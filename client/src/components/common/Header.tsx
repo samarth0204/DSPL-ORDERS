@@ -1,5 +1,5 @@
 import { User } from "lucide-react";
-import logo from "../../static/logo.jpg";
+import logo from "../../assets/logo.png";
 
 const Header = () => {
   return (

@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "../ui/sidebar";
 import AppSidebar from "./AppSidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
-import logo from "../../static/logo.jpg";
+import logo from "../../assets/logo.png";
 
 const Layout = () => {
   const isMobile = useIsMobile();

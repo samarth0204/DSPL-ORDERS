@@ -11,7 +11,7 @@ self.addEventListener("push", (event) => {
 
   self.registration.showNotification(data.title || "Notification", {
     body: data.body || "",
-    icon: "/logo.jpg",
+    icon: "/logo.png",
     data: { url: data.url || "/" },
   });
 
