@@ -62,18 +62,10 @@ export const login = async (req: Request, res: Response) => {
       expiresIn: "7d",
     });
 
-    res.cookie("accessToken", accessToken, {
-      ...cookieOptions,
-      maxAge: 15 * 60 * 1000,
-    });
-
-    res.cookie("refreshToken", refreshToken, {
-      ...cookieOptions,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
     return res.json({
       message: "Login successful",
+      accessToken,
+      refreshToken,
       user: {
         id: user.id,
         username: user.username,
@@ -89,11 +81,12 @@ export const login = async (req: Request, res: Response) => {
 
 export const refresh = async (req: Request, res: Response) => {
   try {
-    const token = req.cookies.refreshToken;
-    if (!token) {
+    // Accept refresh token from Authorization header: Bearer <token>
+    const authHeader = req.headers["authorization"];
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({ message: "No refresh token" });
     }
-
+    const token = authHeader.split(" ")[1];
     // Verify refresh token
     const decoded: any = jwt.verify(token, REFRESH_SECRET);
 
@@ -117,13 +110,9 @@ export const refresh = async (req: Request, res: Response) => {
       { expiresIn: "15m" }
     );
 
-    res.cookie("accessToken", newAccessToken, {
-      ...cookieOptions,
-      maxAge: 15 * 60 * 1000,
-    });
-
     return res.json({
-      message: "Login successful",
+      message: "Token refreshed",
+      accessToken: newAccessToken,
       user: {
         id: user.id,
         username: user.username,
@@ -355,11 +344,10 @@ export const getCurrentUser = async (req: Request, res: Response) => {
 
 export const logout = (req: Request, res: Response) => {
   try {
-    res.clearCookie("accessToken", { ...cookieOptions, path: "/" });
-    res.clearCookie("refreshToken", { ...cookieOptions, path: "/" });
+    // No cookies to clear, just respond
     return res.status(200).json({ message: "user Successfully logged out" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Internal Setver error" });
+    return res.status(500).json({ message: "Internal Server error" });
   }
 };

@@ -13,12 +13,12 @@ export const authenticateJWT = async (
   next: NextFunction
 ) => {
   try {
-    const accessToken = req.cookies?.accessToken;
-
-    if (!accessToken) {
+    // Read access token from Authorization header: Bearer <token>
+    const authHeader = req.headers["authorization"];
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({ message: "Authentication token missing" });
     }
-
+    const accessToken = authHeader.split(" ")[1];
     const decoded = jwt.verify(accessToken, JWT_SECRET);
     req.user = decoded;
     next();

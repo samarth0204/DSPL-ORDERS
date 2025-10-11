@@ -23,6 +23,7 @@ model User {
   orders   Order[]  @relation("SalesmanOrders")
   createdAt         DateTime            @default(now())
   updatedAt DateTime @updatedAt @default(now())
+  subscriptions NotificationSubscription[]
 }
 
 model Order {
@@ -87,4 +88,16 @@ enum Role {
   ADMIN
   SALESMAN
   FULFILLMENT
+}
+
+
+model NotificationSubscription {
+  id         Int      @id @default(autoincrement())
+  userId     String
+  endpoint   String   @unique
+  p256dh     String
+  auth       String
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id])
 }

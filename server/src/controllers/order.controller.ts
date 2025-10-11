@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../config/prisma";
 import { checkAndUpdateOrderStatus } from "../utils/orderUtils";
+import { sendNotification } from "../services/notificationService";
 
 //only admin can access this route
 export const getAllOrders = async (req: Request, res: Response) => {
@@ -189,6 +190,12 @@ export const addOrder = async (req: Request, res: Response) => {
       include: {
         products: true,
       },
+    });
+
+    await sendNotification(salesmanId, {
+      title: "Bill Added",
+      body: `A bill has been added to your order.`,
+      url: "https://order.divydaminispices.com/sales/orders",
     });
 
     res.status(201).json(newOrder);
