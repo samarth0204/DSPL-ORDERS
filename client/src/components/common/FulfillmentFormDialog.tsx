@@ -11,7 +11,7 @@ import { Button } from "../ui/button";
 import FormTextArea from "./FormTextArea";
 import type { Order } from "@/types/order";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { fulfillmentSchema } from "@/constants/schema";
 import { z } from "zod";
@@ -36,13 +36,15 @@ const FulfillmentFormDialog = ({
   order,
   fulfillment,
 }: FulfillmentFormDialogProps) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const {
     register,
     control,
     handleSubmit,
     reset,
     setValue,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<FulfillmentFormValues>({
     resolver: zodResolver(fulfillmentSchema),
     defaultValues: {
@@ -60,7 +62,6 @@ const FulfillmentFormDialog = ({
     control,
     name: "fulfilledProducts",
   });
-
   useEffect(() => {
     if (open) {
       if (fulfillment) {
@@ -101,7 +102,9 @@ const FulfillmentFormDialog = ({
   };
   const addFulfillmentMutation = useAddFulfillment();
   const editFulfillmentMutation = useEditFulfillment();
+
   const onSubmit = (data: any) => {
+    setIsSubmitting(true);
     const payload = { ...data, orderId: order.id };
 
     if (fulfillment) {
@@ -257,7 +260,11 @@ const FulfillmentFormDialog = ({
           )}
 
           {/* Save Button */}
-          <Button className="w-full mt-4" type="submit">
+          <Button
+            className="w-full mt-4"
+            type="submit"
+            disabled={isSubmitting || !isValid}
+          >
             Save Bill
           </Button>
         </form>

@@ -15,6 +15,7 @@ import { useDeleteFulfillment } from "@/hooks/fulfillmentHooks";
 import { useState } from "react";
 import FulfillmentFormDialog from "./FulfillmentFormDialog";
 import { Package, Hash } from "lucide-react";
+import { useUserStore } from "@/store/useUserStore";
 
 interface FulfilledProduct {
   product: {
@@ -66,6 +67,7 @@ const BillCard = ({
 }) => {
   const deleteMutation = useDeleteFulfillment();
   const [openEditFulfillment, setOpenEditFulfillment] = useState(false);
+  const { isAdmin, isFulfillment } = useUserStore();
   if (!fulfillment) return null;
 
   return (
@@ -122,36 +124,38 @@ const BillCard = ({
           <p className="text-xs text-gray-400">
             Total items: {fulfillment.fulfilledProducts?.length || 0}
           </p>
-          <div className="flex gap-2">
-            {order && (
+          {(isAdmin || isFulfillment) && (
+            <div className="flex gap-2">
+              {order && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setOpenEditFulfillment(true);
+                  }}
+                >
+                  <Pencil size={18} />
+                  Edit
+                </Button>
+              )}
+
               <Button
-                variant="outline"
+                variant="destructive"
+                className="bg-white text-black hover:text-white"
                 onClick={() => {
-                  setOpenEditFulfillment(true);
+                  if (
+                    window.confirm(
+                      "Are you sure you want to delete this fulfillment?"
+                    )
+                  ) {
+                    deleteMutation.mutate(fulfillment.id);
+                  }
                 }}
               >
-                <Pencil size={18} />
-                Edit
+                <Trash size={18} />
+                Delete
               </Button>
-            )}
-
-            <Button
-              variant="destructive"
-              className="bg-white text-black hover:text-white"
-              onClick={() => {
-                if (
-                  window.confirm(
-                    "Are you sure you want to delete this fulfillment?"
-                  )
-                ) {
-                  deleteMutation.mutate(fulfillment.id);
-                }
-              }}
-            >
-              <Trash size={18} />
-              Delete
-            </Button>
-          </div>
+            </div>
+          )}
         </CardFooter>
       </Card>
     </>

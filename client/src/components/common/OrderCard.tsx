@@ -33,7 +33,11 @@ import {
 } from "lucide-react";
 
 import { Progress } from "@/components/ui/progress";
-import { getFulfilledQuantities, getFulfillmentProgress } from "@/lib/utils";
+import {
+  cn,
+  getFulfilledQuantities,
+  getFulfillmentProgress,
+} from "@/lib/utils";
 import BillCard from "./BillCard";
 import { Button } from "../ui/button";
 import { useState } from "react";
@@ -209,82 +213,93 @@ const OrderCard = ({ order }: { order: Order }) => {
           <OrderAccordion order={order} />
         </CardContent>
 
-        {(isAdmin || isFulfillment) && (
-          <CardFooter className="flex flex-col lg:pl-0 lg:pr-0 gap-4 lg:col-span-3">
-            <FulfillmentAccordion order={order} />
-            <div className="flex w-full justify-between lg:hidden">
-              {order.status !== "Completed" && (
-                <Button
-                  variant="outline"
-                  className="gap-2"
-                  onClick={() => setOpenFulfillmentForm(true)}
-                >
-                  <Plus />
-                  Attach Bill
-                </Button>
+        <CardFooter className="flex flex-col lg:pl-0 lg:pr-0 gap-4 lg:col-span-3">
+          <FulfillmentAccordion order={order} />
+          <div className="flex w-full justify-between lg:hidden gap-2">
+            <Button
+              variant="outline"
+              className={cn(
+                "gap-2",
+                !(isAdmin || isFulfillment) ? "ml-auto" : ""
               )}
-              <Button
-                variant="outline"
-                className="gap-2"
-                onClick={() => setOpenEditOrder(true)}
-              >
-                <Pencil />
-                Edit
-              </Button>
-              <Button
-                variant="destructive"
-                className="gap-2 bg-white text-black hover:text-white"
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      "Are you sure you want to delete this order?"
-                    )
-                  ) {
-                    deleteMutation.mutate(order.id);
-                  }
-                }}
-              >
-                <Trash />
-                Delete
-              </Button>
-            </div>
-          </CardFooter>
-        )}
-        {(isAdmin || isFulfillment) && (
-          <div className="hidden lg:block lg:col-span-1">
-            <div className="flex flex-col w-full gap-2">
-              {order.status !== "Completed" && (
+              onClick={() => setOpenEditOrder(true)}
+            >
+              <Pencil />
+              Edit
+            </Button>
+
+            {(isAdmin || isFulfillment) && (
+              <>
+                {order.status !== "Completed" && (
+                  <Button
+                    variant="outline"
+                    className="gap-2"
+                    onClick={() => setOpenFulfillmentForm(true)}
+                  >
+                    <Plus />
+                    Attach Bill
+                  </Button>
+                )}
+
                 <Button
-                  variant="outline"
-                  onClick={() => setOpenFulfillmentForm(true)}
+                  variant="destructive"
+                  className="gap-2 bg-white text-black hover:text-white"
+                  onClick={() => {
+                    if (
+                      window.confirm(
+                        "Are you sure you want to delete this order?"
+                      )
+                    ) {
+                      deleteMutation.mutate(order.id);
+                    }
+                  }}
                 >
-                  <Plus />
-                  Attach Bill
+                  <Trash />
+                  Delete
                 </Button>
-              )}
-              <Button variant="outline" onClick={() => setOpenEditOrder(true)}>
-                <Pencil />
-                Edit
-              </Button>
-              <Button
-                variant="destructive"
-                className="bg-white text-black hover:text-white"
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      "Are you sure you want to delete this order?"
-                    )
-                  ) {
-                    deleteMutation.mutate(order.id);
-                  }
-                }}
-              >
-                <Trash />
-                Delete
-              </Button>
-            </div>
+              </>
+            )}
           </div>
-        )}
+        </CardFooter>
+
+        <div className="hidden lg:block lg:col-span-1">
+          <div className="flex flex-col w-full gap-2">
+            <Button variant="outline" onClick={() => setOpenEditOrder(true)}>
+              <Pencil />
+              Edit
+            </Button>
+
+            {(isAdmin || isFulfillment) && (
+              <>
+                {order.status !== "Completed" && (
+                  <Button
+                    variant="outline"
+                    onClick={() => setOpenFulfillmentForm(true)}
+                  >
+                    <Plus />
+                    Attach Bill
+                  </Button>
+                )}
+                <Button
+                  variant="destructive"
+                  className="bg-white text-black hover:text-white"
+                  onClick={() => {
+                    if (
+                      window.confirm(
+                        "Are you sure you want to delete this order?"
+                      )
+                    ) {
+                      deleteMutation.mutate(order.id);
+                    }
+                  }}
+                >
+                  <Trash />
+                  Delete
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
       </Card>
     </>
   );

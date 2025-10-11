@@ -17,7 +17,7 @@ const Completed = () => {
     error,
   } = useFetchOrders({
     salesmanId: localStorage.getItem("id"),
-    status: "In Progress",
+    status: "In progress",
     search: debouncedSearch,
   });
 

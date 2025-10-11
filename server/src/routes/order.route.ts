@@ -37,6 +37,11 @@ router.get(
 );
 
 router.delete("/:id", authenticateJWT, authorizeRoles(["ADMIN"]), deleteOrder);
-router.put("/:id", authenticateJWT, authorizeRoles(["ADMIN"]), editOrder);
+router.put(
+  "/:id",
+  authenticateJWT,
+  authorizeRoles(["ADMIN", "SALESMAN", "FULFILLMENT"]),
+  editOrder
+);
 
 export default router;

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -25,6 +25,7 @@ type Props = {
 const OrderFormDialog: React.FC<Props> = ({ open, setOpen, order }) => {
   const productListRef = useRef<HTMLDivElement>(null);
   const isEdit = Boolean(order);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -69,6 +70,7 @@ const OrderFormDialog: React.FC<Props> = ({ open, setOpen, order }) => {
   const editOrderMutation = useEditOrder();
 
   const onSubmit = (data: any) => {
+    setIsSubmitting(true);
     if (isEdit) {
       editOrderMutation.mutate(
         { ...order, ...data },
@@ -84,7 +86,7 @@ const OrderFormDialog: React.FC<Props> = ({ open, setOpen, order }) => {
         ...data,
         orderDate: new Date(),
         salesmanId: localStorage.getItem("id"),
-        status: "In Progress",
+        status: "In progress",
       };
       addOrderMutation.mutate(newOrder, {
         onSuccess: () => {
@@ -260,7 +262,11 @@ const OrderFormDialog: React.FC<Props> = ({ open, setOpen, order }) => {
             />
           </div>
 
-          <Button type="submit" className="w-full mt-4" disabled={!isValid}>
+          <Button
+            type="submit"
+            className="w-full mt-4"
+            disabled={!isValid || isSubmitting}
+          >
             Save Order
           </Button>
         </form>
