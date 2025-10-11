@@ -17,15 +17,15 @@ export async function notifyBillAction({
   switch (action) {
     case "created":
       title = "Bill Created";
-      body = `A new bill has been created for (${order.clientName}).`;
+      body = `Client: ${order.clientName}`;
       break;
     case "edited":
       title = "Bill Edited";
-      body = `A bill for order of (${order.clientName}) has been edited.`;
+      body = `Client: ${order.clientName}`;
       break;
     case "deleted":
       title = "Bill Deleted";
-      body = `A bill for order of (${order.clientName}) has been deleted.`;
+      body = `Client: ${order.clientName}`;
       break;
   }
 
@@ -65,15 +65,15 @@ export async function notifyOrderAction({
   switch (action) {
     case "created":
       title = "Order Created";
-      body = `A new order has been created\nfor Client: ${order.clientName}`;
+      body = `Client: ${order.clientName}`;
       break;
     case "edited":
       title = "Order Edited";
-      body = `Order for (${order.clientName}) has been edited.`;
+      body = `Client: ${order.clientName}`;
       break;
     case "deleted":
       title = "Order Deleted";
-      body = `Order for (${order.clientName}) has been deleted.`;
+      body = `Client: ${order.clientName}`;
       break;
   }
 
