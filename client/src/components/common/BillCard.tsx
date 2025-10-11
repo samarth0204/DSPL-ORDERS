@@ -144,7 +144,7 @@ const BillCard = ({
                 onClick={() => {
                   if (
                     window.confirm(
-                      "Are you sure you want to delete this fulfillment?"
+                      "Are you sure you want to delete this dispatch?"
                     )
                   ) {
                     deleteMutation.mutate(fulfillment.id);

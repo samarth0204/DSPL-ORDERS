@@ -121,7 +121,7 @@ export default function OrderDetails() {
               </Card>
             ))
           ) : (
-            <span className="text-gray-400 text-sm">No fulfillments yet.</span>
+            <span className="text-gray-400 text-sm">No dispatches yet.</span>
           )}
         </div>
       </div>
