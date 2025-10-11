@@ -10,6 +10,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NotAuthorized from "./components/pages/NotAuthorized";
 import usePushNotification from "./hooks/usePushNotification";
+import OrderDetails from "./components/pages/OrderDetails";
 
 const InProgress = lazy(() => import("./components/pages/InProgress"));
 const Completed = lazy(() => import("./components/pages/Completed"));
@@ -109,6 +110,19 @@ function App() {
                   <RoleBasedRoute allowedRoles={["ADMIN", "FULFILLMENT"]}>
                     <LazyLoad>
                       <AllOrders />
+                    </LazyLoad>
+                  </RoleBasedRoute>
+                }
+              />
+              {/* Order Details route for notifications and direct links */}
+              <Route
+                path="/order/:id"
+                element={
+                  <RoleBasedRoute
+                    allowedRoles={["ADMIN", "FULFILLMENT", "SALESMAN"]}
+                  >
+                    <LazyLoad>
+                      <OrderDetails />
                     </LazyLoad>
                   </RoleBasedRoute>
                 }

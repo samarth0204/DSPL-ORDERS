@@ -9,6 +9,7 @@ export interface Product {
 
 interface Fulfillment {
   id: string; // maybe bill ID
+  billNumber?: string;
   fulfilledProducts: {
     name: string;
     size: string;
@@ -29,6 +30,11 @@ export interface Order {
   products: Product[];
   fulfillments: Fulfillment[];
   salesManName: string;
+  salesmanId?: string;
+  salesman: {
+    id: string;
+    username: string;
+  };
   orderDate: string;
   createdAt?: string;
 }

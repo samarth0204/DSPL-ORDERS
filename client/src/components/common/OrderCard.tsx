@@ -7,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
 import type { Order } from "@/types/order";
 import {
@@ -25,11 +24,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  BadgeCheck,
-  Clock,
   MapPin,
   Pencil,
   Plus,
+  SquareArrowOutUpRight,
   Trash,
   TruckIcon,
 } from "lucide-react";
@@ -43,6 +41,8 @@ import OrderFormDialog from "./OrderFormDialog";
 import { useDeleteOrder } from "@/hooks/orderHooks";
 import FulfillmentFormDialog from "./FulfillmentFormDialog";
 import { useUserStore } from "@/store/useUserStore";
+import { Link } from "react-router-dom";
+import GetBadge from "./GetBadge";
 
 const FulfillmentProgress = ({ order }: { order: Order }) => {
   const progress = getFulfillmentProgress(order);
@@ -126,33 +126,7 @@ const OrderAccordion = ({ order }: { order: Order }) => {
     </Accordion>
   );
 };
-const GetBadge = ({ order }: { order: Order }) => {
-  if (order.status === "Completed") {
-    return (
-      <Badge
-        variant="secondary"
-        className="bg-green-700 text-white dark:bg-blue-600"
-      >
-        <BadgeCheck />
-        Completed
-      </Badge>
-    );
-  }
-  const createdAtMs = order.createdAt ? new Date(order.createdAt).getTime() : 0;
-  const diffMinutes = Math.floor((Date.now() - createdAtMs) / (1000 * 60));
-  if (diffMinutes >= 5) {
-    return (
-      <Badge
-        variant="secondary"
-        className="bg-yellow-500 text-white dark:bg-blue-600"
-      >
-        <Clock />
-        In Progress
-      </Badge>
-    );
-  }
-  return <Badge variant="destructive">Not Started</Badge>;
-};
+
 const FulfillmentAccordion = ({ order }: { order: Order }) => {
   if (!order.fulfillments?.length) return null;
 
@@ -194,17 +168,23 @@ const OrderCard = ({ order }: { order: Order }) => {
       <Card className="gap-3 py-4 rounded-sm lg:grid lg:grid-cols-10 lg:px-4">
         <div className="lg:col-span-3">
           <CardHeader className="lg:px-0">
-            <CardTitle>{order.clientName}</CardTitle>
+            <Link to={`/order/${order.id}`} className="hover:underline">
+              <CardTitle className="flex items-center gap-2">
+                {order.clientName} <SquareArrowOutUpRight size={15} />
+              </CardTitle>
+            </Link>
             <CardDescription className="flex lg:flex-col gap-2">
-              <div className="flex gap-2">
-                <MapPin />
-                {order.deliveryDetails}
-              </div>
+              {order.deliveryDetails && (
+                <div className="flex gap-2">
+                  <MapPin size={18} />
+                  {order.deliveryDetails}
+                </div>
+              )}
               <div className="hidden lg:flex flex-col gap-4">
                 <FulfillmentProgress order={order} />
                 {order.description && (
                   <div className="flex gap-2 font-semibold">
-                    <TruckIcon />
+                    <TruckIcon size={18} />
                     {order.description}
                   </div>
                 )}
