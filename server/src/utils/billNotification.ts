@@ -1,5 +1,4 @@
 import { sendNotification } from "../services/notificationService";
-import prisma from "../config/prisma";
 
 export async function notifyBillAction({
   userId,
@@ -66,7 +65,7 @@ export async function notifyOrderAction({
   switch (action) {
     case "created":
       title = "Order Created";
-      body = `A new order has been created.\nfor Client: ${order.clientName}`;
+      body = `A new order has been created\nfor Client: ${order.clientName}`;
       break;
     case "edited":
       title = "Order Edited";
@@ -79,7 +78,7 @@ export async function notifyOrderAction({
   }
 
   if (order.status) body += `\nStatus: ${order.status}`;
-  if (order.orderDate) body += `, Date: ${order.orderDate}`;
+  if (order.orderDate) body += `\n, Date: ${order.orderDate.toLocaleString()}`;
 
   const userIds = Array.isArray(userId) ? userId : [userId];
 
