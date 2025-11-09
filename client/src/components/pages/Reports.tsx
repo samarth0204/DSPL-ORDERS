@@ -37,8 +37,8 @@ const Reports = () => {
 
       <div className="pt-4 w-full max-w-5xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Daily Reports</h1>
+        <div className="flex flex-row justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold">Your Daily Reports</h1>
           <Button onClick={() => setShowDailyReportForm(true)}>
             <Plus className="mr-2 h-4 w-4" /> Add Report
           </Button>
