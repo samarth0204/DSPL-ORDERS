@@ -24,6 +24,8 @@ model User {
   createdAt         DateTime            @default(now())
   updatedAt DateTime @updatedAt @default(now())
   subscriptions NotificationSubscription[]
+
+  dailyReports   DailyReport[]
 }
 
 model Order {
@@ -100,4 +102,41 @@ model NotificationSubscription {
   createdAt  DateTime @default(now())
 
   user       User     @relation(fields: [userId], references: [id])
+}
+
+
+model DailyReport {
+  id           String       @id @default(uuid())
+  date         DateTime     // The report date
+  reportType   ReportType
+  hq           String
+  dbName       String
+  town         String
+  beat         String?
+
+  // Evening-specific fields
+  tc           Int?
+  pc           Int?
+  ctcWeight    Float?
+  ctcValue     Float?
+  atcWeight    Float?
+  atcValue     Float?
+  vapPacket    Int?
+  vapValue     Float?
+  totalWeight  Float?
+  totalValue   Float?
+  remarks      String?
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@unique([userId, date, reportType]) // 1 report type per user per day
+}
+
+enum ReportType {
+  MORNING
+  EVENING
 }

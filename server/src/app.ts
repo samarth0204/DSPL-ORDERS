@@ -5,6 +5,7 @@ import userRoutes from "./routes/user.route";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import notificationRoutes from "./routes/notification.route";
+import reportRoutes from "./routes/reports.route";
 
 const app = express();
 app.use(express.json());
@@ -24,5 +25,6 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/fulfillment", fulfillmentRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/notification", notificationRoutes);
+app.use("/api/reports", reportRoutes);
 
 export default app;
