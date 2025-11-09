@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  // baseURL: "https://dspl-server-288823573837.asia-south2.run.app/api",
-  baseURL: "http://localhost:3001/api",
+  baseURL: "https://dspl-server-288823573837.asia-south2.run.app/api",
+  // baseURL: "http://localhost:3001/api",
 });
 
 // Attach accessToken from localStorage to every request
