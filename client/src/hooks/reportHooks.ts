@@ -30,9 +30,11 @@ const useAddReport = () => {
         queryClient.invalidateQueries({ queryKey: ["reports"] });
         showToast.success("Report added!");
       },
-      onError: (error) => {
-        console.error("Error adding report:", error);
-        showToast.error("Something went wrong!");
+      onError: (error: any) => {
+        const message =
+          error.response?.data?.error ||
+          "Something went wrong while applying leave!";
+        showToast.error(message);
       },
     });
   }
@@ -46,12 +48,14 @@ const useApplyLeave = () => {
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["leaves"] });
+      queryClient.invalidateQueries({ queryKey: ["reports"] });
       showToast.success("Leave applied!");
     },
-    onError: (error) => {
-      console.error("Error applying leave:", error);
-      showToast.error("Something went wrong!");
+    onError: (error: any) => {
+      const message =
+        error.response?.data?.error ||
+        "Something went wrong while applying leave!";
+      showToast.error(message);
     },
   });
 };

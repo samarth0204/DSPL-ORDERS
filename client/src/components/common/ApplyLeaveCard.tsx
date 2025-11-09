@@ -34,13 +34,34 @@ const ApplyLeaveCard: React.FC<LeaveFormProps> = ({ open, setOpen }) => {
     date ? date.toLocaleDateString("en-US", { weekday: "long" }) : "";
 
   const onSubmit = (data: LeaveFormData) => {
+    const userId = localStorage.getItem("id") || "";
+    if (!data.date) {
+      console.error("No date selected!");
+      return;
+    }
+
+    //Normalize to true UTC midnight (not local)
+    const selectedDate = new Date(data.date);
+    const utcDate = new Date(
+      Date.UTC(
+        selectedDate.getFullYear(),
+        selectedDate.getMonth(),
+        selectedDate.getDate()
+      )
+    );
+
     const payload = {
-      ...data,
-      userId: localStorage.getItem("id") || "",
+      userId,
+      date: utcDate.toISOString(), // ✅ send explicit UTC midnight string
     };
-    console.log("Submitted data:", payload);
+
+    console.log("🚀 Final payload sent to backend:", payload);
     useApplyLeaveMutation.mutate(payload, {
       onSuccess: () => {
+        reset();
+        setOpen(false);
+      },
+      onError: () => {
         reset();
         setOpen(false);
       },

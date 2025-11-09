@@ -50,10 +50,27 @@ export const DailyReportForm: React.FC<DailyReportFormProps> = ({
     date ? date.toLocaleDateString("en-US", { weekday: "long" }) : "";
 
   const onSubmit = (data: DailyReportFormData) => {
+    const userId = localStorage.getItem("id") || "";
+    if (!data.date) {
+      console.error("No date selected!");
+      return;
+    }
+
+    //Normalize to true UTC midnight (not local)
+    const selectedDate = new Date(data.date);
+    const utcDate = new Date(
+      Date.UTC(
+        selectedDate.getFullYear(),
+        selectedDate.getMonth(),
+        selectedDate.getDate()
+      )
+    );
+
     const payload = {
       ...data,
+      userId,
       reportType,
-      userId: localStorage.getItem("id") || "",
+      date: utcDate.toISOString(), // ✅ send explicit UTC midnight string
     };
     console.log("Submitted data:", payload);
 
