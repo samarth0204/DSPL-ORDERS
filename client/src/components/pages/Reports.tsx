@@ -5,15 +5,8 @@ import { Plus, Sun, Moon, CalendarIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { DailyReportForm } from "../common/DailyReportForm";
 import { useFetchReports } from "@/hooks/reportHooks";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardDescription,
-} from "../ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
-import { Separator } from "../ui/separator";
 
 const Reports = () => {
   const [showDailyReportForm, setShowDailyReportForm] = useState(false);
