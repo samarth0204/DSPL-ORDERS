@@ -19,19 +19,34 @@ export const getAllReports = async (req: Request, res: Response) => {
   }
 };
 
-/**
- * Create a new daily report (MORNING or EVENING)
- */
+// 🧩 Utility: Convert any date string → start & end of day (UTC)
+const getDateRangeUTC = (dateString: string) => {
+  const d = new Date(dateString);
+  const startOfDay = new Date(
+    Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 0, 0, 0, 0)
+  );
+  const endOfDay = new Date(
+    Date.UTC(
+      d.getUTCFullYear(),
+      d.getUTCMonth(),
+      d.getUTCDate(),
+      23,
+      59,
+      59,
+      999
+    )
+  );
+  return { startOfDay, endOfDay };
+};
+
 export const createReport = async (req: Request, res: Response) => {
   try {
-    // Accept either dbName or DBName from client to be forgiving
     const {
       userId,
       date,
       reportType,
       hq,
       dbName,
-      DBName,
       town,
       beat,
       tc,
@@ -47,19 +62,11 @@ export const createReport = async (req: Request, res: Response) => {
       remarks,
     } = req.body;
 
-    // Basic required validation
-    if (
-      !userId ||
-      !date ||
-      !reportType ||
-      !hq ||
-      !(dbName || DBName) ||
-      !town
-    ) {
+    if (!userId || !date || !reportType || !hq || !dbName || !town) {
       return res.status(400).json({
         success: false,
         error:
-          "Missing required fields. Required: userId, date, reportType, hq, dbName (or DBName), town",
+          "Missing required fields. Required: userId, date, reportType, hq, dbName, town",
       });
     }
 
@@ -71,7 +78,6 @@ export const createReport = async (req: Request, res: Response) => {
       });
     }
 
-    // Parse/validate date
     const parsedDate = new Date(date);
     if (isNaN(parsedDate.getTime())) {
       return res
@@ -79,69 +85,74 @@ export const createReport = async (req: Request, res: Response) => {
         .json({ success: false, error: "Invalid date format" });
     }
 
-    // Normalize DB name key
-    const finalDbName = dbName ?? DBName;
-
-    // Parse numeric fields safely (throwing helpful errors if invalid)
-    try {
-      // ints
-      const tcInt = parseIntOrNull(tc, "tc");
-      const pcInt = parseIntOrNull(pc, "pc");
-      const vapPacketInt = parseIntOrNull(vapPacket, "vapPacket");
-
-      // floats
-      const ctcWeightF = parseFloatOrNull(ctcWeight, "ctcWeight");
-      const ctcValueF = parseFloatOrNull(ctcValue, "ctcValue");
-      const atcWeightF = parseFloatOrNull(atcWeight, "atcWeight");
-      const atcValueF = parseFloatOrNull(atcValue, "atcValue");
-      const vapValueF = parseFloatOrNull(vapValue, "vapValue");
-      const totalWeightF = parseFloatOrNull(totalWeight, "totalWeight");
-      const totalValueF = parseFloatOrNull(totalValue, "totalValue");
-
-      // Build base payload
-      const baseData: any = {
+    // ✅ Check for duplicates before creation
+    const { startOfDay, endOfDay } = getDateRangeUTC(date);
+    const existingReport = await prisma.dailyReport.findFirst({
+      where: {
         userId,
-        date: parsedDate,
         reportType: normalizedType,
-        hq,
-        dbName: finalDbName,
-        town,
-        beat: beat ?? null,
-      };
+        date: {
+          gte: startOfDay,
+          lte: endOfDay,
+        },
+      },
+    });
 
-      if (normalizedType === "EVENING") {
-        Object.assign(baseData, {
-          tc: tcInt,
-          pc: pcInt,
-          ctcWeight: ctcWeightF,
-          ctcValue: ctcValueF,
-          atcWeight: atcWeightF,
-          atcValue: atcValueF,
-          vapPacket: vapPacketInt,
-          vapValue: vapValueF,
-          totalWeight: totalWeightF,
-          totalValue: totalValueF,
-          remarks: remarks ?? null,
-        });
-      }
-
-      // create
-      const newReport = await prisma.dailyReport.create({
-        data: baseData,
-      });
-
-      return res.status(201).json({
-        success: true,
-        message: `${normalizedType} report created`,
-        data: newReport,
-      });
-    } catch (parsingError: any) {
-      // parseInt/parseFloat helpers throw Errors with friendly messages
-      return res.status(400).json({
+    if (existingReport) {
+      return res.status(409).json({
         success: false,
-        error: parsingError.message ?? "Invalid numeric input",
+        error: "Leave applied!",
       });
     }
+
+    // Parse numbers safely
+    const tcInt = parseIntOrNull(tc, "tc");
+    const pcInt = parseIntOrNull(pc, "pc");
+    const vapPacketInt = parseIntOrNull(vapPacket, "vapPacket");
+
+    const ctcWeightF = parseFloatOrNull(ctcWeight, "ctcWeight");
+    const ctcValueF = parseFloatOrNull(ctcValue, "ctcValue");
+    const atcWeightF = parseFloatOrNull(atcWeight, "atcWeight");
+    const atcValueF = parseFloatOrNull(atcValue, "atcValue");
+    const vapValueF = parseFloatOrNull(vapValue, "vapValue");
+    const totalWeightF = parseFloatOrNull(totalWeight, "totalWeight");
+    const totalValueF = parseFloatOrNull(totalValue, "totalValue");
+
+    const baseData: any = {
+      userId,
+      date: parsedDate,
+      reportType: normalizedType,
+      hq,
+      dbName,
+      town,
+      beat: beat ?? null,
+    };
+
+    if (normalizedType === "EVENING") {
+      Object.assign(baseData, {
+        tc: tcInt,
+        pc: pcInt,
+        ctcWeight: ctcWeightF,
+        ctcValue: ctcValueF,
+        atcWeight: atcWeightF,
+        atcValue: atcValueF,
+        vapPacket: vapPacketInt,
+        vapValue: vapValueF,
+        totalWeight: totalWeightF,
+        totalValue: totalValueF,
+        remarks: remarks ?? null,
+      });
+    }
+
+    const newReport = await prisma.dailyReport.create({
+      data: baseData,
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: `${normalizedType} report created successfully.`,
+      data: newReport,
+    });
   } catch (error: any) {
     if (error?.code === "P2002") {
       return res.status(409).json({
@@ -149,6 +160,7 @@ export const createReport = async (req: Request, res: Response) => {
         error: "Report already exists for this user, date and type.",
       });
     }
+
     console.error("Error creating report:", error);
     return res
       .status(500)
@@ -165,11 +177,12 @@ export const getDailyReport = async (req: Request, res: Response) => {
     const reportDate = new Date(date);
 
     // Match by date only (ignore time)
+    const { startOfDay, endOfDay } = getDateRangeUTC(date);
     const reports = await prisma.dailyReport.findMany({
       where: {
         date: {
-          gte: new Date(reportDate.setHours(0, 0, 0, 0)),
-          lt: new Date(reportDate.setHours(23, 59, 59, 999)),
+          gte: startOfDay,
+          lt: endOfDay,
         },
       },
       include: { user: { select: { username: true } } },
@@ -314,12 +327,11 @@ export const applyLeave = async (req: Request, res: Response) => {
         .status(400)
         .json({ success: false, error: "userId and date are required" });
     }
-
-    const parsedDate = new Date(date);
-
-    // Check if already applied
     const existing = await prisma.dailyReport.findMany({
-      where: { userId, date: parsedDate },
+      where: {
+        userId,
+        date,
+      },
     });
 
     if (existing.length > 0) {
@@ -329,25 +341,19 @@ export const applyLeave = async (req: Request, res: Response) => {
       });
     }
 
-    // Common null data
-    const nullData = {
-      remarks: "Leave Applied",
-    };
-
-    // Create both MORNING and EVENING reports
     await prisma.dailyReport.createMany({
       data: [
         {
           userId,
-          date: parsedDate,
+          date,
           reportType: "MORNING",
-          ...nullData,
+          remarks: "Leave Applied",
         },
         {
           userId,
-          date: parsedDate,
+          date,
           reportType: "EVENING",
-          ...nullData,
+          remarks: "Leave Applied",
         },
       ],
     } as any);
