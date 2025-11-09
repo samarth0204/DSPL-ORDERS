@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import NotAuthorized from "./components/pages/NotAuthorized";
 import usePushNotification from "./hooks/usePushNotification";
 import OrderDetails from "./components/pages/OrderDetails";
+import Reports from "./components/pages/Reports";
 
 const InProgress = lazy(() => import("./components/pages/InProgress"));
 const Completed = lazy(() => import("./components/pages/Completed"));
@@ -146,6 +147,17 @@ function App() {
                 element={
                   <RoleBasedRoute allowedRoles={["ADMIN", "FULFILLMENT"]}>
                     <Stats />
+                  </RoleBasedRoute>
+                }
+              />
+              <Route path="*" element={<Navigate to="/" replace />} />
+              <Route
+                path="/reports"
+                element={
+                  <RoleBasedRoute
+                    allowedRoles={["ADMIN", "FULFILLMENT", "SALESMAN"]}
+                  >
+                    <Reports />
                   </RoleBasedRoute>
                 }
               />
