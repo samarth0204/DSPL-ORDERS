@@ -6,11 +6,13 @@ import { Button } from "../ui/button";
 import { DailyReportForm } from "../common/DailyReportForm";
 import { useFetchReports } from "@/hooks/reportHooks";
 import ReportCard from "../common/ReportCard";
+import ApplyLeaveCard from "../common/ApplyLeaveCard";
 
 const Reports = () => {
   const [showDailyReportForm, setShowDailyReportForm] = useState(false);
   const salesmanId = localStorage.getItem("id") || "";
   const { data = [], isLoading, error } = useFetchReports({ salesmanId });
+  const [applyLeaveOpen, setApplyLeaveOpen] = useState(false);
 
   if (error)
     return (
@@ -35,10 +37,21 @@ const Reports = () => {
         />
       )}
 
+      {applyLeaveOpen && (
+        <ApplyLeaveCard open={applyLeaveOpen} setOpen={setApplyLeaveOpen} />
+      )}
+
       <div className="pt-4 w-full max-w-5xl mx-auto">
         {/* Header */}
         <div className="flex flex-row justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Your Daily Reports</h1>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setApplyLeaveOpen(true);
+            }}
+          >
+            Apply Leave
+          </Button>
           <Button onClick={() => setShowDailyReportForm(true)}>
             <Plus className="mr-2 h-4 w-4" /> Add Report
           </Button>

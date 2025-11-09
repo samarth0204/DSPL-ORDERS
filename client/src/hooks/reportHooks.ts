@@ -38,4 +38,22 @@ const useAddReport = () => {
   }
 };
 
-export { useFetchReports, useAddReport };
+const useApplyLeave = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (leaveData: any) => {
+      const res = await api.post("/reports/apply-leave", leaveData);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["leaves"] });
+      showToast.success("Leave applied!");
+    },
+    onError: (error) => {
+      console.error("Error applying leave:", error);
+      showToast.error("Something went wrong!");
+    },
+  });
+};
+
+export { useFetchReports, useAddReport, useApplyLeave };

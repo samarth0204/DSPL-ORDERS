@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "public"."DailyReport" ALTER COLUMN "hq" DROP NOT NULL,
+ALTER COLUMN "dbName" DROP NOT NULL,
+ALTER COLUMN "town" DROP NOT NULL;

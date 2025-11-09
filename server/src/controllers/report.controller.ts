@@ -304,3 +304,60 @@ export const deleteReport = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, error: "Internal server error" });
   }
 };
+
+export const applyLeave = async (req: Request, res: Response) => {
+  try {
+    const { userId, date } = req.body;
+
+    if (!userId || !date) {
+      return res
+        .status(400)
+        .json({ success: false, error: "userId and date are required" });
+    }
+
+    const parsedDate = new Date(date);
+
+    // Check if already applied
+    const existing = await prisma.dailyReport.findMany({
+      where: { userId, date: parsedDate },
+    });
+
+    if (existing.length > 0) {
+      return res.status(409).json({
+        success: false,
+        error: "You already have reports or leave applied for this date.",
+      });
+    }
+
+    // Common null data
+    const nullData = {
+      remarks: "Leave Applied",
+    };
+
+    // Create both MORNING and EVENING reports
+    await prisma.dailyReport.createMany({
+      data: [
+        {
+          userId,
+          date: parsedDate,
+          reportType: "MORNING",
+          ...nullData,
+        },
+        {
+          userId,
+          date: parsedDate,
+          reportType: "EVENING",
+          ...nullData,
+        },
+      ],
+    } as any);
+
+    return res.status(201).json({
+      success: true,
+      message: "Leave applied successfully",
+    });
+  } catch (error) {
+    console.error("Error applying leave:", error);
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+};

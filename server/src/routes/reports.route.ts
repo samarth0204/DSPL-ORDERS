@@ -6,6 +6,7 @@ import {
   getReportsByUser,
   editReport,
   deleteReport,
+  applyLeave,
 } from "../controllers/report.controller";
 
 const router = express.Router();
@@ -15,6 +16,9 @@ router.post("/", createReport);
 
 // Get all reports
 router.get("/", getAllReports);
+
+// Apply for a leave
+router.post("/apply-leave", applyLeave);
 
 // Get daily reports for a specific date (all users)
 router.get("/daily/:date", getDailyReport);

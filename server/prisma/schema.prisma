@@ -109,9 +109,9 @@ model DailyReport {
   id           String       @id @default(uuid())
   date         DateTime     // The report date
   reportType   ReportType
-  hq           String
-  dbName       String
-  town         String
+  hq           String?
+  dbName       String?
+  town         String?
   beat         String?
 
   // Evening-specific fields
